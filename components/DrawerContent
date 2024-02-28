@@ -1,0 +1,23 @@
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+const DrawerList = [{ icon: "drawer", label: "Home", navigateTo: "Home" }];
+
+const DrawerLayout = ({ icon, label, navigateTo }) => {
+  const navigation = useNavigation();
+  return (
+    <DrawerItem
+      icon={({ color, size }) => <Icon name={icon} color={color} size={size} />}
+      label={label}
+      onPress={() => {
+        navigation.navigate(navigateTo);
+      }}
+    />
+  );
+};
+
+function DrawerContent(props) {
+  return <View></View>;
+}
+
+export default DrawerContent;
