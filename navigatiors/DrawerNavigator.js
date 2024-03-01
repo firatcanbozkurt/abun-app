@@ -55,9 +55,6 @@ const DrawerNavigator = () => {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Tabs" component={TabNavigator} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
-      <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="Clubs" component={Clubs} />
       <Drawer.Screen name="PastExams" component={PastExamScreen} />
     </Drawer.Navigator>
   );

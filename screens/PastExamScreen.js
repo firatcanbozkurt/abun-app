@@ -49,8 +49,8 @@ const PastExamScreen = () => {
           ></Ionicons>
           <Feather name="more-vertical" size={24} color="#52575D" />
         </View>
-        {exams.map((exam) => {
-          return <DownloadView title={exam.name} />;
+        {exams.map((exam, id) => {
+          return <DownloadView key={id} title={exam.name} />;
         })}
       </ScrollView>
     </SafeAreaView>
