@@ -3,7 +3,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from "@expo/vector-icons";
 import confetti from "../assets/confetti.png";
 import Cards from "../components/Cards";
-
+import { Avatar } from "@gluestack-ui/themed";
+import { ScrollView } from "@gluestack-ui/themed";
 const Clubs = ({ navigation }) => {
   const openDrawer = () => {
     navigation.openDrawer();
@@ -25,7 +26,7 @@ const Clubs = ({ navigation }) => {
                 uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
               }}
             >
-              AJ
+              <Text>AJ</Text>
             </Avatar>
           </Pressable>
         </View>

@@ -11,6 +11,8 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import Clubs from "../screens/Clubs";
+import TabNavigator from "./TabNavigator";
+import PastExamScreen from "../screens/PastExamScreen";
 
 const CustomDrawerContent = ({ navigation }) => {
   return (
@@ -34,6 +36,12 @@ const CustomDrawerContent = ({ navigation }) => {
           navigation.navigate("Clubs");
         }}
       />
+      <DrawerItem
+        label="Past Exams"
+        onPress={() => {
+          navigation.navigate("PastExams");
+        }}
+      />
     </DrawerContentScrollView>
   );
 };
@@ -46,9 +54,11 @@ const DrawerNavigator = () => {
       initialRouteName="Home"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
+      <Drawer.Screen name="Tabs" component={TabNavigator} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Clubs" component={Clubs} />
+      <Drawer.Screen name="PastExams" component={PastExamScreen} />
     </Drawer.Navigator>
   );
 };

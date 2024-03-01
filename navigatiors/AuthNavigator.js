@@ -27,6 +27,7 @@ function AuthNavigator() {
         </>
       ) : (
         <>
+          <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
         </>
