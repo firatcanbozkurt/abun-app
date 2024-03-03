@@ -8,6 +8,7 @@ import LoginScreen from "../screens/LoginScreen";
 import TabNavigator from "./TabNavigator";
 import DrawerNavigator from "./DrawerNavigator";
 import Clubs from "../screens/Clubs";
+import PastExamScreen from "../screens/PastExamScreen";
 import { useAuth } from "../components/context/AuthProvider";
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +30,7 @@ function AuthNavigator() {
         <>
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="PastExams" component={PastExamScreen} />
         </>
       )}
     </Stack.Navigator>

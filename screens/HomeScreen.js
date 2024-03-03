@@ -50,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
               shadow={2}
               source={require("../assets/ann.jpeg")}
               alt="Alternate Text"
-              className="w-full h-2/4 mt-4 rounded"
+              className="w-full h-2/5 mt-4 rounded"
             />
             <Text className="text-xl font-semibold my-4">Upcoming Events</Text>
             <View className="flex flex-row">
@@ -87,21 +87,3 @@ const HomeScreen = ({ navigation }) => {
 };
 
 export default HomeScreen;
-
-// <View className="flex-1 justify-center items-center">
-// <Pressable onPress={() => navigation.navigate("CreateProfile")}>
-//   <Text>createprofile</Text>
-// </Pressable>
-// <Pressable onPress={() => navigation.navigate("Login")}>
-//   <Text className="text-3xl">Login Page</Text>
-//   <Pressable onPress={() => navigation.navigate("Register")}>
-//     <Text className="text-3xl mt-5">Register page</Text>
-//   </Pressable>
-// </Pressable>
-// <Pressable onPress={() => navigation.navigate("Welcome")}>
-//   <Text className="text-3xl my-5">Welcome page</Text>
-// </Pressable>
-// <Pressable onPress={() => navigation.navigate("Profile")}>
-//   <Text className="text-3xl">Profile Page</Text>
-// </Pressable>
-// </View> */}

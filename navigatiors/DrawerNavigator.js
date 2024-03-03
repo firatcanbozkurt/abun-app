@@ -1,18 +1,12 @@
 import React from "react";
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import WelcomeScreen from "../screens/WelcomeScreen";
-import CreateProfileScreen from "../screens/CreateProfileScreen";
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
 } from "@react-navigation/drawer";
-import Clubs from "../screens/Clubs";
 import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
+import { supabase } from "../supabase";
 
 const CustomDrawerContent = ({ navigation }) => {
   return (
@@ -42,6 +36,12 @@ const CustomDrawerContent = ({ navigation }) => {
           navigation.navigate("PastExams");
         }}
       />
+      <DrawerItem
+        label="Logout"
+        onPress={() => {
+          supabase.auth.signOut();
+        }}
+      />
     </DrawerContentScrollView>
   );
 };
@@ -51,13 +51,10 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Home"
+      initialRouteName=""
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
-      <Drawer.Screen name="Tabs" component={TabNavigator} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
-      <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="Clubs" component={Clubs} />
+      <Drawer.Screen name="TabNavigator" component={TabNavigator} />
       <Drawer.Screen name="PastExams" component={PastExamScreen} />
     </Drawer.Navigator>
   );

@@ -3,13 +3,31 @@ import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, View, StyleSheet, Text, Image, Alert } from "react-native";
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallbackText,
+  AvatarImage,
+  HStack,
+} from "@gluestack-ui/themed";
 import DownloadView from "../components/DownloadView";
 import { supabase } from "../supabase";
 import { get } from "@gluestack-style/react";
+import TabNavigator from "../navigatiors/TabNavigator";
 
 const PastExamScreen = () => {
+  const navigation = useNavigation();
   const [exams, setExams] = useState([]);
+
   const getExamPdf = async ({ id }) => {
     try {
       const { data, error } = await supabase.storage
@@ -25,6 +43,7 @@ const PastExamScreen = () => {
       Alert.alert("Error", error.message);
     }
   };
+
   useEffect(() => {
     const getExams = async () => {
       try {
@@ -36,141 +55,48 @@ const PastExamScreen = () => {
     };
     getExams();
   }, []);
-  const navigation = useNavigation();
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.titleBar}>
-          <Ionicons
-            name="ios-arrow-back"
-            size={24}
-            color="#52575D"
-            onPress={() => navigation.navigate("Home")}
-          ></Ionicons>
-          <Feather name="more-vertical" size={24} color="#52575D" />
+    <View className="flex-1">
+      <SafeAreaView
+        className="flex bg-primary h-1/4 "
+        style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
+      >
+        <View className="flex flex-row justify-between px-4 items-center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+          >
+            <ArrowLeftIcon size="20" color="white" />
+          </TouchableOpacity>
+          <HStack
+            space="md"
+            h="100%"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Avatar size="md">
+              <AvatarFallbackText>YY YY</AvatarFallbackText>
+              <AvatarImage
+                source={{
+                  uri: "https://wrong-url",
+                }}
+              />
+            </Avatar>
+          </HStack>
         </View>
-        {exams.map((exam) => {
-          return <DownloadView title={exam.name} />;
+        <View className="flex  items-center mt-3">
+          <Text className="text-twhite text-4xl">Past Exams </Text>
+          <Text className="text-twhite text-3xl">CENG-SENG</Text>
+        </View>
+      </SafeAreaView>
+      <View className="flex  pt-8">
+        {exams.map((exam, id) => {
+          return <DownloadView key={id} title={exam.name} />;
         })}
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  // Delete the unused styles
-
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  text: {
-    fontFamily: "",
-    //color: "#52575D",
-  },
-  subText: {
-    fontSize: 12,
-    color: "#AEB5BC",
-    textTransform: "uppercase",
-    fontWeight: "500",
-  },
-  image: {
-    flex: 1,
-    width: undefined,
-    height: undefined,
-  },
-  titleBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 24,
-    marginHorizontal: 16,
-  },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: "hidden",
-  },
-
-  add: {
-    backgroundColor: "#41444B",
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  infoContainer: {
-    alignSelf: "center",
-    alignItems: "center",
-    margintop: 16,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    alignSelf: "center",
-    marginTop: 32,
-  },
-  statsBox: {
-    alignItems: "center",
-    flex: 1,
-  },
-  mediaImageContainer: {
-    width: 180,
-    height: 200,
-    borderRadius: 12,
-    overflow: "hidden",
-    marginHorizontal: 10,
-  },
-  mediaCount: {
-    backgroundColor: "#41444B",
-    position: "absolute",
-    top: "50%",
-    marginTop: -50,
-    marginLeft: 30,
-    width: 100,
-    height: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-    shadowColor: "rgba(0,0,0,0.38)",
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 20,
-    shadowOpacity: 1,
-  },
-  recent: {
-    marginLeft: 78,
-    marginTop: 32,
-    marginBottom: 6,
-    fontSize: 10,
-  },
-  recentItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 16,
-  },
-  recentItemIndicator: {
-    backgroundColor: "#CABFAB",
-    padding: 4,
-    height: 12,
-    width: 12,
-    borderRadius: 6,
-    marginTop: 3,
-    marginRight: 20,
-  },
-  input: {
-    width: "75%",
-    height: 40,
-    borderColor: "#DEE1EF",
-    borderBottomWidth: 2,
-    borderRadius: 4,
-    padding: 3,
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  customButton: {},
-});
 
 export default PastExamScreen;

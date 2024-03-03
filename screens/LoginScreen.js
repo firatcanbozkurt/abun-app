@@ -12,8 +12,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { AuthContext } from "../components/context/AuthContext";
-//import { signInWithEmailAndPassword } from "firebase/auth";
 import { supabase } from "../supabase.js";
 
 //
@@ -45,12 +43,8 @@ export default function LoginScreen({ navigation }) {
     });
 
     if (error) Alert.alert(error.message);
-    else {
-      navigation.replace("Home");
-    }
   };
 
-  useEffect(() => {}, []);
   useEffect(() => {
     checkEmailValidity(email);
   }, [email]);
