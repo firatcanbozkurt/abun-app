@@ -35,7 +35,7 @@ export default DownloadView;
 const styles = StyleSheet.create({
   // Delete the unused styles
   textSize: {
-    fontFamily: "Roboto",
+    fontFamily: "",
     fontSize: 18,
   },
   downloadRow: {

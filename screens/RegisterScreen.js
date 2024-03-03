@@ -33,10 +33,6 @@ export default function RegisterScreen({ navigation }) {
     });
 
     if (error) Alert.alert(error.message);
-    else {
-      navigation.replace("Login");
-      setLoading(false);
-    }
   }
 
   const togglePasswordVisibility = () => {
@@ -51,11 +47,6 @@ export default function RegisterScreen({ navigation }) {
     setIsValidEmail(isValid);
     setEmail(text);
   };
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigation.replace("Home");
-    }
-  }, []);
 
   return (
     <View className="flex-1 bg-primary ">
