@@ -7,16 +7,14 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { AuthContext } from "../components/context/AuthContext.js";
 import { supabase } from "../supabase.js";
 
 export default function RegisterScreen({ navigation }) {
-  const { isLoggedIn } = useContext(AuthContext);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
