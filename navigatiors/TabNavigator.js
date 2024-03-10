@@ -27,8 +27,8 @@ const TabNavigator = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <Entypo
-              name="home"
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
               size={24}
               color={focused ? "#2B47FC" : "gray"}
             />
