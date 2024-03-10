@@ -18,7 +18,6 @@ function App() {
         <GluestackUIProvider config={config}>
           <SafeAreaProvider>
             <NavigationContainer>
-              <StatusBar style="light" />
               <AuthNavigator />
             </NavigationContainer>
           </SafeAreaProvider>

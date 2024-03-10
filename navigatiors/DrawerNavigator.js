@@ -6,6 +6,7 @@ import {
 } from "@react-navigation/drawer";
 import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
+import EventScreen from "../screens/EventScreen";
 import { supabase } from "../supabase";
 
 const CustomDrawerContent = ({ navigation }) => {
@@ -40,6 +41,12 @@ const CustomDrawerContent = ({ navigation }) => {
         label="Logout"
         onPress={() => {
           supabase.auth.signOut();
+        }}
+      />
+      <DrawerItem
+        label="Event"
+        onPress={() => {
+          navigation.navigate("Event");
         }}
       />
     </DrawerContentScrollView>

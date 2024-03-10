@@ -3,7 +3,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { format, getDay } from "date-fns";
 import { Octicons } from "@expo/vector-icons";
 import { supabase } from "../supabase";
-import { Avatar } from "@gluestack-ui/themed";
+import {
+  HStack,
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+  Button,
+  ButtonText,
+  ButtonIcon,
+  Icon,
+  Box,
+} from "@gluestack-ui/themed";
+import AvatarIcon from "../components/AvatarIcon";
 const HomeScreen = ({ navigation }) => {
   const today = new Date();
   const formattedDate = format(today, "MMMM d, yyyy");
@@ -35,9 +46,7 @@ const HomeScreen = ({ navigation }) => {
               }}
             ></Avatar>
           </Pressable>
-          <Pressable onPress={logout}>
-            <Text>Logout</Text>
-          </Pressable>
+          <AvatarIcon navigation={navigation} />
         </View>
         <View className="flex-1 px-4">
           <View>

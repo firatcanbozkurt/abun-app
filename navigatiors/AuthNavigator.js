@@ -1,14 +1,13 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import CreateProfileScreen from "../screens/CreateProfileScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import LoginScreen from "../screens/LoginScreen";
 import TabNavigator from "./TabNavigator";
 import DrawerNavigator from "./DrawerNavigator";
-import Clubs from "../screens/Clubs";
 import PastExamScreen from "../screens/PastExamScreen";
+import EventScreen from "../screens/EventScreen";
+
 import { useAuth } from "../components/context/AuthProvider";
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +30,7 @@ function AuthNavigator() {
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
           <Stack.Screen name="PastExams" component={PastExamScreen} />
+          <Stack.Screen name="Event" component={EventScreen} />
         </>
       )}
     </Stack.Navigator>

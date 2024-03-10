@@ -10,20 +10,19 @@ import {
   Alert,
   TouchableOpacity,
   Text,
+  StatusBar,
   ActivityIndicator,
 } from "react-native";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarFallbackText,
-  AvatarImage,
-  HStack,
-} from "@gluestack-ui/themed";
 import DownloadView from "../components/DownloadView";
 import { supabase } from "../supabase";
 import { get } from "@gluestack-style/react";
 import TabNavigator from "../navigatiors/TabNavigator";
+import AvatarIcon from "../components/AvatarIcon";
+
+const PastExamScreen = ({ navigation, statusColor }) => {
+  const [exams, setExams] = useState([]);
+
 import { useExamList } from "../api/exams";
 
 const PastExamScreen = () => {
@@ -66,21 +65,7 @@ const PastExamScreen = () => {
           >
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>
-          <HStack
-            space="md"
-            h="100%"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Avatar size="md">
-              <AvatarFallbackText>YY YY</AvatarFallbackText>
-              <AvatarImage
-                source={{
-                  uri: "https://wrong-url",
-                }}
-              />
-            </Avatar>
-          </HStack>
+          <AvatarIcon navigation={navigation} />
         </View>
         <View className="flex  items-center mt-3">
           <Text className="text-twhite text-4xl">Past Exams </Text>
