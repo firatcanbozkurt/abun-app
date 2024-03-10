@@ -19,10 +19,6 @@ import { supabase } from "../supabase";
 import { get } from "@gluestack-style/react";
 import TabNavigator from "../navigatiors/TabNavigator";
 import AvatarIcon from "../components/AvatarIcon";
-
-const PastExamScreen = ({ navigation, statusColor }) => {
-  const [exams, setExams] = useState([]);
-
 import { useExamList } from "../api/exams";
 
 const PastExamScreen = () => {
@@ -80,5 +76,4 @@ const PastExamScreen = () => {
     </View>
   );
 };
-
 export default PastExamScreen;
