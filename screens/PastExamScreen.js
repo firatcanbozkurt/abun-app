@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Text,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import DownloadView from "../components/DownloadView";
@@ -22,6 +23,12 @@ import AvatarIcon from "../components/AvatarIcon";
 const PastExamScreen = ({ navigation, statusColor }) => {
   const [exams, setExams] = useState([]);
 
+import { useExamList } from "../api/exams";
+
+const PastExamScreen = () => {
+  const navigation = useNavigation();
+  const { data: exams, error, isLoading } = useExamList();
+  console.log(exams);
   const getExamPdf = async ({ id }) => {
     try {
       const { data, error } = await supabase.storage
@@ -37,18 +44,13 @@ const PastExamScreen = ({ navigation, statusColor }) => {
       Alert.alert("Error", error.message);
     }
   };
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
-  useEffect(() => {
-    const getExams = async () => {
-      try {
-        const { data, error } = await supabase.from("past_exams").select("*");
-        setExams(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getExams();
-  }, []);
+  if (error) {
+    return <Text>An error occured!</Text>;
+  }
 
   return (
     <View className="flex-1">
