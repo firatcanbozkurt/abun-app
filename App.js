@@ -6,6 +6,7 @@ import { config } from "@gluestack-ui/config";
 import { useAuth } from "./components/context/AuthProvider.tsx";
 import AuthProvider from "./components/context/AuthProvider.tsx";
 import AuthNavigator from "./navigatiors/AuthNavigator";
+import QueryProvider from "./components/context/QueryProvider";
 
 function App() {
   const { session } = useAuth();
@@ -13,14 +14,16 @@ function App() {
 
   return (
     <AuthProvider>
-      <GluestackUIProvider config={config}>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <StatusBar style="light" />
-            <AuthNavigator />
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </GluestackUIProvider>
+      <QueryProvider>
+        <GluestackUIProvider config={config}>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <StatusBar style="light" />
+              <AuthNavigator />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </GluestackUIProvider>
+      </QueryProvider>
     </AuthProvider>
   );
 }

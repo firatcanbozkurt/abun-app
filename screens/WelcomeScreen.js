@@ -1,20 +1,12 @@
 import { View, Text, Image, TouchableOpacity, Animated } from "react-native";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { AuthContext } from "../components/context/AuthContext";
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
-  const { isLoggedIn } = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigation.replace("Home");
-    }
-  }, []);
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
