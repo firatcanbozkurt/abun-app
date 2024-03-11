@@ -7,7 +7,8 @@ import TabNavigator from "./TabNavigator";
 import DrawerNavigator from "./DrawerNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
 import EventScreen from "../screens/EventScreen";
-
+import CreateEventScreen from "../screens/CreateEventScreen";
+import AllEventsScreen from "../screens/AllEventsScreen";
 import { useAuth } from "../components/context/AuthProvider";
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,8 @@ function AuthNavigator() {
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
           <Stack.Screen name="PastExams" component={PastExamScreen} />
           <Stack.Screen name="Event" component={EventScreen} />
+          <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
+          <Stack.Screen name="AllEvents" component={AllEventsScreen} />
         </>
       )}
     </Stack.Navigator>

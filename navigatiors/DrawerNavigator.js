@@ -49,6 +49,18 @@ const CustomDrawerContent = ({ navigation }) => {
           navigation.navigate("Event");
         }}
       />
+      <DrawerItem
+        label="create event"
+        onPress={() => {
+          navigation.navigate("CreateEvent");
+        }}
+      />
+      <DrawerItem
+        label="all events"
+        onPress={() => {
+          navigation.navigate("AllEvents");
+        }}
+      />
     </DrawerContentScrollView>
   );
 };
