@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Pressable, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format, getDay } from "date-fns";
 import { Octicons } from "@expo/vector-icons";
@@ -61,7 +61,16 @@ const HomeScreen = ({ navigation }) => {
               alt="Alternate Text"
               className="w-full h-2/5 mt-4 rounded"
             />
-            <Text className="text-xl font-semibold my-4">Upcoming Events</Text>
+            <View className="flex flex-row justify-between items-center">
+              <Text className="text-xl font-semibold my-4">
+                Upcoming Events
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AllEvents")}
+              >
+                <Text className="mr-1 text-secondary">See All</Text>
+              </TouchableOpacity>
+            </View>
             <View className="flex flex-row">
               <Image
                 shadow={2}

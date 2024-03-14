@@ -8,59 +8,68 @@ import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
 import EventScreen from "../screens/EventScreen";
 import { supabase } from "../supabase";
+import { View, ScrollView, StyleSheet } from "react-native";
 
 const CustomDrawerContent = ({ navigation }) => {
   return (
     <DrawerContentScrollView>
-      <DrawerItem
-        label="Home"
-        onPress={() => {
-          navigation.navigate("Home");
-        }}
-      />
+      <View>
+        <DrawerItem
+          label="Home"
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        />
 
-      <DrawerItem
-        label="Profile"
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-      />
-      <DrawerItem
-        label="Clubs"
-        onPress={() => {
-          navigation.navigate("Clubs");
-        }}
-      />
-      <DrawerItem
-        label="Past Exams"
-        onPress={() => {
-          navigation.navigate("PastExams");
-        }}
-      />
-      <DrawerItem
-        label="Logout"
-        onPress={() => {
-          supabase.auth.signOut();
-        }}
-      />
-      <DrawerItem
-        label="Event"
-        onPress={() => {
-          navigation.navigate("Event");
-        }}
-      />
-      <DrawerItem
-        label="create event"
-        onPress={() => {
-          navigation.navigate("CreateEvent");
-        }}
-      />
-      <DrawerItem
-        label="all events"
-        onPress={() => {
-          navigation.navigate("AllEvents");
-        }}
-      />
+        <DrawerItem
+          label="Profile"
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+        />
+        <DrawerItem
+          label="Clubs"
+          onPress={() => {
+            navigation.navigate("Clubs");
+          }}
+        />
+        <DrawerItem
+          label="Past Exams"
+          onPress={() => {
+            navigation.navigate("PastExams");
+          }}
+        />
+
+        <DrawerItem
+          label="Event"
+          onPress={() => {
+            navigation.navigate("Event");
+          }}
+        />
+        <DrawerItem
+          label="Create Event"
+          onPress={() => {
+            navigation.navigate("CreateEvent");
+          }}
+        />
+        <DrawerItem
+          label="Events"
+          onPress={() => {
+            navigation.navigate("AllEvents");
+          }}
+        />
+        <DrawerItem
+          label="Logout"
+          onPress={() => {
+            supabase.auth.signOut();
+          }}
+          labelStyle={{ color: "blue" }}
+          style={{
+            borderTopWidth: 1,
+            borderTopColor: "gray",
+          }}
+        />
+      </View>
     </DrawerContentScrollView>
   );
 };

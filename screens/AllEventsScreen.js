@@ -7,14 +7,24 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { supabase } from "../supabase";
+import {
+  HStack,
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+} from "@gluestack-ui/themed";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/loading.json";
 
-const AllEventsScreen = () => {
+const AllEventsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [eventData, setEventData] = useState([]);
-  const navigation = useNavigation();
+  const navigation2 = useNavigation();
 
   useEffect(() => {
     const fetchAllEvents = async () => {
@@ -39,7 +49,10 @@ const AllEventsScreen = () => {
   const renderCard = ({ item }) => (
     <TouchableOpacity onPress={() => handleEventPress(item)}>
       <View style={styles.card}>
-        <Image source={{ uri: item.eventImage }} style={styles.cardImage} />
+        <Image
+          source={item.eventImage ? { uri: item.eventImage } : null}
+          style={styles.cardImage}
+        />
         <View style={styles.cardContent}>
           <Text style={styles.eventName}>{item.eventName}</Text>
           <Text style={styles.eventAbout}>{item.eventAbout}</Text>
@@ -50,17 +63,60 @@ const AllEventsScreen = () => {
   );
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <View className="flex justify-center items-center">
+          <LottieView
+            source={loadingAnimation}
+            style={{ height: 100, aspectRatio: 1 }}
+            autoPlay
+            loop
+          />
+        </View>
+      </SafeAreaView>
+    );
   }
 
   const handleEventPress = (selectedEvent) => {
     console.log("Selected Event ID:", selectedEvent.id); // Seçilen etkinliğin ID'sini kontrol et
 
-    navigation.navigate("Event", { id: selectedEvent.id });
+    navigation2.navigate("Event", { id: selectedEvent.id });
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <View>
+        <View className="flex flex-row justify-between p-4  items-center mb-4">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
+          >
+            <ArrowLeftIcon size="20" color="white" />
+          </TouchableOpacity>
+          <Text className="pt-4 text-2xl font-semibold">EVENTS</Text>
+
+          <HStack
+            space="md"
+            h="100%"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Pressable onPress={() => navigation.navigate("Profile")}>
+              <View className="pr-5">
+                <Avatar size="md">
+                  <AvatarFallbackText>Halid Acar</AvatarFallbackText>
+                  <AvatarImage
+                    alt="HH"
+                    onPress={() => navigation.navigate("Profile")}
+                  />
+                </Avatar>
+              </View>
+            </Pressable>
+          </HStack>
+        </View>
+      </View>
       <FlatList
         data={eventData}
         keyExtractor={(item) => item.id.toString()}
@@ -78,7 +134,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
   },
   flatListContainer: {
-    paddingBottom: 16,
+    padding: 34,
+    paddingTop: 48,
   },
   card: {
     backgroundColor: "white",
