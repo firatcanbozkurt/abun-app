@@ -9,10 +9,23 @@ import {
   Heading,
   Image,
   VStack,
+  View,
 } from "@gluestack-ui/themed";
 import club1 from "../assets/clubIcon1.png";
 import { GluestackUIProvider, Text, Box } from "@gluestack-ui/themed";
-function Cards() {
+import { useNumberOfEvents } from "../api/clubs";
+import { ActivityIndicator } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+function Cards({ name, id }) {
+  const { data, error, isLoading } = useNumberOfEvents({ id });
+  console.log(data);
+  if (isLoading) {
+    return (
+      <View>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
   return (
     <Card p="$6" borderRadius="$lg" maxWidth={360} m="$3">
       <Box flexDirection="row">
@@ -22,7 +35,7 @@ function Cards() {
         </Avatar>
         <VStack>
           <Heading size="sm" fontFamily="$heading" mb="$1">
-            Social Responsibility & Awareness Community
+            {name}
           </Heading>
           <Text size="sm" fontFamily="$heading">
             janedoe@sample.com
@@ -123,7 +136,7 @@ function Cards() {
           }}
         >
           <Heading size="xs" fontFamily="$heading">
-            281
+            {data}
           </Heading>
           <Text size="xs">Events</Text>
         </VStack>

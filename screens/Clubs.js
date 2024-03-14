@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Pressable, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons } from "@expo/vector-icons";
 import confetti from "../assets/confetti.png";
@@ -6,10 +6,19 @@ import Cards from "../components/Cards";
 import { Avatar } from "@gluestack-ui/themed";
 import { ScrollView } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
+import { useClubList } from "../api/clubs";
 const Clubs = ({ navigation }) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
+  const { data: clubs, error, isLoading } = useClubList();
+  if (isLoading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
   return (
     <SafeAreaView className="flex-1">
       <View className="p-4">
@@ -35,10 +44,9 @@ const Clubs = ({ navigation }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className=" items-center">
-          <Cards />
-          <Cards />
-          <Cards />
-          <Cards />
+          {clubs.map((club) => {
+            return <Cards name={club?.name} key={club?.id} id={club?.id} />;
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>

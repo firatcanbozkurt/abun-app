@@ -9,8 +9,10 @@ import PastExamScreen from "../screens/PastExamScreen";
 import EventScreen from "../screens/EventScreen";
 import { supabase } from "../supabase";
 import { View, ScrollView, StyleSheet } from "react-native";
+import { useAuth } from "../components/context/AuthProvider";
 
 const CustomDrawerContent = ({ navigation }) => {
+  const { isAdmin } = useAuth();
   return (
     <DrawerContentScrollView>
       <View>
@@ -46,12 +48,14 @@ const CustomDrawerContent = ({ navigation }) => {
             navigation.navigate("Event");
           }}
         />
-        <DrawerItem
-          label="Create Event"
-          onPress={() => {
-            navigation.navigate("CreateEvent");
-          }}
-        />
+        {isAdmin && ( // if user is admin show the create event screen on the sidebar
+          <DrawerItem
+            label="Create Event"
+            onPress={() => {
+              navigation.navigate("CreateEvent");
+            }}
+          />
+        )}
         <DrawerItem
           label="Events"
           onPress={() => {
