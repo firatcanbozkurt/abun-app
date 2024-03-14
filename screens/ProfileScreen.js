@@ -14,10 +14,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 
 import { useFonts } from "expo-font";
-
+import { useAuth } from "../components/context/AuthProvider";
 const ProfileScreen = () => {
   const [text, setText] = useState("");
   const navigation = useNavigation();
+  const { session, loading } = useAuth();
+  console.log(session.user.email);
 
   const [fontsLoaded, fontError] = useFonts({
     Montserrat: require("../assets/fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf"),

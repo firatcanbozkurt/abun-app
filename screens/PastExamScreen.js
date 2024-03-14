@@ -20,6 +20,8 @@ import { get } from "@gluestack-style/react";
 import TabNavigator from "../navigatiors/TabNavigator";
 import AvatarIcon from "../components/AvatarIcon";
 import { useExamList } from "../api/exams";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/loading.json";
 
 const PastExamScreen = () => {
   const navigation = useNavigation();
@@ -41,7 +43,20 @@ const PastExamScreen = () => {
     }
   };
   if (isLoading) {
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <View className="flex justify-center items-center">
+          <LottieView
+            source={loadingAnimation}
+            style={{ height: 100, aspectRatio: 1 }}
+            autoPlay
+            loop
+          />
+        </View>
+      </SafeAreaView>
+    );
   }
 
   if (error) {

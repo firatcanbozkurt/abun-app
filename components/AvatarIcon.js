@@ -8,7 +8,7 @@ import { Pressable, View } from "react-native";
 
 const AvatarIcon = ({ navigation }) => {
   return (
-    <HStack space="md" h="100%" justifyContent="center" alignItems="center">
+    <HStack space="md" h="100%">
       <Pressable onPress={() => navigation.navigate("Profile")}>
         <View className="">
           <Avatar size="md" bgColor="$purple600">
