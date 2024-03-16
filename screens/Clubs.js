@@ -45,7 +45,14 @@ const Clubs = ({ navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className=" items-center">
           {clubs.map((club) => {
-            return <Cards name={club?.name} key={club?.id} id={club?.id} />;
+            return (
+              <Cards
+                name={club?.name}
+                key={club?.id}
+                id={club?.id}
+                img={club?.img_src}
+              />
+            );
           })}
         </View>
       </ScrollView>

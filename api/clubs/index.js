@@ -24,13 +24,30 @@ export const useNumberOfEvents = ({ id }) => {
   return useQuery({
     queryKey: ["#events", id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { count, error } = await supabase
         .from("events")
-        .select("*", { count: "exact", head: "true" })
+        .select("count", { count: "exact", head: "true" })
         .eq("community_id", id);
       if (error) {
         throw new Error(error.message);
       }
+      return count;
+    },
+  });
+};
+
+export const useNumberOfMembers = ({ id }) => {
+  return useQuery({
+    queryKey: ["#members", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("communities")
+        .select("users"); // Use array_length for element count
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      // Check if data exists and if the users array is not null
       return data;
     },
   });
