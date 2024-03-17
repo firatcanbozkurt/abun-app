@@ -25,12 +25,31 @@ export default function RegisterScreen({ navigation }) {
 
   async function signUpWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { user, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      if (user && !user.email_verified) {
+        Alert.alert(
+          "Verification Required",
+          "Please verify your email before login.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                navigation.replace("Login");
+              },
+            },
+          ]
+        );
+      } else {
+        navigation.replace("Login");
+      }
+    }
   }
 
   const togglePasswordVisibility = () => {

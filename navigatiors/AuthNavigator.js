@@ -10,6 +10,7 @@ import EventScreen from "../screens/EventScreen";
 import CreateEventScreen from "../screens/CreateEventScreen";
 import AllEventsScreen from "../screens/AllEventsScreen";
 import { useAuth } from "../components/context/AuthProvider";
+import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 const Stack = createNativeStackNavigator();
 
 function AuthNavigator() {
@@ -34,6 +35,10 @@ function AuthNavigator() {
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
+          <Stack.Screen
+            name="VocabularyItems"
+            component={VocabularyItemsScreen}
+          />
         </>
       )}
     </Stack.Navigator>
