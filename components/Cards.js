@@ -15,11 +15,16 @@ import club1 from "../assets/clubIcon1.png";
 import { GluestackUIProvider, Text, Box } from "@gluestack-ui/themed";
 import { useNumberOfEvents } from "../api/clubs";
 import { ActivityIndicator } from "react-native";
-import { useQuery } from "@tanstack/react-query";
-function Cards({ name, id }) {
+function Cards({ name, id, img }) {
   const { data, error, isLoading } = useNumberOfEvents({ id });
-  console.log(data);
-  if (isLoading) {
+  {
+    /*const {
+    data: numberofMembers,
+    error: memberError,
+    isLoading: memberIsLoading,
+  } = useNumberOfEvents({ id }); */
+  }
+  if (isLoading /*| memberIsLoading*/) {
     return (
       <View>
         <ActivityIndicator size={"large"} />
@@ -27,7 +32,7 @@ function Cards({ name, id }) {
     );
   }
   return (
-    <Card p="$6" borderRadius="$lg" maxWidth={360} m="$3">
+    <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3">
       <Box flexDirection="row">
         <Avatar mr="$4">
           <AvatarFallbackText fontFamily="$heading">JD</AvatarFallbackText>
@@ -105,7 +110,7 @@ function Cards({ name, id }) {
           }}
         >
           <Heading size="xs" fontFamily="$heading">
-            5,281
+            {"numberofMembers"}
           </Heading>
           <Text size="xs">Member</Text>
         </VStack>
@@ -166,24 +171,9 @@ function Cards({ name, id }) {
             },
           }}
           source={{
-            uri: "https://images.unsplash.com/photo-1592089416462-2b0cb7da8379?q=80&w=2865&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            uri: `${img}`,
           }}
           alt="image1"
-        />
-        <Image
-          borderRadius="$md"
-          sx={{
-            width: "$full",
-            height: 140,
-            "@base": {
-              width: 150,
-              height: 154,
-            },
-          }}
-          source={{
-            uri: "https://images.unsplash.com/photo-1484406566174-9da000fda645?q=80&w=2425&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          }}
-          alt="image2"
         />
       </Box>
       <Button py="$2" px="$4">
