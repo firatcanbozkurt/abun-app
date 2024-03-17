@@ -9,6 +9,7 @@ import PastExamScreen from "../screens/PastExamScreen";
 import EventScreen from "../screens/EventScreen";
 import { supabase } from "../supabase";
 import { View, ScrollView, StyleSheet } from "react-native";
+import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 
 const CustomDrawerContent = ({ navigation }) => {
   return (
@@ -56,6 +57,12 @@ const CustomDrawerContent = ({ navigation }) => {
           label="Events"
           onPress={() => {
             navigation.navigate("AllEvents");
+          }}
+        />
+        <DrawerItem
+          label="VocabularyItems"
+          onPress={() => {
+            navigation.navigate("VocabularyItems");
           }}
         />
         <DrawerItem

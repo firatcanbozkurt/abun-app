@@ -25,6 +25,9 @@ module.exports = {
       homebg: {
         100: "#3a83f41a",
       },
+      vocabCard: {
+        100: "#030637",
+      },
     },
   },
   plugins: [],

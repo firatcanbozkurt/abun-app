@@ -42,7 +42,21 @@ export default function LoginScreen({ navigation }) {
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
+    //if (error) Alert.alert(error.message);
+
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      if (user && !user.email_verified) {
+        Alert.alert(
+          "Email verification required",
+          "Please verify your email address."
+        );
+      } else {
+        Alert.alert("Login Successful", "You are logged in successfully.");
+        navigation.replace("Home");
+      }
+    }
   };
 
   useEffect(() => {
