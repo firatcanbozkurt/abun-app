@@ -40,7 +40,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         const { data } = await supabase
           .from("users")
           .select("*")
-          .eq("id", session.user.id)
+          .eq("uuid", session.user.id)
           .single();
         setProfile(data || null);
       }
@@ -56,7 +56,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 
   return (
     <AuthContext.Provider
-      value={{ session, loading, profile, isAdmin: profile?.group === "ADMIN" }}
+      value={{ session, loading, profile, isAdmin: profile?.role === "ADMIN" }}
     >
       {children}
     </AuthContext.Provider>
