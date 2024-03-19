@@ -80,6 +80,7 @@ const EventScreen = ({ navigation, route }) => {
                     source={{
                       uri: "https://wrong-url",
                     }}
+                    alt=""
                     onPress={() => navigation.navigate("Profile")}
                   />
                 </Avatar>
