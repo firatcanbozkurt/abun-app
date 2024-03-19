@@ -7,6 +7,8 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
+  FormControl,
+  FormGroup,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../supabase";
@@ -18,7 +20,7 @@ import AvatarIcon from "../components/AvatarIcon";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 const CreateEventScreen = ({ navigation }) => {
-  const [eventImage, setEventImage] = useState("");
+  const [eventImage, setEventImage] = useState(null);
   const [eventName, setEventName] = useState("");
   const [eventAbout, setEventAbout] = useState("");
   const [date, setDate] = useState(new Date());
@@ -46,41 +48,45 @@ const CreateEventScreen = ({ navigation }) => {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 1,
+        quality: 0.1,
       });
 
       if (!result.canceled) {
-        const uploadedImageUrl = await uploadImageToStorage(result.assets[0]);
-
-        if (uploadedImageUrl) {
-          setEventImage(uploadedImageUrl);
-        }
+        setEventImage(result.assets[0].uri);
+        uploadImageToStorage(eventImage);
       }
-    } catch (error) {
-      console.error("Error picking an image:", error);
-    }
+    } catch (error) {}
   };
 
-  const uploadImageToStorage = async (imageUri) => {
-    const base64 = await FileSystem.readAsStringAsync(imageUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+  const uploadImageToStorage = async (url) => {
     try {
-      const response = await fetch(imageUri);
+      const response = await fetch(url);
       const blob = await response.blob();
 
+      if (blob.size === 0) {
+        console.error("Error uploading image: Empty file.");
+        return null;
+      }
+
       const { data, error } = await supabase.storage
-        .from("event_images") // Depo adınızı buraya ekleyin
+        .from("event_images")
         .upload(`images/${Date.now()}.jpg`, blob, {
-          contentType: "image/jpeg",
+          cacheControl: "3600",
         });
 
+      console.log("Upload data:", data);
+      console.log("Upload error:", error);
       if (error) {
         console.error("Error uploading image:", error.message);
         return null;
       }
 
-      return data[0].url;
+      if (!data || !data.url) {
+        console.error("Error uploading image: Invalid response format.");
+        return null;
+      }
+
+      return data.url;
     } catch (error) {
       console.error("Error uploading image:", error.message);
       return null;
@@ -102,10 +108,10 @@ const CreateEventScreen = ({ navigation }) => {
   const createEvent = async () => {
     try {
       const formattedDate = formatCustomDateForText(date);
-
+      const imageUrl = await uploadImageToStorage(eventImage);
       const { data, error } = await supabase.from("eventTest").insert([
         {
-          eventImage,
+          eventImage: imageUrl,
           eventName,
           eventAbout,
           date: formattedDate,
@@ -212,7 +218,12 @@ const CreateEventScreen = ({ navigation }) => {
               <ButtonIcon as={AddIcon} />
             </Button>
           </View>
-          {eventImage ? <Image source={{ uri: eventImage }} /> : null}
+          {eventImage ? (
+            <Image
+              source={{ uri: eventImage }}
+              style={{ width: 150, height: 150 }}
+            />
+          ) : null}
         </View>
       </View>
 

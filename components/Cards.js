@@ -32,7 +32,7 @@ function Cards({ name, id, img }) {
     );
   }
   return (
-    <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3">
+    <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3" width={330}>
       <Box flexDirection="row">
         <Avatar mr="$4">
           <AvatarFallbackText fontFamily="$heading">JD</AvatarFallbackText>
@@ -42,9 +42,6 @@ function Cards({ name, id, img }) {
           <Heading size="sm" fontFamily="$heading" mb="$1">
             {name}
           </Heading>
-          <Text size="sm" fontFamily="$heading">
-            janedoe@sample.com
-          </Text>
         </VStack>
       </Box>
       <Box
@@ -110,7 +107,7 @@ function Cards({ name, id, img }) {
           }}
         >
           <Heading size="xs" fontFamily="$heading">
-            {"numberofMembers"}
+            {"4444"}
           </Heading>
           <Text size="xs">Member</Text>
         </VStack>
@@ -156,25 +153,12 @@ function Cards({ name, id, img }) {
           },
         }}
       >
-        <Image
-          mb="$3"
-          borderRadius="$md"
-          sx={{
-            width: "$full",
-            height: 140,
-
-            "@base": {
-              mb: "$0",
-              mr: "$3",
-              width: 150,
-              height: 154,
-            },
-          }}
-          source={{
-            uri: `${img}`,
-          }}
-          alt="image1"
-        />
+        <Text style={{ fontSize: 15 }}>
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since the 1500s, when an unknown printer took a galley of type and
+          scrambled it to make a type specimen book.
+        </Text>
       </Box>
       <Button py="$2" px="$4">
         <ButtonText size="sm">Join</ButtonText>
