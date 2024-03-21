@@ -13,31 +13,53 @@ import {
   StatusBar,
   ActivityIndicator,
 } from "react-native";
+import { Platform } from "react-native";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import DownloadView from "../components/DownloadView";
 import { supabase } from "../supabase";
-import { get } from "@gluestack-style/react";
-import TabNavigator from "../navigatiors/TabNavigator";
+import * as FileSystem from "expo-file-system";
+import { shareAsync } from "expo-sharing";
 import AvatarIcon from "../components/AvatarIcon";
 import { useExamList } from "../api/exams";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
+import { StorageAccessFramework } from "expo-file-system";
+import { set } from "date-fns";
 
 const PastExamScreen = () => {
   const navigation = useNavigation();
   const { data: exams, error, isLoading } = useExamList();
-  console.log(exams);
-  const getExamPdf = async ({ id }) => {
+  const [downloading, setDownloading] = useState(false);
+  const downloadFromUrl = async ({ url, name }) => {
+    let androidPermission = false;
+    if (Platform.OS === "android") {
+      const permissions =
+        await StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (permissions.granted) {
+        androidPermission = true;
+      }
+    }
+    if (androidPermission || Platform.OS === "ios") {
+      const fileUri = FileSystem.documentDirectory + name + ".pdf";
+      try {
+        const { uri } = await FileSystem.downloadAsync(url, fileUri);
+        console.log("Finished downloading to ", uri);
+        setDownloading(false);
+        await shareAsync(uri);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  const getExamPdf = async ({ id, name }) => {
     try {
-      const { data, error } = await supabase.storage
+      setDownloading(true);
+      const { data } = await supabase.storage // Data = public URL
         .from("past_exams") // Storage bucket name
-        .list("CENG 471", {
-          // Folder name
-          limit: 100,
-          offset: 0,
-          sortBy: { column: "name", order: "asc" },
-          search: `${id}.pdf`, // search by id
-        });
+        .getPublicUrl(`${id}.pdf`);
+      const url = data?.publicUrl;
+      downloadFromUrl({ url, name });
     } catch (error) {
       Alert.alert("Error", error.message);
     }
@@ -85,7 +107,15 @@ const PastExamScreen = () => {
       </SafeAreaView>
       <View className="flex  pt-8">
         {exams.map((exam, id) => {
-          return <DownloadView key={id} title={exam.name} />;
+          return (
+            <DownloadView
+              key={id}
+              title={exam.name}
+              examId={exam.src}
+              getExamPdf={() => getExamPdf({ id: exam.src, name: exam.name })}
+              downloading={downloading}
+            />
+          );
         })}
       </View>
     </View>

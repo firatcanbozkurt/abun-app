@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
 
-const DownloadView = ({ title }) => {
+const DownloadView = ({ title, getExamPdf, downloading }) => {
   return (
     <>
       <View style={styles.downloadRow}>
@@ -9,11 +16,17 @@ const DownloadView = ({ title }) => {
           <Text style={styles.textSize}>{title}</Text>
         </View>
         <View>
-          <Image
-            source={require("../assets/download.png")} // Image resolution is weak! Change it with another one
-            width={32}
-            height={32}
-          />
+          <Pressable onPress={getExamPdf} style={{ alignItems: "center" }}>
+            {!downloading ? (
+              <Image
+                source={require("../assets/download.png")} // Image resolution is weak! Change it with another one
+                width={32}
+                height={32}
+              />
+            ) : (
+              <ActivityIndicator size="small" color="#2B47FC" />
+            )}
+          </Pressable>
         </View>
       </View>
       <View // Horizontal line

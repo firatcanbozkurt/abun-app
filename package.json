@@ -49,7 +49,8 @@
     "react-native-safe-area-view": "^1.1.1",
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
-    "react-native-url-polyfill": "^2.0.0"
+    "react-native-url-polyfill": "^2.0.0",
+    "expo-sharing": "~11.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

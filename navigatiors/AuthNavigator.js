@@ -11,10 +11,31 @@ import CreateEventScreen from "../screens/CreateEventScreen";
 import AllEventsScreen from "../screens/AllEventsScreen";
 import { useAuth } from "../components/context/AuthProvider";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
+import loadingAnimation from "../assets/loading.json";
+import LottieView from "lottie-react-native";
 const Stack = createNativeStackNavigator();
+import { SafeAreaView, View } from "react-native";
 
 function AuthNavigator() {
-  const { session } = useAuth();
+  const { session, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <View className="flex justify-center items-center">
+          <LottieView
+            source={loadingAnimation}
+            style={{ height: 100, aspectRatio: 1 }}
+            autoPlay
+            loop
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <Stack.Navigator
       initialRouteName="Welcome"
