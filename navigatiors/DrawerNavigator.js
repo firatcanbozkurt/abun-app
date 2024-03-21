@@ -8,9 +8,11 @@ import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
 import EventScreen from "../screens/EventScreen";
 import { supabase } from "../supabase";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import { useAuth } from "../components/context/AuthProvider";
+import loadingAnimation from "../assets/loading.json";
+import LottieView from "lottie-react-native";
 
 const CustomDrawerContent = ({ navigation }) => {
   const { isAdmin } = useAuth();

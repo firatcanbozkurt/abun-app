@@ -14,7 +14,6 @@ import {
   Button,
   ButtonText,
   ButtonIcon,
-  Icon,
   Box,
 } from "@gluestack-ui/themed";
 import React, { useEffect, useState } from "react";

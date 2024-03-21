@@ -1,5 +1,6 @@
 import { supabase } from "../../supabase";
 import { Session } from "@supabase/supabase-js";
+import { set } from "date-fns";
 import {
   PropsWithChildren,
   createContext,
@@ -26,7 +27,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchSession = async () => {
       const {
@@ -44,19 +44,25 @@ export default function AuthProvider({ children }: PropsWithChildren) {
           .single();
         setProfile(data || null);
       }
-
       setLoading(false);
     };
 
     fetchSession();
     supabase.auth.onAuthStateChange((_event, session) => {
+      setLoading(true); // when session is not defined and we are trying to login
       setSession(session);
+      fetchSession();
     });
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ session, loading, profile, isAdmin: profile?.role === "ADMIN" }}
+      value={{
+        session,
+        loading: loading,
+        profile,
+        isAdmin: profile?.role === "ADMIN",
+      }}
     >
       {children}
     </AuthContext.Provider>
