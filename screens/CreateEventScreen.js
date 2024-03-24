@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   FormControl,
   FormGroup,
+
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../supabase";
@@ -16,15 +17,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { ButtonText, ButtonIcon, Button, AddIcon } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
-
+import * as FileSystem from 'expo-file-system';
+import {decode} from 'base64-arraybuffer';
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import { useAuth } from "../components/context/AuthProvider";
 
 const CreateEventScreen = ({ navigation }) => {
   const [eventImage, setEventImage] = useState(null);
   const [eventName, setEventName] = useState("");
   const [eventAbout, setEventAbout] = useState("");
   const [date, setDate] = useState(new Date());
-
+  const {user} = useAuth();
   const [loading, setLoading] = useState();
   const onChange = (event, selectedDate) => {
     setDate(selectedDate);
@@ -41,59 +44,7 @@ const CreateEventScreen = ({ navigation }) => {
       }
     })();
   }, []);
-
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 0.1,
-      });
-
-      if (!result.canceled) {
-        setEventImage(result.assets[0].uri);
-        uploadImageToStorage(eventImage);
-      }
-    } catch (error) {}
-  };
-
-  const uploadImageToStorage = async (url) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-
-      if (blob.size === 0) {
-        console.error("Error uploading image: Empty file.");
-        return null;
-      }
-
-      const { data, error } = await supabase.storage
-        .from("event_images")
-        .upload(`images/${Date.now()}.jpg`, blob, {
-          cacheControl: "3600",
-        });
-
-      console.log("Upload data:", data);
-      console.log("Upload error:", error);
-      if (error) {
-        console.error("Error uploading image:", error.message);
-        return null;
-      }
-
-      if (!data || !data.url) {
-        console.error("Error uploading image: Invalid response format.");
-        return null;
-      }
-
-      return data.url;
-    } catch (error) {
-      console.error("Error uploading image:", error.message);
-      return null;
-    }
-  };
-
-  //db
+    //db
   const formatCustomDateForText = (date) => {
     const month = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
       date
@@ -105,13 +56,64 @@ const CreateEventScreen = ({ navigation }) => {
 
     return `${month} ${day}, ${hours}:${minutes} ${ampm}`;
   };
+
+  const uploadFromURI = async (result) => {
+    if (!result || result.canceled) {
+      return null;
+    }
+    if(!result.canceled){
+      const ext = result.assets[0].uri.substring(result.assets[0].uri.lastIndexOf(".") + 1);
+
+      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/,"");
+
+      var formData = new FormData();
+      formData.append("files", {
+        uri: result.assets[0].uri,
+        name: fileName,
+        type: result.assets[0].mediaType ? `image/${ext}` : `video/${ext}`,
+      });
+      const {data, error} =  await supabase.storage.from("event_images").upload(fileName,formData);
+     
+      if( error) throw new Error(error.message);
+
+      return { eventImage: data};
+    }else{
+      return result;
+    }
+  }
+  
+  const selectImage = async () =>{
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        aspect: [4,3],
+        quality: 0.1,
+      })
+      if(!result.canceled){
+        setEventImage(result);
+
+      }else
+      {
+        return error
+      }
+  }
+/*
+  try{
+    return await uploadFromURI(eventImage);
+
+  }catch(e){
+    ErrorAlert({title: "Image upload" , message: e.message});
+    return null;
+  }
+  */
   const createEvent = async () => {
     try {
       const formattedDate = formatCustomDateForText(date);
-      const imageUrl = await uploadImageToStorage(eventImage);
+      const uploadedImage = await uploadFromURI(eventImage);
+      const imagePath = uploadedImage.eventImage.fullPath.replace("event_images/", "");
       const { data, error } = await supabase.from("eventTest").insert([
         {
-          eventImage: imageUrl,
+          eventImage: imagePath,
           eventName,
           eventAbout,
           date: formattedDate,
@@ -180,27 +182,7 @@ const CreateEventScreen = ({ navigation }) => {
           />
 
           <View className="flex  items-center p-6">
-            <View className="flex flex-row  items-center ">
-              <Text>Select Date</Text>
-              <DateTimePicker
-                value={date}
-                mode={"date"}
-                display="default"
-                is24Hour={true}
-                onChange={onChange}
-              />
-            </View>
-            <View className="flex flex-row items-center">
-              <Text>Select Time</Text>
-              <DateTimePicker
-                value={date}
-                mode={"time"}
-                display="default"
-                is24Hour={true}
-                onChange={onChange}
-                style={{ marginVertical: 20 }}
-              />
-            </View>
+            
             <Text>{date.toLocaleString()}</Text>
           </View>
 
@@ -211,12 +193,20 @@ const CreateEventScreen = ({ navigation }) => {
               action="primary"
               isDisabled={false}
               isFocusVisible={false}
-              onPress={pickImage}
+              onPress={selectImage}
               style={{ borderRadius: 25 }}
             >
               <ButtonText>Select Image </ButtonText>
               <ButtonIcon as={AddIcon} />
             </Button>
+            <TouchableOpacity onPress={async () => {
+              const response = await selectImage();
+            if(response.eventImage){
+              setEventImage(response?.eventImage)
+            }
+            }}>
+              <Text>image</Text>
+            </TouchableOpacity>
           </View>
           {eventImage ? (
             <Image
