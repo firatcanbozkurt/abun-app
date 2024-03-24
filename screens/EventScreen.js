@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Pressable,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import {
   HStack,
@@ -20,41 +21,37 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 
 import { ArrowRightIcon, ArrowLeftIcon } from "react-native-heroicons/solid";
+import { set } from "date-fns";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/loading.json";
 
 const EventScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [eventData, setEventData] = useState(null);
-  const eventId = route.params?.id;
-  console.log("eventId before conversion:", eventId); // eventId değerini kontrol et
-
+  const [imageLoading, setImageLoading] = useState(true);
   useEffect(() => {
     const fetchEventData = async () => {
-      console.log("route.params:", route.params);
-
-      try {
-        // Supabase'den etkinlik verilerini çek
-        const { data, error } = await supabase
-          .from("eventTest")
-          .select("*")
-          .eq("id", eventId)
-          .limit(1)
-          .single();
-        if (error) {
-          console.error("Error fetching event data:", error.message);
-          return;
-        }
-
-        // Verileri state'e set et
-        setEventData(data);
-        setLoading(false);
-        console.log(eventData);
-      } catch (error) {
-        console.error("Error fetching event data:", error.message);
-      }
+      const eventDataParams = await route.params?.eventData;
+      setEventData(eventDataParams);
     };
-
+    setLoading(false);
     fetchEventData();
-  }, [eventId]);
+  }, []);
+  if (loading)
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <View className="flex justify-center items-center">
+          <LottieView
+            source={loadingAnimation}
+            style={{ height: 100, aspectRatio: 1 }}
+            autoPlay
+            loop
+          />
+        </View>
+      </SafeAreaView>
+    );
   return (
     <SafeAreaView className="">
       <View className="">
@@ -91,8 +88,16 @@ const EventScreen = ({ navigation, route }) => {
         </View>
         <View className="p-6">
           <View className="items-center">
+            {imageLoading && (
+              <ActivityIndicator
+                style={{ position: "absolute", top: "50%" }}
+                size="large"
+                color="#0000ff"
+              />
+            )}
             <Image
               shadow={2}
+              onLoad={() => setImageLoading(false)}
               source={{ uri: eventData?.eventImage }}
               //source={require("../assets/ann.jpeg")}
               alt=""

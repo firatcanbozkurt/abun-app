@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   FormControl,
   FormGroup,
-
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../supabase";
@@ -17,8 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { ButtonText, ButtonIcon, Button, AddIcon } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
-import * as FileSystem from 'expo-file-system';
-import {decode} from 'base64-arraybuffer';
+import * as FileSystem from "expo-file-system";
+import { decode } from "base64-arraybuffer";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useAuth } from "../components/context/AuthProvider";
 
@@ -27,7 +26,7 @@ const CreateEventScreen = ({ navigation }) => {
   const [eventName, setEventName] = useState("");
   const [eventAbout, setEventAbout] = useState("");
   const [date, setDate] = useState(new Date());
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [loading, setLoading] = useState();
   const onChange = (event, selectedDate) => {
     setDate(selectedDate);
@@ -44,7 +43,7 @@ const CreateEventScreen = ({ navigation }) => {
       }
     })();
   }, []);
-    //db
+  //db
   const formatCustomDateForText = (date) => {
     const month = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
       date
@@ -61,10 +60,12 @@ const CreateEventScreen = ({ navigation }) => {
     if (!result || result.canceled) {
       return null;
     }
-    if(!result.canceled){
-      const ext = result.assets[0].uri.substring(result.assets[0].uri.lastIndexOf(".") + 1);
+    if (!result.canceled) {
+      const ext = result.assets[0].uri.substring(
+        result.assets[0].uri.lastIndexOf(".") + 1
+      );
 
-      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/,"");
+      const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
 
       var formData = new FormData();
       formData.append("files", {
@@ -72,32 +73,33 @@ const CreateEventScreen = ({ navigation }) => {
         name: fileName,
         type: result.assets[0].mediaType ? `image/${ext}` : `video/${ext}`,
       });
-      const {data, error} =  await supabase.storage.from("event_images").upload(fileName,formData);
-     
-      if( error) throw new Error(error.message);
+      const { data, error } = await supabase.storage
+        .from("event_images")
+        .upload(fileName, formData);
 
-      return { eventImage: data};
-    }else{
+      if (error) throw new Error(error.message);
+
+      return { eventImage: data };
+    } else {
       return result;
     }
-  }
-  
-  const selectImage = async () =>{
+  };
+
+  const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        aspect: [4,3],
-        quality: 0.1,
-      })
-      if(!result.canceled){
-        setEventImage(result);
-
-      }else
-      {
-        return error
-      }
-  }
-/*
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 0.1,
+    });
+    if (!result.canceled) {
+      setEventImage(result);
+      console.log(result);
+    } else {
+      return error;
+    }
+  };
+  /*
   try{
     return await uploadFromURI(eventImage);
 
@@ -110,7 +112,10 @@ const CreateEventScreen = ({ navigation }) => {
     try {
       const formattedDate = formatCustomDateForText(date);
       const uploadedImage = await uploadFromURI(eventImage);
-      const imagePath = uploadedImage.eventImage.fullPath.replace("event_images/", "");
+      const imagePath = uploadedImage.eventImage.fullPath.replace(
+        "event_images/",
+        ""
+      );
       const { data, error } = await supabase.from("eventTest").insert([
         {
           eventImage: imagePath,
@@ -182,7 +187,6 @@ const CreateEventScreen = ({ navigation }) => {
           />
 
           <View className="flex  items-center p-6">
-            
             <Text>{date.toLocaleString()}</Text>
           </View>
 
@@ -199,12 +203,14 @@ const CreateEventScreen = ({ navigation }) => {
               <ButtonText>Select Image </ButtonText>
               <ButtonIcon as={AddIcon} />
             </Button>
-            <TouchableOpacity onPress={async () => {
-              const response = await selectImage();
-            if(response.eventImage){
-              setEventImage(response?.eventImage)
-            }
-            }}>
+            <TouchableOpacity
+              onPress={async () => {
+                const response = await selectImage();
+                if (response.eventImage) {
+                  setEventImage(response?.eventImage);
+                }
+              }}
+            >
               <Text>image</Text>
             </TouchableOpacity>
           </View>

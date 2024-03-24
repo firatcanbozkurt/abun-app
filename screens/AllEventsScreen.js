@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { supabase } from "../supabase";
@@ -20,6 +21,7 @@ import {
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
+import { set } from "date-fns";
 
 const AllEventsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -36,23 +38,48 @@ const AllEventsScreen = ({ navigation }) => {
           return;
         }
 
-        setEventData(data);
-        setLoading(false);
+        // Initialize arrays to hold image URLs and event IDs
+        const imageUrls = [];
+        const eventIds = [];
+
+        // Fetch image URLs for all events concurrently
+        const imageUrlPromises = data.map(async (event) => {
+          const { data: imageData, error: imageError } = await supabase.storage
+            .from("event_images")
+            .getPublicUrl(event.eventImage);
+          if (imageError) {
+            console.error("Error fetching image:", imageError.message);
+            return null;
+          }
+          imageUrls.push(imageData.publicUrl); // Store image URL
+          eventIds.push(event.id); // Store event ID
+        });
+
+        // Wait for all image URLs to be fetched
+        await Promise.all(imageUrlPromises);
+
+        // Update state with image URLs and event IDs
+        setEventData(
+          data.map((event) => ({
+            ...event,
+            // Retrieve image URL and event ID by index
+            eventImage: imageUrls[eventIds.indexOf(event.id)],
+          }))
+        );
       } catch (error) {
         console.error("Error fetching all events:", error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchAllEvents();
-  }, []);
+  }, []); // Empty dependency array to run effect only once
 
   const renderCard = ({ item }) => (
     <TouchableOpacity onPress={() => handleEventPress(item)}>
       <View style={styles.card}>
-        <Image
-          source={item.eventImage ? { uri: item.eventImage } : null}
-          style={styles.cardImage}
-        />
+        <Image source={{ uri: item.eventImage }} style={styles.cardImage} />
         <View style={styles.cardContent}>
           <Text style={styles.eventName}>{item.eventName}</Text>
           <Text style={styles.eventAbout}>{item.eventAbout}</Text>
@@ -81,8 +108,7 @@ const AllEventsScreen = ({ navigation }) => {
 
   const handleEventPress = (selectedEvent) => {
     console.log("Selected Event ID:", selectedEvent.id); // Seçilen etkinliğin ID'sini kontrol et
-
-    navigation2.navigate("Event", { id: selectedEvent.id });
+    navigation2.navigate("Event", { eventData: selectedEvent });
   };
 
   return (
