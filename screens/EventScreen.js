@@ -24,19 +24,58 @@ import { ArrowRightIcon, ArrowLeftIcon } from "react-native-heroicons/solid";
 import { set } from "date-fns";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
+import { useAuth } from "../components/context/AuthProvider";
 
 const EventScreen = ({ navigation, route }) => {
+  const { session } = useAuth();
+  const userId = session?.user?.id;
   const [loading, setLoading] = useState(true);
   const [eventData, setEventData] = useState(null);
   const [imageLoading, setImageLoading] = useState(true);
+  const [attendingEvent, setAttendingEvent] = useState(false);
+  const [joinedEvent, setJoinedEvent] = useState(false);
   useEffect(() => {
     const fetchEventData = async () => {
       const eventDataParams = await route.params?.eventData;
       setEventData(eventDataParams);
     };
-    setLoading(false);
+    //setLoading(false);
     fetchEventData();
   }, []);
+  useEffect(() => {
+    if (!eventData) return;
+    const isUserJoinedEvent = async () => {
+      const { data, error } = await supabase
+        .from("events_users")
+        .select("*")
+        .eq("eventId", eventData?.id)
+        .eq("user", userId);
+      if (error) {
+        return;
+      }
+      setJoinedEvent(data.length > 0);
+      setLoading(false);
+    };
+
+    isUserJoinedEvent();
+  }, [eventData]);
+
+  const attendEvent = async () => {
+    setAttendingEvent(true);
+    await supabase.from("events_users").insert([{ eventId: eventData?.id }]);
+    setJoinedEvent(true);
+    setAttendingEvent(false);
+  };
+
+  const leaveEvent = async () => {
+    await supabase
+      .from("events_users")
+      .delete()
+      .eq("eventId", eventData?.id)
+      .eq("user", userId);
+    setJoinedEvent(false);
+  };
+
   if (loading)
     return (
       <SafeAreaView
@@ -120,15 +159,39 @@ const EventScreen = ({ navigation, route }) => {
             </View>
           </View>
           <Box>
-            <Button variant="solid" mt="$2" h="$12" rounded="$2xl">
-              <ButtonText>Join the Event</ButtonText>
-              <ButtonIcon
-                as={ArrowRightIcon}
-                ml="$4"
-                fontSize="$2xl"
-                fontWeight="$bold"
-              />
-            </Button>
+            {joinedEvent ? (
+              <Button
+                variant="link"
+                action="negative"
+                onPress={leaveEvent}
+                py="$2"
+                px="$4"
+              >
+                <ButtonText size="sm">Leave</ButtonText>
+              </Button>
+            ) : (
+              <Button
+                onPress={attendEvent}
+                variant="solid"
+                mt="$2"
+                h="$12"
+                rounded="$2xl"
+              >
+                {!attendingEvent ? (
+                  <>
+                    <ButtonText>Join the Event</ButtonText>
+                    <ButtonIcon
+                      as={ArrowRightIcon}
+                      ml="$4"
+                      fontSize="$2xl"
+                      fontWeight="$bold"
+                    />
+                  </>
+                ) : (
+                  <ActivityIndicator size="small" />
+                )}
+              </Button>
+            )}
           </Box>
         </View>
       </View>

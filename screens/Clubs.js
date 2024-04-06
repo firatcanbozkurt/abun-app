@@ -56,7 +56,7 @@ const Clubs = ({ navigation }) => {
                 img={club?.img_src}
                 body={club?.description}
                 numberOfEvents={club?.numberOfEvents}
-                numberOfMembers={club?.numberOfMembers}
+                numberOfMembersProp={club?.numberOfMembers}
               />
             );
           })}

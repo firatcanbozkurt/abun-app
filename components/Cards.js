@@ -20,10 +20,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./context/AuthProvider";
 import { set } from "date-fns";
-function Cards({ name, id, img, body, numberOfEvents, numberOfMembers }) {
+function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
   const communityId = id;
   // const { data, error, isLoading } = useNumberOfEvents({ id });
   const [joiningClub, setJoiningClub] = useState(false);
+  const [numberOfMembers, setNumberOfMembers] = useState(numberOfMembersProp);
   const [isMember, setIsMember] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { session } = useAuth();
@@ -75,6 +76,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembers }) {
 
     setJoiningClub(false);
     setIsMember(true);
+    setNumberOfMembers(numberOfMembers + 1);
     // Check if data exists and if the users array is not null
     return data;
   };
@@ -90,9 +92,14 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembers }) {
     if (error) {
       throw new Error(error.message);
     }
-
+    await supabase // rpc function will be added this is a temporary solution
+      .from("communities")
+      .update({
+        numberOfMembers: numberOfMembers - 1,
+      })
+      .eq("id", communityId);
     setJoiningClub(false);
-
+    setNumberOfMembers(numberOfMembers - 1);
     // Check if data exists and if the users array is not null
     return data;
   };
