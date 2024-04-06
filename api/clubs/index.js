@@ -1,5 +1,6 @@
 import { supabase } from "../../supabase";
 import { useQuery } from "@tanstack/react-query";
+import { userUserId } from "../../components/context/AuthProvider";
 
 export const useClubList = () => {
   return useQuery({
@@ -31,7 +32,7 @@ export const useNumberOfEvents = ({ id }) => {
       if (error) {
         throw new Error(error.message);
       }
-      return count;
+      return count || 0;
     },
   });
 };
@@ -44,6 +45,22 @@ export const useNumberOfMembers = ({ id }) => {
         .from("communities")
         .select("users"); // Use array_length for element count
 
+      if (error) {
+        throw new Error(error.message);
+      }
+      // Check if data exists and if the users array is not null
+      return data;
+    },
+  });
+};
+
+export const joinClub = ({ id }) => {
+  return useQuery({
+    queryKey: ["#joinClub", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("community_members")
+        .insert([{ community: id, user: userUserId() }]);
       if (error) {
         throw new Error(error.message);
       }

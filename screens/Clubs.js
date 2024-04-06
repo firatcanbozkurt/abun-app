@@ -7,6 +7,8 @@ import { Avatar } from "@gluestack-ui/themed";
 import { ScrollView } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 import { useClubList } from "../api/clubs";
+import { useEffect } from "react";
+import { supabase } from "../supabase";
 const Clubs = ({ navigation }) => {
   const openDrawer = () => {
     navigation.openDrawer();
@@ -19,6 +21,7 @@ const Clubs = ({ navigation }) => {
       </View>
     );
   }
+
   return (
     <SafeAreaView className="flex-1">
       <View className="p-4">
@@ -51,6 +54,9 @@ const Clubs = ({ navigation }) => {
                 key={club?.id}
                 id={club?.id}
                 img={club?.img_src}
+                body={club?.description}
+                numberOfEvents={club?.numberOfEvents}
+                numberOfMembers={club?.numberOfMembers}
               />
             );
           })}
