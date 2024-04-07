@@ -7,30 +7,63 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
-  FormControl,
-  FormGroup,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { ButtonText, ButtonIcon, Button, AddIcon } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
-import * as FileSystem from "expo-file-system";
-import { decode } from "base64-arraybuffer";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useAuth } from "../components/context/AuthProvider";
-
+import {Dimensions} from 'react-native';
+import DateTimePickerModal from "react-native-modal-datetime-picker"
 const CreateEventScreen = ({ navigation }) => {
   const [eventImage, setEventImage] = useState(null);
   const [eventName, setEventName] = useState("");
   const [eventAbout, setEventAbout] = useState("");
-  const [date, setDate] = useState(new Date());
   const { user } = useAuth();
   const [loading, setLoading] = useState();
-  const onChange = (event, selectedDate) => {
-    setDate(selectedDate);
+ 
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(new Date());
+
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
   };
+  
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+  
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+const handleDateConfirm = (date) => {
+  console.warn("A date has been picked", date);
+  setSelectedDate(date);
+  hideDatePicker();
+};
+
+const handleTimeConfirm = (time) => {
+  console.warn("A time has been picked", time);
+  setSelectedTime(time);
+  hideTimePicker();
+};
+
+  const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+
+
 
   useEffect(() => {
     (async () => {
@@ -44,14 +77,14 @@ const CreateEventScreen = ({ navigation }) => {
     })();
   }, []);
   //db
-  const formatCustomDateForText = (date) => {
+  const formatCustomDateForText = (date, time) => {
     const month = new Intl.DateTimeFormat("en-US", { month: "short" }).format(
       date
     );
     const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const ampm = date.getHours() >= 12 ? "PM" : "AM";
+    const hours = String(time.getHours()).padStart(2, "0");
+    const minutes = String(time.getMinutes()).padStart(2, "0");
+    const ampm = time.getHours() >= 12 ? "PM" : "AM";
 
     return `${month} ${day}, ${hours}:${minutes} ${ampm}`;
   };
@@ -60,57 +93,60 @@ const CreateEventScreen = ({ navigation }) => {
     if (!result || result.canceled) {
       return null;
     }
-    if (!result.canceled) {
-      const ext = result.assets[0].uri.substring(
-        result.assets[0].uri.lastIndexOf(".") + 1
-      );
-
+    
+    try {
+      const { uri, mediaType } = result.assets[0];
+      const ext = uri.substring(uri.lastIndexOf(".") + 1);
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
-
-      var formData = new FormData();
+      const formData = new FormData();
       formData.append("files", {
-        uri: result.assets[0].uri,
-        name: fileName,
-        type: result.assets[0].mediaType ? `image/${ext}` : `video/${ext}`,
+        uri:result.assets[0].uri,
+        name: `${fileName}.${ext}`,
+        type: mediaType ? mediaType : `image/${ext}`,
       });
+  
       const { data, error } = await supabase.storage
         .from("event_images")
-        .upload(fileName, formData);
-
-      if (error) throw new Error(error.message);
-
+        .upload(`${fileName}.${ext}`, formData);
+  
+      if (error) {
+        throw new Error(error.message);
+      }
+  
       return { eventImage: data };
-    } else {
-      return result;
+    } catch (error) {
+      console.error("Error uploading image:", error.message);
+      return null;
     }
   };
 
   const selectImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      aspect: [4, 3],
-      quality: 0.1,
-    });
-    if (!result.canceled) {
-      setEventImage(result);
-      console.log(result);
-    } else {
-      return error;
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        aspect: [4, 3],
+        quality: 0.1,
+      });
+      if (result) {
+        if (!result.canceled) {
+          setEventImage(result);
+          console.log(result);
+          return result;
+        } else {
+          throw new Error('Image selection canceled');
+        }
+      } else {
+        throw new Error('Image selection result is null');
+      }
+    } catch (error) {
+      console.error('Error selecting image:', error.message);
     }
   };
-  /*
-  try{
-    return await uploadFromURI(eventImage);
 
-  }catch(e){
-    ErrorAlert({title: "Image upload" , message: e.message});
-    return null;
-  }
-  */
   const createEvent = async () => {
     try {
-      const formattedDate = formatCustomDateForText(date);
+      const formattedDate = formatCustomDateForText(selectedDate, selectedTime);
       const uploadedImage = await uploadFromURI(eventImage);
       const imagePath = uploadedImage.eventImage.fullPath.replace(
         "event_images/",
@@ -171,6 +207,7 @@ const CreateEventScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
+      
       <View className="flex-1 ">
         <View className=" flex-1 justify-start items-center p-12">
           <TextInput
@@ -187,7 +224,34 @@ const CreateEventScreen = ({ navigation }) => {
           />
 
           <View className="flex  items-center p-6">
-            <Text>{date.toLocaleString()}</Text>
+          <View className="flex flex-row  items-center ">
+              <Button onPress={showDatePicker}>
+                <ButtonText>
+                  Select Date
+                </ButtonText>
+              </Button>
+             <DateTimePickerModal 
+             isVisible={isDatePickerVisible}
+             mode= "date"
+             onConfirm={handleDateConfirm}
+             onCancel={hideDatePicker}
+             />
+            </View>
+            <View className="flex flex-row items-center">
+              <Button onPress={showTimePicker}>
+                <ButtonText>
+                  Select Date
+                </ButtonText>
+              </Button>
+             <DateTimePickerModal 
+             isVisible={isTimePickerVisible}
+             mode= "time"
+             onConfirm={handleTimeConfirm}
+             onCancel={hideTimePicker}
+             />
+            </View>
+            <Text>{`${selectedDate.toLocaleDateString()} ${selectedTime.toLocaleTimeString()}`}</Text>
+
           </View>
 
           <View className="items-center">
@@ -197,13 +261,7 @@ const CreateEventScreen = ({ navigation }) => {
               action="primary"
               isDisabled={false}
               isFocusVisible={false}
-              onPress={selectImage}
               style={{ borderRadius: 25 }}
-            >
-              <ButtonText>Select Image </ButtonText>
-              <ButtonIcon as={AddIcon} />
-            </Button>
-            <TouchableOpacity
               onPress={async () => {
                 const response = await selectImage();
                 if (response.eventImage) {
@@ -211,15 +269,16 @@ const CreateEventScreen = ({ navigation }) => {
                 }
               }}
             >
-              <Text>image</Text>
-            </TouchableOpacity>
+              <ButtonText>Select Image </ButtonText>
+              <ButtonIcon as={AddIcon} />
+            </Button>
           </View>
           {eventImage ? (
             <Image
-              source={{ uri: eventImage }}
-              style={{ width: 150, height: 150 }}
+            style={{ width: windowWidth, height: windowHeight * 0.4, resizeMode: 'contain' }}
+            source={{ uri: eventImage.assets[0].uri }}
             />
-          ) : null}
+          ) : null}     
         </View>
       </View>
 
