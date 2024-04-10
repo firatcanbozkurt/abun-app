@@ -21,7 +21,6 @@ import {
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
-import { set } from "date-fns";
 
 const AllEventsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -38,11 +37,9 @@ const AllEventsScreen = ({ navigation }) => {
           return;
         }
 
-        // Initialize arrays to hold image URLs and event IDs
         const imageUrls = [];
         const eventIds = [];
 
-        // Fetch image URLs for all events concurrently
         const imageUrlPromises = data.map(async (event) => {
           const { data: imageData, error: imageError } = await supabase.storage
             .from("event_images")
@@ -51,18 +48,15 @@ const AllEventsScreen = ({ navigation }) => {
             console.error("Error fetching image:", imageError.message);
             return null;
           }
-          imageUrls.push(imageData.publicUrl); // Store image URL
-          eventIds.push(event.id); // Store event ID
+          imageUrls.push(imageData.publicUrl); 
+          eventIds.push(event.id);
         });
 
-        // Wait for all image URLs to be fetched
         await Promise.all(imageUrlPromises);
 
-        // Update state with image URLs and event IDs
         setEventData(
           data.map((event) => ({
             ...event,
-            // Retrieve image URL and event ID by index
             eventImage: imageUrls[eventIds.indexOf(event.id)],
           }))
         );
@@ -74,7 +68,7 @@ const AllEventsScreen = ({ navigation }) => {
     };
 
     fetchAllEvents();
-  }, []); // Empty dependency array to run effect only once
+  }, []); 
 
   const renderCard = ({ item }) => (
     <TouchableOpacity onPress={() => handleEventPress(item)}>
@@ -107,7 +101,7 @@ const AllEventsScreen = ({ navigation }) => {
   }
 
   const handleEventPress = (selectedEvent) => {
-    console.log("Selected Event ID:", selectedEvent.id); // Seçilen etkinliğin ID'sini kontrol et
+    console.log("Selected Event ID:", selectedEvent.id);
     navigation2.navigate("Event", { eventData: selectedEvent });
   };
 
