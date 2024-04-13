@@ -179,7 +179,22 @@ const CreateEventScreen = ({ navigation }) => {
       );
     }
   };
-
+  const handleCreateEventPress = () => {
+    Alert.alert(
+      "Create Event",
+      "Are you sure you want to create this event?",
+      [
+        {
+          text: "Create",
+          onPress: createEvent,
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ]
+    );
+  };
   if (loading) {
     return (
       <SafeAreaView
@@ -283,7 +298,7 @@ const CreateEventScreen = ({ navigation }) => {
       <SafeAreaView className="flex justify-center w-2/3 self-center">
         <Button
           title="Create Event"
-          onPress={createEvent}
+          onPress={handleCreateEventPress}
         >
           <ButtonText>Create Event</ButtonText>
         </Button>
