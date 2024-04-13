@@ -14,7 +14,7 @@ import {
 import club1 from "../assets/clubIcon1.png";
 import { GluestackUIProvider, Text, Box } from "@gluestack-ui/themed";
 import { joinClub, useNumberOfEvents } from "../api/clubs";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator,   Alert} from "react-native";
 import { isUserMember } from "../api/clubs";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
@@ -59,6 +59,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
     );
   }
   const joinClubQuery = async () => {
+    
     setJoiningClub(true);
     const { data, error } = await supabase
       .from("community_members")
@@ -103,6 +104,45 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
     // Check if data exists and if the users array is not null
     return data;
   };
+
+  const handleJoinOrLeave = async (actionType) => {
+    const confirmed = await confirmAction(actionType);
+    if (!confirmed) return; // Kullanıcı işlemi onaylamadıysa, işlemi iptal et
+  
+    setJoiningClub(true); // İşlem başladı
+    if (isMember) {
+      await leaveClubQuery();
+    } else {
+      await joinClubQuery();
+    }
+  };
+
+  const confirmAction = async (actionType) => {
+    let message = "";
+    if (actionType === "join") {
+      message = "Are you sure you want to join this club?";
+    } else if (actionType === "leave") {
+      message = "Are you sure you want to leave this club?";
+    }
+  
+    return new Promise((resolve) => {
+      Alert.alert(
+        `Confirm ${actionType.charAt(0).toUpperCase() + actionType.slice(1)}`,
+        message,
+        [
+          {
+            text: "Cancel",
+            onPress: () => resolve(false),
+            style: "cancel",
+          },
+          { text: "Confirm", onPress: () => resolve(true) },
+        ],
+        { cancelable: false }
+      );
+    });
+  };
+  
+  
 
   return (
     <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3" width={330}>
@@ -232,7 +272,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
         <Button
           variant="link"
           action="negative"
-          onPress={leaveClubQuery}
+          onPress={() => handleJoinOrLeave("leave")}
           py="$2"
           px="$4"
         >
@@ -241,7 +281,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
       ) : joiningClub ? (
         <ActivityIndicator size="small" />
       ) : (
-        <Button onPress={joinClubQuery} py="$2" px="$4">
+        <Button onPress={() => handleJoinOrLeave("join")}>
           <ButtonText size="sm">Join</ButtonText>
         </Button>
       )}
