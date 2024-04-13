@@ -3,46 +3,76 @@ import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, TouchableOpacity, Text, Animated } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
-import DownloadView from "../components/DownloadView";
 
 import AvatarIcon from "../components/AvatarIcon";
 import { useExamList } from "../api/exams";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import { Button, ButtonText } from "@gluestack-ui/themed";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  runOnJS,
+  interpolate,
+} from "react-native-reanimated";
+import {
+  GestureHandlerRootView,
+  TapGestureHandler,
+  State,
+} from "react-native-gesture-handler";
 
 const VocabularyItemsScreen = () => {
   const navigation = useNavigation();
-  const [isFlipped, setIsFlipped] = useState(false);
   const { error, isLoading } = useExamList();
 
-  const flipAnimation = new Animated.Value(0);
+  const [isFlipped, setIsFlipped] = useState(false);
 
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
-    Animated.spring(flipAnimation, {
-      toValue: isFlipped ? 0 : 180,
-      useNativeDriver: true,
-    }).start();
-  };
-  const frontInterpolate = flipAnimation.interpolate({
-    inputRange: [0, 180],
-    outputRange: ["0deg", "180deg"],
+  const rotation = useSharedValue(0);
+  const frontAnimatedStyles = useAnimatedStyle(() => {
+    const rotateValue = interpolate(rotation.value, [0, 1], [0, 180]);
+    return {
+      transform: [
+        { rotateY: withTiming(`${rotateValue}deg`, { duration: 1000 }) },
+      ],
+    };
   });
-  const backInterpolate = flipAnimation.interpolate({
-    inputRange: [0, 180],
-    outputRange: ["180deg", "360deg"],
+  const toggleFlip = () => {
+    rotation.value = withTiming(
+      isFlipped ? 0 : 180,
+      {
+        duration: 500,
+        easing: Easing.ease,
+      },
+      () => {
+        runOnJS(setIsFlipped)(!isFlipped);
+      }
+    );
+  };
+
+  const frontCardStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ perspective: 1000 }, { rotateY: `${rotation.value}deg` }],
+    };
   });
 
-  const frontAnimatedStyle = {
-    transform: [{ rotateY: frontInterpolate }],
-  };
-  const backAnimatedStyle = {
-    transform: [{ rotateY: backInterpolate }],
-  };
-
+  const backCardStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { perspective: 1000 },
+        { rotateY: `${rotation.value + 180}deg` },
+      ],
+    };
+  });
   if (isLoading) {
     return (
       <SafeAreaView
@@ -65,6 +95,114 @@ const VocabularyItemsScreen = () => {
   }
 
   return (
+    <>
+    <SafeAreaView
+        className="flex bg-primary h-1/4 "
+        style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
+      >
+        <View className="flex flex-row justify-between px-4 items-center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+          >
+            <ArrowLeftIcon size="20" color="white" />
+          </TouchableOpacity>
+          <AvatarIcon navigation={navigation} />
+        </View>
+        <View className="flex  items-center mt-3">
+          <Text className="text-twhite text-4xl">CENG-SENG</Text>
+          <Text className="text-twhite text-3xl">Vocabulary Items</Text>
+        </View>
+      </SafeAreaView>
+    <SafeAreaView style={styles.container}>
+      
+    <GestureHandlerRootView>
+      <View style={styles.container}>
+        <TapGestureHandler
+          onHandlerStateChange={({ nativeEvent }) => {
+            if (nativeEvent.state === State.END) {
+              toggleFlip();
+            }
+          }}
+        >
+          <Animated.View style={[styles.cardContainer, frontCardStyle]}>
+            <Text style={styles.cardText}>Front</Text>
+          </Animated.View>
+        </TapGestureHandler>
+        <TapGestureHandler
+          onHandlerStateChange={({ nativeEvent }) => {
+            if (nativeEvent.state === State.END) {
+              toggleFlip();
+            }
+          }}
+        >
+          <Animated.View
+            style={[styles.cardContainer, backCardStyle, styles.cardBack]}
+          >
+            <Text style={styles.cardText}>Back</Text>
+          </Animated.View>
+        </TapGestureHandler>
+      </View>
+    </GestureHandlerRootView>
+    </SafeAreaView>
+    <SafeAreaView className=" mb-8">
+        <View className="flex flex-row justify-evenly  ">
+          <View className="w-1/3">
+            <Button
+              size="md"
+              variant="solid"
+              action="primary"
+              isDisabled={false}
+              isFocusVisible={false}
+            >
+              <ButtonText>PREV </ButtonText>
+            </Button>
+          </View>
+          <View className="w-1/3">
+            <Button
+              size="md"
+              variant="solid"
+              action="primary"
+              isDisabled={false}
+              isFocusVisible={false}
+            >
+              <ButtonText>NEXT </ButtonText>
+            </Button>
+          </View>
+        </View>
+      </SafeAreaView>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardContainer: {
+    width: 200,
+    height: 300,
+    backgroundColor: "#030637",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    backfaceVisibility: "hidden",
+  },
+  cardBack: {
+    backgroundColor: "lightcoral",
+    position: "absolute",
+  },
+  cardText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+});
+/*
+  return (
+    <GestureHandlerRootView style={{flex:1}}>
     <View className="flex-1">
       <SafeAreaView
         className="flex bg-primary h-1/4 "
@@ -84,13 +222,16 @@ const VocabularyItemsScreen = () => {
           <Text className="text-twhite text-3xl">Vocabulary Items</Text>
         </View>
       </SafeAreaView>
-      <TouchableOpacity onPress={handleFlip}>
-        <Feather name="refresh-cw" size={24} color="black" />
-      </TouchableOpacity>
+  
       <View className="flex-1 p-12 mt-8">
         <View className="flex  items-center justify-center w-full h-full rounded-xl">
+          <TapGestureHandler onHandlerStateChange={({nativeEvent}) => {
+            if(nativeEvent.state === State.END){
+              toggleFlip();
+            }
+          }}>
           <Animated.View
-            style={frontAnimatedStyle}
+            style={frontCardStyle}
             className="absolute  bg-vocabCard-100 items-center justify-center p-8 rounded-xl"
           >
             <Text className="text-twhite text-2xl font-bold">API</Text>
@@ -105,9 +246,16 @@ const VocabularyItemsScreen = () => {
               Interface
             </Text>
           </Animated.View>
+          </TapGestureHandler>
+
+          <TapGestureHandler onHandlerStateChange={({nativeEvent}) => {
+            if(nativeEvent.state === State.END){
+              toggleFlip();
+            }
+          }}>
           <Animated.View
             style={[
-              backAnimatedStyle,
+              backCardStyle,
               {
                 position: "absolute",
                 width: "100%",
@@ -126,6 +274,7 @@ const VocabularyItemsScreen = () => {
               Back of the card description...
             </Text>
           </Animated.View>
+          </TapGestureHandler>
         </View>
       </View>
       <SafeAreaView className=" mb-8">
@@ -155,7 +304,12 @@ const VocabularyItemsScreen = () => {
         </View>
       </SafeAreaView>
     </View>
+    </GestureHandlerRootView>
   );
-};
 
+*/
 export default VocabularyItemsScreen;
+
+/***    <TouchableOpacity onPress={}>
+        <Feather name="refresh-cw" size={24} color="black" />
+      </TouchableOpacity> */
