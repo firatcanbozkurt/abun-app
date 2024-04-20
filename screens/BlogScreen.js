@@ -19,7 +19,7 @@ import BlogListItem from "../components/blog/BlogListItem";
 import { blogData } from "../assets/blogListItemDemo";
 const BlogScreen = ({ navigation }) => {
   const [search, setSearch] = useState(""); // Will be used for searching blogs
-  // Scrool view should be fixed, we cannot see the whole content
+
   return (
     <View className="flex-1">
       <SafeAreaView
@@ -38,7 +38,7 @@ const BlogScreen = ({ navigation }) => {
           <Text className="text-twhite text-4xl">Blog</Text>
         </View>
       </SafeAreaView>
-      <View className="px-6 py-4 flex-1">
+      <View className="px-6 py-4 flex-1 ">
         <Input
           variant="rounded"
           size="lg"
@@ -55,7 +55,7 @@ const BlogScreen = ({ navigation }) => {
           />
         </Input>
 
-        <ScrollView className="mt-4" showsVerticalScrollIndicator={false}>
+        <ScrollView className="mt-4 " showsVerticalScrollIndicator={false}>
           {blogData.map((blog, id) => {
             return (
               <BlogListItem
