@@ -16,7 +16,13 @@ import {
   ButtonText,
   ButtonIcon,
   Box,
+  useToast,
+  Toast,
+  VStack,
+  ToastTitle,
+  ToastDescription,
 } from "@gluestack-ui/themed";
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 
@@ -27,6 +33,7 @@ import loadingAnimation from "../assets/loading.json";
 import { useAuth } from "../components/context/AuthProvider";
 
 const EventScreen = ({ navigation, route }) => {
+  const toast = useToast();
   const { session } = useAuth();
   const userId = session?.user?.id;
   const [loading, setLoading] = useState(true);
@@ -34,6 +41,8 @@ const EventScreen = ({ navigation, route }) => {
   const [imageLoading, setImageLoading] = useState(true);
   const [attendingEvent, setAttendingEvent] = useState(false);
   const [joinedEvent, setJoinedEvent] = useState(false);
+  const [counter, setCounter] = useState(0);
+
   useEffect(() => {
     const fetchEventData = async () => {
       const eventDataParams = await route.params?.eventData;
@@ -65,6 +74,23 @@ const EventScreen = ({ navigation, route }) => {
     await supabase.from("events_users").insert([{ eventId: eventData?.id }]);
     setJoinedEvent(true);
     setAttendingEvent(false);
+    toast.show({
+      placement: "top",
+      render: ({ id }) => {
+        const toastId = "toast-" + id;
+        return (
+          <Toast nativeID={toastId} action="success" variant="accent">
+            <VStack space="xs">
+              <ToastTitle>Your registration has succeeded</ToastTitle>
+              <ToastDescription>
+                We look forward to seeing you at the event.
+              </ToastDescription>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
+    setCounter(counter + 1);
   };
 
   const leaveEvent = async () => {
@@ -74,6 +100,25 @@ const EventScreen = ({ navigation, route }) => {
       .eq("eventId", eventData?.id)
       .eq("user", userId);
     setJoinedEvent(false);
+
+    toast.show({
+      placement: "top",
+      render: ({ id }) => {
+        const toastId = "toast-" + id;
+        return (
+          <Toast nativeID={toastId} action="info" variant="accent">
+            <VStack space="xs">
+              <ToastTitle>Info</ToastTitle>
+              <ToastDescription>
+                We're sorry to see that you've left. Hope to see you at another
+                event soon!"
+              </ToastDescription>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
+    setCounter(counter + 1);
   };
 
   if (loading)

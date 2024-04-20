@@ -168,7 +168,7 @@ const CreateEventScreen = ({ navigation }) => {
       ]);
     } catch (error) {
       console.error("Error creating event:", error.message);
-    } finally{
+    } finally {
       setLoading(false);
     }
     if (loading) {
@@ -180,20 +180,16 @@ const CreateEventScreen = ({ navigation }) => {
     }
   };
   const handleCreateEventPress = () => {
-    Alert.alert(
-      "Create Event",
-      "Are you sure you want to create this event?",
-      [
-        {
-          text: "Create",
-          onPress: createEvent,
-        },
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-      ]
-    );
+    Alert.alert("Create Event", "Are you sure you want to create this event?", [
+      {
+        text: "Create",
+        onPress: createEvent,
+      },
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+    ]);
   };
   if (loading) {
     return (
@@ -228,8 +224,10 @@ const CreateEventScreen = ({ navigation }) => {
 
       <View className="flex-1 ">
         <View className=" flex-1 justify-start items-center p-12">
-          <View className="flex justify-center items-center border  mb-6"
-          style={{width: windowWidth * 0.5, height: windowHeight * 0.23}}>
+          <View
+            className="flex justify-center items-center border  mb-6"
+            style={{ width: windowWidth * 0.5, height: windowHeight * 0.23 }}
+          >
             <View className="flex justify-center items-center">
               <TouchableOpacity
                 onPress={async () => {
@@ -242,8 +240,8 @@ const CreateEventScreen = ({ navigation }) => {
                 {eventImage ? (
                   <Image
                     style={{
-                      width: windowWidth *0.5,
-                      height: windowHeight * 0.23 ,
+                      width: windowWidth * 0.5,
+                      height: windowHeight * 0.23,
                       resizeMode: "contain",
                     }}
                     source={{ uri: eventImage.assets[0].uri }}
@@ -282,7 +280,10 @@ const CreateEventScreen = ({ navigation }) => {
             </View>
             <View className="">
               <Button onPress={showTimePicker}>
-                <ButtonText> {`${selectedTime.toLocaleTimeString()}`}</ButtonText>
+                <ButtonText>
+                  {" "}
+                  {`${selectedTime.toLocaleTimeString()}`}
+                </ButtonText>
               </Button>
               <DateTimePickerModal
                 isVisible={isTimePickerVisible}
@@ -296,10 +297,7 @@ const CreateEventScreen = ({ navigation }) => {
       </View>
 
       <SafeAreaView className="flex justify-center w-2/3 self-center">
-        <Button
-          title="Create Event"
-          onPress={handleCreateEventPress}
-        >
+        <Button title="Create Event" onPress={handleCreateEventPress}>
           <ButtonText>Create Event</ButtonText>
         </Button>
       </SafeAreaView>
