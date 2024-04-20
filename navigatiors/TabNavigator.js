@@ -78,6 +78,7 @@ const TabNavigator = () => {
             />
           ),
           tabBarLabel: "Blog",
+          tabBarStyle: { display: "none" },
         }}
       />
     </Tab.Navigator>

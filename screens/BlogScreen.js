@@ -38,7 +38,7 @@ const BlogScreen = ({ navigation }) => {
           <Text className="text-twhite text-4xl">Blog</Text>
         </View>
       </SafeAreaView>
-      <View className="px-6 py-4">
+      <View className="px-6 py-4 flex-1">
         <Input
           variant="rounded"
           size="lg"
