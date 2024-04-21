@@ -141,7 +141,7 @@ const EventScreen = ({ navigation, route }) => {
       <View className="">
         <View className="flex flex-row justify-between p-4  items-center ">
           <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.goBack()}
             className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
           >
             <ArrowLeftIcon size="20" color="white" />
