@@ -61,6 +61,8 @@ const Clubs = ({ navigation }) => {
             );
           })}
         </View>
+
+        
       </ScrollView>
     </SafeAreaView>
   );
