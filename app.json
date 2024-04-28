@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "AbunApp",
-    "slug": "AbunApp",
+    "slug": "abun-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,11 +29,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-    
+    },
+    "extra": {
+      "eas": {
+        "projectId": "913a754b-3b18-42e3-b4e6-68d63a9da144"
+      }
+    },
+    "owner": "abunapp"
   }
 }
