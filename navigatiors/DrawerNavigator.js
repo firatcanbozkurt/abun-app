@@ -51,13 +51,22 @@ const CustomDrawerContent = ({ navigation }) => {
             navigation.navigate("Event");
           }}
         />
-        {isAdmin && ( // if user is admin show the create event screen on the sidebar
-          <DrawerItem
-            label="Create Event"
-            onPress={() => {
-              navigation.navigate("CreateEvent");
-            }}
-          />
+        {isAdmin && (
+          // if user is admin show the create event screen on the sidebar
+          <>
+            <DrawerItem
+              label="Create Event"
+              onPress={() => {
+                navigation.navigate("CreateEvent");
+              }}
+            />
+            <DrawerItem
+              label="Send notification"
+              onPress={() => {
+                navigation.navigate("notification");
+              }}
+            />
+          </>
         )}
         <DrawerItem
           label="Events"

@@ -2,20 +2,28 @@ import { registerForPushNotificationsAsync } from "../../lib/nofitications";
 import { ExpoPushToken } from "expo-notifications";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import * as Notifications from "expo-notifications";
-
+import { useAuth } from "./AuthProvider";
+import { supabase } from "../../supabase";
 const NotificationProvider = ({ children }: PropsWithChildren) => {
-  const [expoPushToken, setExpoPushToken] = useState<
-    ExpoPushToken | undefined
-  >();
+  const { session } = useAuth();
+  const [expoPushToken, setExpoPushToken] = useState<String | undefined>();
   const [notification, setNotification] =
     useState<Notifications.Notification>();
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
+  const savePushToken = async (newToken: string | undefined) => {
+    setExpoPushToken(newToken);
+    if (!newToken) {
+      return;
+    }
 
+    await supabase
+      .from("users")
+      .update({ expo_push_token: newToken })
+      .eq("uuid", session.user.id);
+  };
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then((token) => savePushToken(token));
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {

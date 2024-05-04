@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import TabNavigator from "./TabNavigator";
 import DrawerNavigator from "./DrawerNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
+import SendNotification from "../screens/SendNotification";
 import EventScreen from "../screens/EventScreen";
 import CreateEventScreen from "../screens/CreateEventScreen";
 import AllEventsScreen from "../screens/AllEventsScreen";
@@ -56,6 +57,7 @@ function AuthNavigator() {
           <Stack.Screen name="PastExams" component={PastExamScreen} />
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
+          <Stack.Screen name="notification" component={SendNotification} />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
           <Stack.Screen
             name="VocabularyItems"

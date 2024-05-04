@@ -3,6 +3,7 @@ import { Text, View, Button, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { supabase } from "../supabase";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -14,13 +15,15 @@ Notifications.setNotificationHandler({
 
 // Can use this function below or use Expo's Push Notification Tool from: https://expo.dev/notifications
 async function sendPushNotification(
-  expoPushToken: Notifications.ExpoPushToken
+  expoPushToken: string,
+  title: string,
+  body: string
 ) {
   const message = {
     to: expoPushToken,
     sound: "default",
-    title: "Original Title",
-    body: "And here is the body!",
+    title,
+    body,
     data: { someData: "goes here" },
   };
 
@@ -71,3 +74,60 @@ export async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
+export const getUsersTokenForEvents = async (communityId: string) => {
+  const { data, error } = await supabase
+    .from("community_members")
+    .select("user")
+    .eq("community", communityId);
+
+  if (error) {
+    console.error(error);
+    return [];
+  }
+
+  const userTokens = await Promise.all(
+    data.map(async (uuid) => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("expo_push_token")
+        .eq("uuid", uuid.user)
+        .single();
+
+      if (error) {
+        console.error(error);
+        return null;
+      }
+
+      return data.expo_push_token;
+    })
+  );
+
+  return userTokens.filter(Boolean); // remove null values
+};
+
+export const getAllUsersToken = async () => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("expo_push_token");
+  return data;
+};
+
+export const notifyUsersWithPushToken = async (
+  communityId: string,
+  title: string,
+  body: string
+) => {
+  await getUsersTokenForEvents(communityId).then((data) => {
+    data.forEach((expo_push_token) => {
+      sendPushNotification(expo_push_token, title, body);
+    });
+  });
+};
+
+export const adminNotifyAllUsers = async (title: string, body: string) => {
+  const data = await getAllUsersToken();
+  data.forEach((user) => {
+    sendPushNotification(user.expo_push_token, title, body);
+  });
+};
