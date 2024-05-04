@@ -15,55 +15,51 @@ import { ButtonText, ButtonIcon, Button, AddIcon } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useAuth } from "../components/context/AuthProvider";
-import {Dimensions} from 'react-native';
-import DateTimePickerModal from "react-native-modal-datetime-picker"
+import { Dimensions } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { notifyUsersWithPushToken } from "../lib/nofitications";
 const CreateEventScreen = ({ navigation }) => {
   const [eventImage, setEventImage] = useState(null);
   const [eventName, setEventName] = useState("");
   const [eventAbout, setEventAbout] = useState("");
   const { user } = useAuth();
   const [loading, setLoading] = useState();
- 
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
 
-
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
-  
+
   const showTimePicker = () => {
     setTimePickerVisibility(true);
   };
-  
+
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-  
+
   const hideTimePicker = () => {
     setTimePickerVisibility(false);
   };
 
-const handleDateConfirm = (date) => {
-  console.warn("A date has been picked", date);
-  setSelectedDate(date);
-  hideDatePicker();
-};
+  const handleDateConfirm = (date) => {
+    console.warn("A date has been picked", date);
+    setSelectedDate(date);
+    hideDatePicker();
+  };
 
-const handleTimeConfirm = (time) => {
-  console.warn("A time has been picked", time);
-  setSelectedTime(time);
-  hideTimePicker();
-};
+  const handleTimeConfirm = (time) => {
+    console.warn("A time has been picked", time);
+    setSelectedTime(time);
+    hideTimePicker();
+  };
 
-  const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-
-
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
 
   useEffect(() => {
     (async () => {
@@ -93,26 +89,26 @@ const windowHeight = Dimensions.get('window').height;
     if (!result || result.canceled) {
       return null;
     }
-    
+
     try {
       const { uri, mediaType } = result.assets[0];
       const ext = uri.substring(uri.lastIndexOf(".") + 1);
       const fileName = result.assets[0].uri.replace(/^.*[\\\/]/, "");
       const formData = new FormData();
       formData.append("files", {
-        uri:result.assets[0].uri,
+        uri: result.assets[0].uri,
         name: `${fileName}.${ext}`,
         type: mediaType ? mediaType : `image/${ext}`,
       });
-  
+
       const { data, error } = await supabase.storage
         .from("event_images")
         .upload(`${fileName}.${ext}`, formData);
-  
+
       if (error) {
         throw new Error(error.message);
       }
-  
+
       return { eventImage: data };
     } catch (error) {
       console.error("Error uploading image:", error.message);
@@ -134,13 +130,13 @@ const windowHeight = Dimensions.get('window').height;
           console.log(result);
           return result;
         } else {
-          throw new Error('Image selection canceled');
+          throw new Error("Image selection canceled");
         }
       } else {
-        throw new Error('Image selection result is null');
+        throw new Error("Image selection result is null");
       }
     } catch (error) {
-      console.error('Error selecting image:', error.message);
+      console.error("Error selecting image:", error.message);
     }
   };
 
@@ -165,7 +161,9 @@ const windowHeight = Dimensions.get('window').height;
         console.error("Error creating event:", error.message);
         return;
       }
-
+      /* SEND NOTIFICATIONS TO USERS WHO MEMBERS OF THIS COMMUNITY */
+      /* TAKES communityId, title, body AS PARAMETERS */
+      notifyUsersWithPushToken("5", eventName, eventAbout);
       console.log("Event created successfully:", data);
       Alert.alert("Success", "Event created successfully", [
         { text: "OK", onPress: () => navigation.navigate("Home") },
@@ -207,7 +205,7 @@ const windowHeight = Dimensions.get('window').height;
           </View>
         </View>
       </View>
-      
+
       <View className="flex-1 ">
         <View className=" flex-1 justify-start items-center p-12">
           <TextInput
@@ -224,34 +222,29 @@ const windowHeight = Dimensions.get('window').height;
           />
 
           <View className="flex  items-center p-6">
-          <View className="flex flex-row  items-center ">
+            <View className="flex flex-row  items-center ">
               <Button onPress={showDatePicker}>
-                <ButtonText>
-                  Select Date
-                </ButtonText>
+                <ButtonText>Select Date</ButtonText>
               </Button>
-             <DateTimePickerModal 
-             isVisible={isDatePickerVisible}
-             mode= "date"
-             onConfirm={handleDateConfirm}
-             onCancel={hideDatePicker}
-             />
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleDateConfirm}
+                onCancel={hideDatePicker}
+              />
             </View>
             <View className="flex flex-row items-center">
               <Button onPress={showTimePicker}>
-                <ButtonText>
-                  Select Date
-                </ButtonText>
+                <ButtonText>Select Date</ButtonText>
               </Button>
-             <DateTimePickerModal 
-             isVisible={isTimePickerVisible}
-             mode= "time"
-             onConfirm={handleTimeConfirm}
-             onCancel={hideTimePicker}
-             />
+              <DateTimePickerModal
+                isVisible={isTimePickerVisible}
+                mode="time"
+                onConfirm={handleTimeConfirm}
+                onCancel={hideTimePicker}
+              />
             </View>
             <Text>{`${selectedDate.toLocaleDateString()} ${selectedTime.toLocaleTimeString()}`}</Text>
-
           </View>
 
           <View className="items-center">
@@ -275,10 +268,14 @@ const windowHeight = Dimensions.get('window').height;
           </View>
           {eventImage ? (
             <Image
-            style={{ width: windowWidth, height: windowHeight * 0.4, resizeMode: 'contain' }}
-            source={{ uri: eventImage.assets[0].uri }}
+              style={{
+                width: windowWidth,
+                height: windowHeight * 0.4,
+                resizeMode: "contain",
+              }}
+              source={{ uri: eventImage.assets[0].uri }}
             />
-          ) : null}     
+          ) : null}
         </View>
       </View>
 
