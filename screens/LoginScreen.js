@@ -14,7 +14,6 @@ import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../supabase.js";
 
-//
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +36,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { user, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
@@ -54,7 +53,7 @@ export default function LoginScreen({ navigation }) {
         );
       } else {
         Alert.alert("Login Successful", "You are logged in successfully.");
-        navigation.replace("Home");
+        //navigation.replace("Home");
       }
     }
   };
