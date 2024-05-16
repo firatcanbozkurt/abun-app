@@ -1,24 +1,24 @@
-import { View, Text, Pressable, Image, TouchableOpacity } from "react-native";
+import { View, Text, Pressable, Image, TouchableOpacity,FlatList,  StyleSheet} from "react-native";
+import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format, getDay } from "date-fns";
 import { Octicons } from "@expo/vector-icons";
 import { supabase } from "../supabase";
+import { useNavigation } from "@react-navigation/native";
+
 import {
-  HStack,
-  Avatar,
-  AvatarFallbackText,
-  AvatarImage,
-  Button,
-  ButtonText,
-  ButtonIcon,
-  Icon,
-  Box,
+  Avatar, ScrollView,
 } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 const HomeScreen = ({ navigation }) => {
+
+  const [eventData, setEventData] = useState([])
   const today = new Date();
   const formattedDate = format(today, "MMMM d, yyyy");
   const dayOfWeek = getDay(today);
+  const navigation2 = useNavigation();
+  const [loading, setLoading] = useState(true);
+
   const logout = () => {
     supabase.auth.signOut();
     navigation.replace("Login");
@@ -27,6 +27,66 @@ const HomeScreen = ({ navigation }) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
+
+  useEffect(() => {
+    const fetchAllEvents = async () => {
+      try {
+        const { data, error } = await supabase.from("eventTest").select("*");
+
+        if (error) {
+          console.error("Error fetching all events:", error.message);
+          return;
+        }
+
+        const imageUrls = [];
+        const eventIds = [];
+
+        const imageUrlPromises = data.map(async (event) => {
+          const { data: imageData, error: imageError } = await supabase.storage
+            .from("event_images")
+            .getPublicUrl(event.eventImage);
+          if (imageError) {
+            console.error("Error fetching image:", imageError.message);
+            return null;
+          }
+          imageUrls.push(imageData.publicUrl); 
+          eventIds.push(event.id);
+        });
+
+        await Promise.all(imageUrlPromises);
+
+        setEventData(
+          data.map((event) => ({
+            ...event,
+            eventImage: imageUrls[eventIds.indexOf(event.id)],
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching all events:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllEvents();
+  }, []); 
+  const handleEventPress = (selectedEvent) => {
+    console.log("Selected Event ID:", selectedEvent.id);
+    navigation2.navigate("Event", { eventData: selectedEvent });
+  };
+  const renderCard = ({ item }) => (
+    <TouchableOpacity onPress={() => handleEventPress(item)}>
+      <View style={styles.card}>
+        <Image source={{ uri: item.eventImage }} style={styles.cardImage} />
+        <View style={styles.cardContent}>
+          <Text style={styles.eventName}>{item.eventName}</Text>
+          <Text style={styles.eventAbout}>{item.eventAbout}</Text>
+          <Text style={styles.date}>{item.date}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView className="flex-1 ">
       <View className="flex-1 p-4">
@@ -71,37 +131,78 @@ const HomeScreen = ({ navigation }) => {
                 <Text className="mr-1 text-secondary">See All</Text>
               </TouchableOpacity>
             </View>
-            <View className="flex flex-row">
-              <Image
-                shadow={2}
-                source={require("../assets/ann.jpeg")}
-                alt="alt"
-                className="w-[120px] h-[100px] rounded"
-              />
-              <View className="items-start p-1 pl-4">
-                <Text className="text-xl">Museum Week Fest</Text>
-                <Text className="text-sm font-light my-1">By "" club</Text>
-                <Text className="text-sm font-light ">May 21 09:00 - On</Text>
-              </View>
-            </View>
-            <View className="flex flex-row my-5">
-              <Image
-                shadow={2}
-                source={require("../assets/ann.jpeg")}
-                alt="alt"
-                className="w-[120px] h-[100px] rounded"
-              />
-              <View className="items-start p-1 pl-4">
-                <Text className="text-xl ">Museum Week Fest</Text>
-                <Text className="text-sm font-light my-1">By "" club</Text>
-                <Text className="text-sm font-light ">May 21 09:00 - On</Text>
-              </View>
-            </View>
+            <View style={styles.container}>
+                <FlatList
+                  data={eventData}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={renderCard}
+                  contentContainerStyle={styles.flatListContainer}
+                />
+          </View>
+
           </View>
         </View>
       </View>
     </SafeAreaView>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 0,
+    backgroundColor: "#f0f0f0",
+  },
+  flatListContainer: {
+    padding: 12,
+    paddingTop: 8,
+  },
+  card: {
+    display:"flex",
+    flexDirection:"row",
+    backgroundColor: "white",
+    borderRadius: 8,
+    marginBottom: 16,
+    elevation: 3, 
+  },
+  cardImage: {
+    width: "50%",
+    height: "100%",
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+  },
+  cardContent: {
+    padding: 16,
+  },
+  eventName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  eventAbout: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  date: {
+    fontSize: 14,
+    color: "#888",
+  },
+});
 
 export default HomeScreen;
+
+
+/*<View className="flex flex-column my-5">
+              {eventData.map((event) =>(
+                <TouchableOpacity onPress={()=> handleEventPress()}>
+                <View key={event.id} className="items-start p-1 pb-4  flex flex-row">
+                  <Image source={{uri:event.eventImage}}  alt="alt" className="w-[120px] h-[100px] rounded"/>
+                  <View className="flex flex-col pl-4 pt-1">
+                    <Text className="text-xl">{event.eventName}</Text>
+                    <Text className="text-sm font-light my-1">By {event.eventAbout}</Text>
+                    <Text className="text-sm font-light ">{event.date}</Text>
+                    </View>
+                </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+            */
