@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
+
 import {
   Input,
   InputField,
@@ -19,7 +20,11 @@ import BlogListItem from "../components/blog/BlogListItem";
 import { blogData } from "../assets/blogListItemDemo";
 const BlogScreen = ({ navigation }) => {
   const [search, setSearch] = useState(""); // Will be used for searching blogs
-
+  const [currentPopUp, setCurrentPopUp] = useState(null);
+  const openPopUp = (id, profileName, Tag, Title) => {
+    setCurrentPopUp({ id, profileName, Tag, Title });
+    console.log("PRESSED");
+  };
   return (
     <View className="flex-1">
       <SafeAreaView
@@ -63,6 +68,15 @@ const BlogScreen = ({ navigation }) => {
                 profileName={blog.profileName}
                 tag={blog.tag}
                 title={blog.title}
+                openListItem={() => {
+                  navigation.navigate("BlogModal", {
+                    id: id,
+                    profileName: blog.profileName,
+                    title: blog.title,
+                    tag: blog.tag,
+                    body: blog.body,
+                  });
+                }}
               />
             );
           })}

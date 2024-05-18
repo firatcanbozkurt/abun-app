@@ -1,7 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Button } from "@gluestack-ui/themed";
-import { notifyUsersWithPushToken } from "../lib/nofitications";
+import {
+  notifyUsersWithPushToken,
+  adminNotifyAllUsers,
+} from "../lib/nofitications";
 const SendNotificaiton = () => {
   return (
     <View>

@@ -124,7 +124,7 @@ export const notifyUsersWithPushToken = async (
     });
   });
 };
-
+// Expo can send 100 notification at the same time. Divide array to chunks that consists of 100 push token
 export const adminNotifyAllUsers = async (title: string, body: string) => {
   const data = await getAllUsersToken();
   data.forEach((user) => {

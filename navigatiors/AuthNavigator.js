@@ -15,6 +15,7 @@ import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import loadingAnimation from "../assets/loading.json";
 import LottieView from "lottie-react-native";
 import BlogScreen from "../screens/BlogScreen";
+import BlogModal from "../components/blog/BlogModal";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
 
@@ -64,6 +65,9 @@ function AuthNavigator() {
             component={VocabularyItemsScreen}
           />
           <Stack.Screen name="BlogScreen" component={BlogScreen} />
+          <Stack.Group screenOptions={{ presentation: "modal" }}>
+            <Stack.Screen name="BlogModal" component={BlogModal} />
+          </Stack.Group>
         </>
       )}
     </Stack.Navigator>
