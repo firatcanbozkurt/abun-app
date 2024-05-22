@@ -130,7 +130,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
           return (
             <Toast nativeID={toastId} action="info" sx={{bg:"$purple500"}} variant="accent">
               <VStack space="xs">
-                <ToastTitle sx={{color:"$white", fontWeight:"$bold", fontSize:"18"}}>Info</ToastTitle>
+                <ToastTitle sx={{color:"$white", fontWeight:"$bold", fontSize:18}}>Info</ToastTitle>
                 <ToastDescription sx={{color:"$white", fontWeight:"$semibold"}}>
                   We're sorry to see that you've left. Hope to see you at another
                   event soon!"
@@ -268,7 +268,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
             },
           }}
         >
-          <Text style={{ fontSize: 15 }}>{body}</Text>
+          <Text style={{  }}>{body}</Text>
         </Box>
         {isMember ? (
           <>
@@ -291,7 +291,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
               <AlertDialogBackdrop />
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <Heading size="lg">Are you sure you want to join club?</Heading>
+                  <Heading size="lg">Are you sure you want to leave club?</Heading>
                 </AlertDialogHeader>
                 <AlertDialogBody>
                   <Text size="sm"></Text>
