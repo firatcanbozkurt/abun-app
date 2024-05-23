@@ -55,12 +55,19 @@ const HomeScreen = ({ navigation }) => {
 
         await Promise.all(imageUrlPromises);
 
+        const eventsWithImages = data.map((event) => ({
+          ...event,
+          eventImage: imageUrls[eventIds.indexOf(event.id)],
+        }));
+
+        const sortedEvents = eventsWithImages.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const upcomingEvents = sortedEvents.slice(0, 2);
+
+
         setEventData(
-          data.map((event) => ({
-            ...event,
-            eventImage: imageUrls[eventIds.indexOf(event.id)],
-          }))
+         upcomingEvents
         );
+
       } catch (error) {
         console.error("Error fetching all events:", error.message);
       } finally {
@@ -131,15 +138,20 @@ const HomeScreen = ({ navigation }) => {
                 <Text className="mr-1 text-secondary">See All</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.container}>
-                <FlatList
-                  data={eventData}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderCard}
-                  contentContainerStyle={styles.flatListContainer}
-                />
-          </View>
-
+            <View style={styles.eventsContainer}>
+              {eventData.map((event, index) => (
+                <TouchableOpacity key={index} onPress={() => handleEventPress(event)}>
+                  <View style={styles.card}>
+                    <Image source={{ uri: event.eventImage }} style={styles.cardImage} />
+                    <View style={styles.cardContent}>
+                      <Text style={styles.eventName}>{event.eventName}</Text>
+                      <Text style={styles.eventAbout}>{event.eventAbout}</Text>
+                      <Text style={styles.date}>{event.date}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </View>
       </View>
@@ -151,6 +163,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
     backgroundColor: "#f0f0f0",
+  },
+  eventsContainer:{
+    padding: 4,
   },
   flatListContainer: {
     padding: 12,
@@ -189,20 +204,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-
-/*<View className="flex flex-column my-5">
-              {eventData.map((event) =>(
-                <TouchableOpacity onPress={()=> handleEventPress()}>
-                <View key={event.id} className="items-start p-1 pb-4  flex flex-row">
-                  <Image source={{uri:event.eventImage}}  alt="alt" className="w-[120px] h-[100px] rounded"/>
-                  <View className="flex flex-col pl-4 pt-1">
-                    <Text className="text-xl">{event.eventName}</Text>
-                    <Text className="text-sm font-light my-1">By {event.eventAbout}</Text>
-                    <Text className="text-sm font-light ">{event.date}</Text>
-                    </View>
-                </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-            */
