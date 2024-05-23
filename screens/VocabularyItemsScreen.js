@@ -19,15 +19,30 @@ import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 const VocabularyItemsScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
   const navigation = useNavigation();
   const { data: vocabularyData, error, isLoading } = useVocabularyList();
 
   const offsetX = useSharedValue(0);
   const opacity = useSharedValue(1);
+  const rotateY = useSharedValue(0);
 
   const frontCardStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: offsetX.value }],
+      transform: [
+        { translateX: offsetX.value },
+        { rotateY: `${rotateY.value}deg` },
+      ],
+      opacity: opacity.value,
+    };
+  });
+
+  const backCardStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: offsetX.value },
+        { rotateY: `${rotateY.value + 180}deg` },
+      ],
       opacity: opacity.value,
     };
   });
@@ -38,6 +53,8 @@ const VocabularyItemsScreen = () => {
     opacity.value = 0;
     offsetX.value = withTiming(0, { duration: 300 });
     opacity.value = withTiming(1, { duration: 300 });
+    setIsFlipped(false);
+    rotateY.value = withTiming(0, { duration: 300 });
   };
 
   const handleNextWord = () => {
@@ -54,6 +71,15 @@ const VocabularyItemsScreen = () => {
         runOnJS(updateIndex)(currentIndex - 1, "prev");
       });
     }
+  };
+
+  const flipCard = () => {
+    if (isFlipped) {
+      rotateY.value = withTiming(0, { duration: 300 });
+    } else {
+      rotateY.value = withTiming(180, { duration: 300 });
+    }
+    setIsFlipped(!isFlipped);
   };
 
   if (isLoading) {
@@ -112,13 +138,22 @@ const VocabularyItemsScreen = () => {
         </View>
       </SafeAreaView>
       <SafeAreaView style={styles.container}>
-        <Animated.View style={[styles.cardContainer, frontCardStyle]}>
-          {currentWord ? (
-            <Text style={styles.cardText}>{currentWord.word}</Text>
-          ) : (
-            <Text style={styles.cardText}>No word available</Text>
-          )}
-        </Animated.View>
+        <TouchableOpacity onPress={flipCard}>
+          <Animated.View style={[styles.cardContainer, frontCardStyle]}>
+            {currentWord ? (
+              <Text style={styles.cardText}>{currentWord.word}</Text>
+            ) : (
+              <Text style={styles.cardText}>No word available</Text>
+            )}
+          </Animated.View>
+          <Animated.View style={[styles.cardContainer, backCardStyle, styles.cardBack]}>
+            {currentWord ? (
+              <Text style={styles.cardText}>{currentWord.description}</Text>
+            ) : (
+              <Text style={styles.cardText}>No description available</Text>
+            )}
+          </Animated.View>
+        </TouchableOpacity>
       </SafeAreaView>
       <SafeAreaView className="mb-8">
         <View className="items-center mb-4">
@@ -179,6 +214,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
+    backfaceVisibility: "hidden",
+  },
+  cardBack: {
+    position: "absolute",
+    top: 0,
+    backfaceVisibility: "hidden",
+    backgroundColor: "#B52FF8",
+    transform: [{ rotateY: "180deg" }],
   },
   cardText: {
     color: "white",
