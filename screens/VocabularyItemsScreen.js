@@ -1,105 +1,64 @@
+import React, { useState } from "react";
+import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
-import { ArrowLeftIcon } from "react-native-heroicons/solid";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import AvatarIcon from "../components/AvatarIcon";
-import { useExamList, useVocabularyList } from "../api/exams";
-import LottieView from "lottie-react-native";
-import loadingAnimation from "../assets/loading.json";
-import { Button, ButtonText } from "@gluestack-ui/themed";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
-  Easing,
-  useAnimatedStyle,
   useSharedValue,
+  useAnimatedStyle,
   withTiming,
   runOnJS,
-  interpolate,
 } from "react-native-reanimated";
-import {
-  GestureHandlerRootView,
-  TapGestureHandler,
-  State,
-} from "react-native-gesture-handler";
+import { Button, ButtonText } from "@gluestack-ui/themed";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/loading.json";
+import AvatarIcon from "../components/AvatarIcon";
+import { useVocabularyList } from "../api/exams";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 const VocabularyItemsScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  
   const navigation = useNavigation();
   const { data: vocabularyData, error, isLoading } = useVocabularyList();
 
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  const rotation = useSharedValue(0);
-
-  const saveVocabularyData = async (wordData) => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('vocabularyData');
-      let existingData = [];
-      if (jsonValue !== null) {
-        existingData = JSON.parse(jsonValue);
-      }
-      existingData.push({ word: wordData.word, description: wordData.description });
-      await AsyncStorage.setItem('vocabularyData', JSON.stringify(existingData));
-      alert('Kelime başarıyla kaydedildi!');
-    } catch (error) {
-      console.error('Kelime kaydetme hatası:', error);
-      alert('Kelime kaydetme hatası!');
-    }
-  };
-
-  const frontAnimatedStyles = useAnimatedStyle(() => {
-    const rotateValue = interpolate(rotation.value, [0, 1], [0, 180]);
-    return {
-      transform: [
-        { rotateY: withTiming(`${rotateValue}deg`, { duration: 1000 }) },
-      ],
-    };
-  });
-
-  const toggleFlip = () => {
-    rotation.value = withTiming(
-      isFlipped ? 0 : 180,
-      {
-        duration: 500,
-        easing: Easing.ease,
-      },
-      () => {
-        runOnJS(setIsFlipped)(!isFlipped);
-      }
-    );
-  };
+  const offsetX = useSharedValue(0);
+  const opacity = useSharedValue(1);
 
   const frontCardStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ perspective: 1000 }, { rotateY: `${rotation.value}deg` }],
+      transform: [{ translateX: offsetX.value }],
+      opacity: opacity.value,
     };
   });
 
-  const backCardStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { perspective: 1000 },
-        { rotateY: `${rotation.value + 180}deg` },
-      ],
-    };
-  });
+  const updateIndex = (newIndex, direction) => {
+    setCurrentIndex(newIndex);
+    offsetX.value = direction === "next" ? -300 : 300;
+    opacity.value = 0;
+    offsetX.value = withTiming(0, { duration: 300 });
+    opacity.value = withTiming(1, { duration: 300 });
+  };
+
+  const handleNextWord = () => {
+    if (currentIndex < vocabularyData.length - 1) {
+      offsetX.value = withTiming(300, { duration: 300 }, () => {
+        runOnJS(updateIndex)(currentIndex + 1, "next");
+      });
+    }
+  };
+
+  const handlePrevWord = () => {
+    if (currentIndex > 0) {
+      offsetX.value = withTiming(-300, { duration: 300 }, () => {
+        runOnJS(updateIndex)(currentIndex - 1, "prev");
+      });
+    }
+  };
 
   if (isLoading) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
+      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <View className="flex justify-center items-center">
           <LottieView
             source={loadingAnimation}
@@ -122,25 +81,27 @@ const VocabularyItemsScreen = () => {
 
   const currentWord = vocabularyData[currentIndex];
 
-  const handleNextWord = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % vocabularyData.length);
-  };
-
-  const handlePrevWord = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + vocabularyData.length) % vocabularyData.length);
+  const saveVocabularyData = async (wordData) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('vocabularyData');
+      let existingData = [];
+      if (jsonValue !== null) {
+        existingData = JSON.parse(jsonValue);
+      }
+      existingData.push({ word: wordData.word, description: wordData.description });
+      await AsyncStorage.setItem('vocabularyData', JSON.stringify(existingData));
+      alert('Kelime başarıyla kaydedildi!');
+    } catch (error) {
+      console.error('Kelime kaydetme hatası:', error);
+      alert('Kelime kaydetme hatası!');
+    }
   };
 
   return (
-    <>
-      <SafeAreaView
-        className="flex bg-primary h-1/4"
-        style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
-      >
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView className="flex bg-primary h-1/4" style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}>
         <View className="flex flex-row justify-between px-4 items-center">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
-          >
+          <TouchableOpacity onPress={() => navigation.goBack()} className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9">
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>
           <AvatarIcon navigation={navigation} />
@@ -151,42 +112,13 @@ const VocabularyItemsScreen = () => {
         </View>
       </SafeAreaView>
       <SafeAreaView style={styles.container}>
-        <GestureHandlerRootView>
-          <View style={styles.container}>
-            <TapGestureHandler
-              onHandlerStateChange={({ nativeEvent }) => {
-                if (nativeEvent.state === State.END) {
-                  toggleFlip();
-                }
-              }}
-            >
-              <Animated.View style={[styles.cardContainer, frontCardStyle]}>
-                {currentWord ? (
-                  <Text style={styles.cardText}>{currentWord.word}</Text>
-                ) : (
-                  <Text style={styles.cardText}>No word available</Text>
-                )}
-              </Animated.View>
-            </TapGestureHandler>
-            <TapGestureHandler
-              onHandlerStateChange={({ nativeEvent }) => {
-                if (nativeEvent.state === State.END) {
-                  toggleFlip();
-                }
-              }}
-            >
-              <Animated.View
-                style={[styles.cardContainer, backCardStyle, styles.cardBack]}
-              >
-                {currentWord ? (
-                  <Text style={styles.cardText}>{currentWord.description}</Text>
-                ) : (
-                  <Text style={styles.cardText}>No description available</Text>
-                )}
-              </Animated.View>
-            </TapGestureHandler>
-          </View>
-        </GestureHandlerRootView>
+        <Animated.View style={[styles.cardContainer, frontCardStyle]}>
+          {currentWord ? (
+            <Text style={styles.cardText}>{currentWord.word}</Text>
+          ) : (
+            <Text style={styles.cardText}>No word available</Text>
+          )}
+        </Animated.View>
       </SafeAreaView>
       <SafeAreaView className="mb-8">
         <View className="items-center mb-4">
@@ -230,7 +162,7 @@ const VocabularyItemsScreen = () => {
           </View>
         </View>
       </SafeAreaView>
-    </>
+    </GestureHandlerRootView>
   );
 };
 
@@ -247,11 +179,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    backfaceVisibility: "hidden",
-  },
-  cardBack: {
-    backgroundColor: "lightcoral",
-    position: "absolute",
   },
   cardText: {
     color: "white",
