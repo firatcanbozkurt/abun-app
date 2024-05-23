@@ -8,7 +8,11 @@ import Animated, {
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
-import { Button, ButtonText } from "@gluestack-ui/themed";
+import { Button, ButtonText,  useToast,
+  Toast,
+  VStack,
+ToastTitle,
+ToastDescription, } from "@gluestack-ui/themed";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import AvatarIcon from "../components/AvatarIcon";
@@ -22,6 +26,7 @@ const VocabularyItemsScreen = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const navigation = useNavigation();
   const { data: vocabularyData, error, isLoading } = useVocabularyList();
+  const toast = useToast();
 
   const offsetX = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -113,15 +118,50 @@ const VocabularyItemsScreen = () => {
       let existingData = [];
       if (jsonValue !== null) {
         existingData = JSON.parse(jsonValue);
+        // Check if the word already exists in the vocabulary data
+        const isDuplicate = existingData.some(item => item.word === wordData.word);
+        if (isDuplicate) {
+          toast.show({
+            placement: "top",
+            render: ({ id }) => {
+              const toastId = "toast-" + id;
+              return (
+                <Toast nativeID={toastId} action="error" variant="accent">
+                  <VStack space="xs">
+                    <ToastTitle>{wordData.word} kelimesi zaten kaydedilmiş!</ToastTitle>
+                    <ToastDescription>
+                    </ToastDescription>
+                  </VStack>
+                </Toast>
+              );
+            },
+          });
+          return;
+        }
       }
       existingData.push({ word: wordData.word, description: wordData.description });
       await AsyncStorage.setItem('vocabularyData', JSON.stringify(existingData));
-      alert('Kelime başarıyla kaydedildi!');
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="accent">
+              <VStack space="xs">
+                <ToastTitle>{wordData.word} Başarıyla kaydedildi!</ToastTitle>
+                <ToastDescription>
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     } catch (error) {
       console.error('Kelime kaydetme hatası:', error);
       alert('Kelime kaydetme hatası!');
     }
   };
+  
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
