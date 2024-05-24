@@ -14,8 +14,8 @@ import {
 } from "@gluestack-ui/themed";
 
 const BlogModal = ({ navigation, route }) => {
-  const { id, profileName, tag, title, body, contactEmail } = route.params;
-  const email = "s200201012@ankarabilim.edu.tr";
+  const { id, profileName, tag, title, body, user_email } = route.params;
+
   return (
     <View className="bg-primary" style={{ flex: 1 }}>
       <View style={{ paddingLeft: "5%", paddingTop: "5%" }}>
@@ -60,14 +60,16 @@ const BlogModal = ({ navigation, route }) => {
               </Text>
             </View>
             <View style={{ marginHorizontal: 16 }}>
-              <Badge
-                size="lg"
-                variant="solid"
-                borderRadius="$md"
-                action={!tag ? "success" : "warning"}
-              >
-                <BadgeText>{!tag ? "I Can Help" : "Help Me"}</BadgeText>
-              </Badge>
+              {tag && (
+                <Badge
+                  size="lg"
+                  variant="solid"
+                  borderRadius="$md"
+                  action={!tag ? "success" : "warning"}
+                >
+                  <BadgeText>{tag}</BadgeText>
+                </Badge>
+              )}
             </View>
           </View>
         </View>
@@ -95,7 +97,7 @@ const BlogModal = ({ navigation, route }) => {
       >
         <Button
           style={{ width: "70%", marginBottom: "10%" }}
-          onPress={() => Linking.openURL(`mailto:${email}`)}
+          onPress={() => Linking.openURL(`mailto:${user_email}`)}
         >
           <Text
             style={{

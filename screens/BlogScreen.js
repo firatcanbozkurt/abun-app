@@ -4,9 +4,9 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  Button,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 import {
@@ -15,16 +15,23 @@ import {
   InputSlot,
   SearchIcon,
   InputIcon,
+  Button,
+  ButtonText,
+  Icon,
+  ArrowDownIcon,
 } from "@gluestack-ui/themed";
 import BlogListItem from "../components/blog/BlogListItem";
 import { blogData } from "../assets/blogListItemDemo";
-const BlogScreen = ({ navigation }) => {
+import { useBlogList } from "../api/blog";
+const BlogScreen = ({ navigation, route }) => {
+  const createdPost = route.params;
+
   const [search, setSearch] = useState(""); // Will be used for searching blogs
-  const [currentPopUp, setCurrentPopUp] = useState(null);
-  const openPopUp = (id, profileName, Tag, Title) => {
-    setCurrentPopUp({ id, profileName, Tag, Title });
-    console.log("PRESSED");
-  };
+  const { data, isLoading, error } = useBlogList();
+  function openCreatePostModal() {
+    console.log(createdPost?.refresh);
+    navigation.navigate("BlogCreatePostModal");
+  }
   return (
     <View className="flex-1">
       <SafeAreaView
@@ -61,26 +68,63 @@ const BlogScreen = ({ navigation }) => {
         </Input>
 
         <ScrollView className="mt-4 " showsVerticalScrollIndicator={false}>
-          {blogData.map((blog, id) => {
-            return (
-              <BlogListItem
-                key={id}
-                profileName={blog.profileName}
-                tag={blog.tag}
-                title={blog.title}
-                openListItem={() => {
-                  navigation.navigate("BlogModal", {
-                    id: id,
-                    profileName: blog.profileName,
-                    title: blog.title,
-                    tag: blog.tag,
-                    body: blog.body,
-                  });
-                }}
-              />
-            );
-          })}
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : data.length > 0 ? (
+            data.map((post) => {
+              return (
+                <BlogListItem
+                  key={post.id}
+                  profileName={post.full_name}
+                  tag={post.tag}
+                  title={post.title}
+                  openListItem={() => {
+                    navigation.navigate("BlogModal", {
+                      id: post.id,
+                      profileName: post.full_name,
+                      title: post.title,
+                      tag: post.tag,
+                      body: post.body,
+                      user_email: post.user_email,
+                    });
+                  }}
+                />
+              );
+            })
+          ) : (
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <Text style={{ fontSize: 24 }}>No posts found!</Text>
+              <Text style={{ fontSize: 16 }}>
+                You can create the first post below.
+              </Text>
+              <Icon as={ArrowDownIcon} m="$2" w="$16" h="$16" />
+            </View>
+          )}
         </ScrollView>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginTop: 20,
+            marginBottom: 20,
+          }}
+        >
+          <Button onPress={openCreatePostModal}>
+            <ButtonText size="md">My posts</ButtonText>
+          </Button>
+          <Button onPress={openCreatePostModal}>
+            <ButtonText size="md">Create a post</ButtonText>
+          </Button>
+        </View>
       </View>
     </View>
   );

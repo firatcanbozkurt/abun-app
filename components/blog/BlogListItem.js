@@ -20,7 +20,6 @@ const BlogListItem = ({ profileName, tag, title, openListItem }) => {
     return str;
   }
 
-  console.log(tag);
   title = trimTitle(title);
   return (
     <TouchableOpacity onPress={openListItem}>
@@ -59,14 +58,16 @@ const BlogListItem = ({ profileName, tag, title, openListItem }) => {
               }}
             >
               <View style={{ display: "flex", flexDirection: "row" }}>
-                <Badge
-                  size="lg"
-                  variant="solid"
-                  borderRadius="$md"
-                  action={!tag ? "success" : "warning"}
-                >
-                  <BadgeText>{!tag ? "I Can Help" : "Help Me"}</BadgeText>
-                </Badge>
+                {tag && (
+                  <Badge
+                    size="lg"
+                    variant="solid"
+                    borderRadius="$md"
+                    action={tag === "I can help" ? "success" : "warning"}
+                  >
+                    <BadgeText>{tag}</BadgeText>
+                  </Badge>
+                )}
                 <Text> </Text>
                 <Text style={{ fontSize: 16, fontWeight: "300" }}>{title}</Text>
               </View>

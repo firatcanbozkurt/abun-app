@@ -18,6 +18,7 @@ import BlogScreen from "../screens/BlogScreen";
 import BlogModal from "../components/blog/BlogModal";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
+import BlogCreatePostModal from "../components/blog/BlogCreatePostModal";
 
 function AuthNavigator() {
   const { session, loading } = useAuth();
@@ -67,6 +68,12 @@ function AuthNavigator() {
           <Stack.Screen name="BlogScreen" component={BlogScreen} />
           <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen name="BlogModal" component={BlogModal} />
+          </Stack.Group>
+          <Stack.Group screenOptions={{ presentation: "modal" }}>
+            <Stack.Screen
+              name="BlogCreatePostModal"
+              component={BlogCreatePostModal}
+            />
           </Stack.Group>
         </>
       )}
