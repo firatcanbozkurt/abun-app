@@ -68,8 +68,6 @@ function AuthNavigator() {
           <Stack.Screen name="BlogScreen" component={BlogScreen} />
           <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen name="BlogModal" component={BlogModal} />
-          </Stack.Group>
-          <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen
               name="BlogCreatePostModal"
               component={BlogCreatePostModal}

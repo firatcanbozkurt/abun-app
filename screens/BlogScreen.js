@@ -21,17 +21,56 @@ import {
   ArrowDownIcon,
 } from "@gluestack-ui/themed";
 import BlogListItem from "../components/blog/BlogListItem";
-import { blogData } from "../assets/blogListItemDemo";
 import { useBlogList } from "../api/blog";
+import { useAuth } from "../components/context/AuthProvider";
 const BlogScreen = ({ navigation, route }) => {
-  const createdPost = route.params;
-
+  const { profile } = useAuth();
+  const [postData, setPostData] = useState([]);
+  const [postAction, setPostAction] = useState({});
   const [search, setSearch] = useState(""); // Will be used for searching blogs
   const { data, isLoading, error } = useBlogList();
-  function openCreatePostModal() {
-    console.log(createdPost?.refresh);
-    navigation.navigate("BlogCreatePostModal");
+  if (error) {
+    alert("Error fetching posts");
   }
+
+  const openCreatePostModal = () => {
+    navigation.navigate("BlogCreatePostModal", {
+      onGoBack: (data) => setPostAction(data),
+    });
+  };
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setPostData(data);
+      console.log(postData);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (postAction?.isTrue) {
+      setPostData((prevData) => {
+        return prevData.filter((post) => post.id !== postAction?.id);
+      });
+    }
+    if (postAction?.isAdded) {
+      setPostData((prevData) => {
+        return [
+          ...prevData,
+          {
+            uuid: profile?.uuid,
+            id: profile?.uuid + Math.random() * 1000, // to avoid id conflicts without fetching from the server
+            full_name: postAction?.full_name,
+            title: postAction?.title,
+            tag: postAction?.tag,
+            body: postAction?.body,
+            user_email: postAction?.user_email,
+            created_at: new Date().toISOString(), // to avoid timestamp conflicts without fetching from the server
+          },
+        ];
+      });
+    }
+  }, [postAction]);
+
   return (
     <View className="flex-1">
       <SafeAreaView
@@ -70,22 +109,27 @@ const BlogScreen = ({ navigation, route }) => {
         <ScrollView className="mt-4 " showsVerticalScrollIndicator={false}>
           {isLoading ? (
             <ActivityIndicator size="large" color="#0000ff" />
-          ) : data.length > 0 ? (
-            data.map((post) => {
+          ) : postData.length > 0 ? (
+            postData.map((post) => {
               return (
                 <BlogListItem
                   key={post.id}
                   profileName={post.full_name}
                   tag={post.tag}
                   title={post.title}
+                  uuid={post.uuid}
+                  timestamp={post.created_at}
                   openListItem={() => {
                     navigation.navigate("BlogModal", {
+                      onGoBack: (data) => setPostAction(data),
                       id: post.id,
                       profileName: post.full_name,
                       title: post.title,
                       tag: post.tag,
                       body: post.body,
                       user_email: post.user_email,
+                      uuid: post.uuid,
+                      timestamp: post.created_at,
                     });
                   }}
                 />
@@ -118,10 +162,10 @@ const BlogScreen = ({ navigation, route }) => {
             marginBottom: 20,
           }}
         >
-          <Button onPress={openCreatePostModal}>
+          <Button style={{ width: "45%" }} onPress={openCreatePostModal}>
             <ButtonText size="md">My posts</ButtonText>
           </Button>
-          <Button onPress={openCreatePostModal}>
+          <Button style={{ width: "45%" }} onPress={openCreatePostModal}>
             <ButtonText size="md">Create a post</ButtonText>
           </Button>
         </View>

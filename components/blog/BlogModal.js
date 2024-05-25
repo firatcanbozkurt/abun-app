@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Linking } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   HStack,
   Avatar,
@@ -11,10 +11,33 @@ import {
   Button,
   Icon,
   ShareIcon,
+  CloseIcon,
 } from "@gluestack-ui/themed";
+import { format, getDay } from "date-fns";
+import { useAuth } from "../context/AuthProvider";
+import { supabase } from "../../supabase";
 
 const BlogModal = ({ navigation, route }) => {
-  const { id, profileName, tag, title, body, user_email } = route.params;
+  const [deleting, setDeleting] = useState(false);
+  const { profile } = useAuth();
+  const { id, profileName, tag, title, body, user_email, uuid, timestamp } =
+    route.params;
+  const dateObject = new Date(timestamp);
+  const formattedDate = format(dateObject, "MMMM d, yyyy");
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    await supabase
+      .from("blog_post")
+      .delete()
+      .eq("id", id)
+      .then((res) => {
+        console.log("NORMAL NMMMN Route params:", route.params);
+        console.log("Navigation:", navigation);
+        route.params.onGoBack({ isTrue: true, id: id });
+        navigation.goBack();
+      });
+  };
 
   return (
     <View className="bg-primary" style={{ flex: 1 }}>
@@ -73,6 +96,17 @@ const BlogModal = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+        <View
+          style={{
+            padding: 8,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 16 }}>{formattedDate}</Text>
+        </View>
         <View // Horizontal line
           style={{
             width: "100%",
@@ -80,11 +114,11 @@ const BlogModal = ({ navigation, route }) => {
             opacity: 0.5,
             borderBottomWidth: 1.5,
             alignSelf: "center",
-            marginTop: 10,
+            marginVertical: 8,
           }}
         />
       </View>
-      <ScrollView style={{ padding: 24 }}>
+      <ScrollView style={{ padding: 24, marginVertical: 32 }}>
         <Text style={{ fontSize: 16 }}>{body}</Text>
       </ScrollView>
 
@@ -95,27 +129,53 @@ const BlogModal = ({ navigation, route }) => {
           alignItems: "center",
         }}
       >
-        <Button
-          style={{ width: "70%", marginBottom: "10%" }}
-          onPress={() => Linking.openURL(`mailto:${user_email}`)}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "500",
-              color: "white",
-            }}
+        {uuid === profile?.uuid ? (
+          <Button
+            isDisabled={deleting}
+            action="negative"
+            style={{ width: "70%", marginBottom: "10%" }}
+            onPress={handleDelete}
           >
-            Send Email
-          </Text>
-          <Icon
-            style={{ color: "white" }}
-            as={ShareIcon}
-            m="$2"
-            w="$6"
-            h="$6"
-          />
-        </Button>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "500",
+                color: "white",
+              }}
+            >
+              Delete post
+            </Text>
+            <Icon
+              style={{ color: "white" }}
+              as={CloseIcon}
+              m="$2"
+              w="$6"
+              h="$6"
+            />
+          </Button>
+        ) : (
+          <Button
+            style={{ width: "70%", marginBottom: "10%" }}
+            onPress={() => Linking.openURL(`mailto:${user_email}`)}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "500",
+                color: "white",
+              }}
+            >
+              Send Email
+            </Text>
+            <Icon
+              style={{ color: "white" }}
+              as={ShareIcon}
+              m="$2"
+              w="$6"
+              h="$6"
+            />
+          </Button>
+        )}
       </SafeAreaView>
     </View>
   );

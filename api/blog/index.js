@@ -4,7 +4,6 @@ import { userUserId } from "../../components/context/AuthProvider";
 
 export const useBlogList = () => {
   return useQuery({
-    enabled: true,
     queryKey: ["posts"],
     queryFn: async () => {
       try {

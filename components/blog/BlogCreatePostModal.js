@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView } from "react-native";
 import React, { useState } from "react";
+import { useRoute } from "@react-navigation/native";
 import {
   InputField,
   Button,
@@ -22,6 +23,7 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../context/AuthProvider";
 
 const BlogCreatePostModal = ({ navigation, route }) => {
+  const asdfsadf = route.params;
   const { session, profile } = useAuth();
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("");
@@ -32,17 +34,31 @@ const BlogCreatePostModal = ({ navigation, route }) => {
       alert("Please fill all the fields");
       return;
     }
-    console.log(session);
-    const { data, error } = await supabase.from("blog_post").insert({
-      full_name: profile.full_name,
-      title: title,
-      tag: tag,
-      body: body,
-      user_email: session.user.email,
-    });
-    navigation.goBack({
-      refresh: true,
-    });
+
+    await supabase
+      .from("blog_post")
+      .insert({
+        full_name: profile?.full_name,
+        title: title,
+        tag: tag,
+        body: body,
+        user_email: session.user.email,
+      })
+      .then((res) => {
+        console.log("Route params:", route.params);
+        console.log("Navigation:", navigation);
+
+        route.params.onGoBack({
+          isAdded: true,
+          title: title,
+          tag: tag,
+          body: body,
+          full_name: profile.full_name,
+          user_email: session.user.email,
+        });
+
+        navigation.goBack();
+      });
   };
   return (
     <SafeAreaView className="bg-primary" style={{ flex: 1 }}>
