@@ -72,6 +72,7 @@ const CustomDrawerContent = ({ navigation }) => {
           }}
         />
         <DrawerItem label="VocabularyList" onPress={() => { navigation.navigate("VocabularyList")}}/>
+        <DrawerItem label="VocabularyCourse" onPress={() => { navigation.navigate("VocabularyCourse")}}/>
 
         <DrawerItem
           label="Logout"

@@ -60,7 +60,7 @@ const VocabularyListScreen = () => {
   }, []);
 
   const deleteWord = async (word) => {
-    setSelectedWord(word);
+    setSelectedWord(word); 
     setDeleteDialogVisible(true);
   };
 

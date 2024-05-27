@@ -16,7 +16,7 @@ import LottieView from "lottie-react-native";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
 import VocabularyListScreen from "../screens/VocabularyListScreen";
-
+import VocabularyCourseList from "../screens/VocabularyCourseList";
 function AuthNavigator() {
   const { session, loading } = useAuth();
 
@@ -64,7 +64,11 @@ function AuthNavigator() {
           <Stack.Screen
             name="VocabularyList"
             component={VocabularyListScreen}
-          />
+          /> 
+          <Stack.Screen
+          name="VocabularyCourse"
+          component={VocabularyCourseList}
+        />
         </>
       )}
     </Stack.Navigator>

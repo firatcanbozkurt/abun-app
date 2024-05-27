@@ -21,19 +21,3 @@ export const useExamList = () => {
 };
 
 
-export const useVocabularyList = () => {
-  return useQuery({
-    queryKey:["vocabularyItems"],
-    queryFn: async  () => {
-      try {
-        const {data, error} = await supabase.from("vocabulary_items").select("*");
-        if(error){
-          throw new Error(error.message);
-        }
-        return data;
-      } catch (error) {
-        console.log("Error fetching items", error);
-      }
-    }
-  })
-}

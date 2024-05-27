@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
@@ -16,16 +16,18 @@ ToastDescription, } from "@gluestack-ui/themed";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import AvatarIcon from "../components/AvatarIcon";
-import { useVocabularyList } from "../api/exams";
+import { useVocabularyList } from "../api/courses";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
-const VocabularyItemsScreen = () => {
+const VocabularyItemsScreen = ({route}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const navigation = useNavigation();
-  const { data: vocabularyData, error, isLoading } = useVocabularyList();
+  const {courseId} = route.params;
+
+  const { data: vocabularyData, error, isLoading } = useVocabularyList(courseId);
   const toast = useToast();
 
   const offsetX = useSharedValue(0);
@@ -103,7 +105,7 @@ const VocabularyItemsScreen = () => {
   }
 
   if (error) {
-    return <Text>An error occurred!</Text>;
+    return <SafeAreaView><Text>An error occurred!</Text></SafeAreaView>
   }
 
   if (!vocabularyData || vocabularyData.length === 0) {
