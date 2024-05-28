@@ -6,6 +6,7 @@ import Clubs from "../screens/Clubs";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
+import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
@@ -64,6 +65,7 @@ const TabNavigator = () => {
           tabBarLabel: "Clubs",
         }}
       />
+    
     </Tab.Navigator>
   );
 };

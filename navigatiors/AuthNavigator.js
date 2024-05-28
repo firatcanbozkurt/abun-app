@@ -58,10 +58,6 @@ function AuthNavigator() {
           <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
           <Stack.Screen
-            name="VocabularyItems"
-            component={VocabularyItemsScreen}
-          />
-          <Stack.Screen
             name="VocabularyList"
             component={VocabularyListScreen}
           /> 

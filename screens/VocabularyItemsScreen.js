@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import { SafeAreaView, View, Text, StyleSheet, Pressable } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
@@ -12,7 +12,8 @@ import { Button, ButtonText,  useToast,
   Toast,
   VStack,
 ToastTitle,
-ToastDescription, } from "@gluestack-ui/themed";
+ToastDescription,
+Avatar, } from "@gluestack-ui/themed";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import AvatarIcon from "../components/AvatarIcon";
@@ -20,11 +21,14 @@ import { useVocabularyList } from "../api/courses";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import { AntDesign } from '@expo/vector-icons';
+import { Octicons } from "@expo/vector-icons";
 
-const VocabularyItemsScreen = ({route}) => {
+
+const VocabularyItemsScreen = ({route, navigation}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const navigation = useNavigation();
+  const navigation2 = useNavigation();
   const {courseId} = route.params;
 
   const { data: vocabularyData, error, isLoading } = useVocabularyList(courseId);
@@ -33,6 +37,10 @@ const VocabularyItemsScreen = ({route}) => {
   const offsetX = useSharedValue(0);
   const opacity = useSharedValue(1);
   const rotateY = useSharedValue(0);
+
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
 
   const frontCardStyle = useAnimatedStyle(() => {
     return {
@@ -165,21 +173,26 @@ const VocabularyItemsScreen = ({route}) => {
   };
   
 
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="flex bg-primary h-1/4" style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}>
-        <View className="flex flex-row justify-between px-4 items-center">
-          <TouchableOpacity onPress={() => navigation.goBack()} className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9">
-            <ArrowLeftIcon size="20" color="white" />
+    <GestureHandlerRootView style={styles.container}>
+      <SafeAreaView className="flex flex-row  justify-between mx-8  items-center">
+          <TouchableOpacity
+          className="mt-3"
+            onPress={openDrawer}
+            android_ripple={{ color: "transparent" }}
+          >
+            <Octicons name="three-bars" size={24} color="black" />
+          </TouchableOpacity>
+          <View className=" flex-1 justify-center items-center mt-3">
+            <Text className="font-semibold text-2xl">Vocabulary Items</Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           </TouchableOpacity>
           <AvatarIcon navigation={navigation} />
-        </View>
-        <View className="flex items-center mt-3">
-          <Text className="text-twhite text-4xl">CENG-SENG</Text>
-          <Text className="text-twhite text-3xl">Vocabulary Items</Text>
-        </View>
-      </SafeAreaView>
-      <SafeAreaView style={styles.container}>
+        </SafeAreaView>
+        
+      <SafeAreaView style={styles.main}>
         <TouchableOpacity onPress={flipCard}>
           <Animated.View style={[styles.cardContainer, frontCardStyle]}>
             {currentWord ? (
@@ -196,14 +209,16 @@ const VocabularyItemsScreen = ({route}) => {
             )}
           </Animated.View>
         </TouchableOpacity>
+        
       </SafeAreaView>
       <SafeAreaView className="mb-8">
-        <View className="items-center mb-4">
+      <View className="items-center mb-6">
           <View className="w-1/3">
             <Button
               size="md"
               variant="solid"
               action="primary"
+              bg="$black"
               isDisabled={false}
               isFocusVisible={false}
               onPress={() => saveVocabularyData(currentWord)}
@@ -212,7 +227,7 @@ const VocabularyItemsScreen = ({route}) => {
             </Button>
           </View>
         </View>
-        <View className="flex flex-row justify-evenly">
+        <View className="flex flex-row justify-evenly mb-24">
           <View className="w-1/3">
             <Button
               size="md"
@@ -221,8 +236,10 @@ const VocabularyItemsScreen = ({route}) => {
               isDisabled={false}
               isFocusVisible={false}
               onPress={handlePrevWord}
+              bg="$black"
+
             >
-              <ButtonText>PREV</ButtonText>
+              <ButtonText><AntDesign name="arrowleft" size={24} color="white" /></ButtonText>
             </Button>
           </View>
           <View className="w-1/3">
@@ -230,11 +247,13 @@ const VocabularyItemsScreen = ({route}) => {
               size="md"
               variant="solid"
               action="primary"
+              color="$textLight900"
+              bg="$black"
               isDisabled={false}
               isFocusVisible={false}
               onPress={handleNextWord}
             >
-              <ButtonText>NEXT</ButtonText>
+              <ButtonText><AntDesign name="arrowright" size={24} color="white" /></ButtonText>
             </Button>
           </View>
         </View>
@@ -246,13 +265,17 @@ const VocabularyItemsScreen = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "gainsboro",
+  },
+  main:{
+    flex:1,
     justifyContent: "center",
     alignItems: "center",
   },
   cardContainer: {
     width: 200,
     height: 300,
-    backgroundColor: "#030637",
+    backgroundColor: "#030647",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -261,13 +284,14 @@ const styles = StyleSheet.create({
   cardBack: {
     position: "absolute",
     top: 0,
+    paddingHorizontal: 16,
     backfaceVisibility: "hidden",
-    backgroundColor: "#B52FF8",
+    backgroundColor: "#030647",
     transform: [{ rotateY: "180deg" }],
   },
   cardText: {
     color: "white",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
   },
 });

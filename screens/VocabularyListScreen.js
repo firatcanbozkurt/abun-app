@@ -26,6 +26,8 @@ import {
   ToastTitle,
   ToastDescription,
 } from "@gluestack-ui/themed";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/loading.json";
 
 const VocabularyListScreen = () => {
   const [vocabularyData, setVocabularyData] = useState([]);

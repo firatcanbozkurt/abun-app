@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
   },
   eventsContainer:{
     padding: 4,
+
   },
   flatListContainer: {
     padding: 12,

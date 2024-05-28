@@ -8,6 +8,9 @@ module.exports = {
       secondary: "#B52FF8",
       button: "#4960F9",
       twhite: "#fff",
+      tblack: {
+        900: "#000000"
+      },
       gray: {
         100: "#f7fafc",
         200: "#edf2f7",

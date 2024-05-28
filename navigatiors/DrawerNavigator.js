@@ -65,14 +65,9 @@ const CustomDrawerContent = ({ navigation }) => {
             navigation.navigate("AllEvents");
           }}
         />
-        <DrawerItem
-          label="VocabularyItems"
-          onPress={() => {
-            navigation.navigate("VocabularyItems");
-          }}
-        />
-        <DrawerItem label="VocabularyList" onPress={() => { navigation.navigate("VocabularyList")}}/>
-        <DrawerItem label="VocabularyCourse" onPress={() => { navigation.navigate("VocabularyCourse")}}/>
+  
+        <DrawerItem label="Saved Vocabulary" onPress={() => { navigation.navigate("VocabularyList")}}/>
+        <DrawerItem label="Vocabulary Items" onPress={() => { navigation.navigate("VocabularyCourse")}}/>
 
         <DrawerItem
           label="Logout"
@@ -95,11 +90,12 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName=""
+      initialRouteName="TabNavigator"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="TabNavigator" component={TabNavigator} />
       <Drawer.Screen name="PastExams" component={PastExamScreen} />
+      <Drawer.Screen name="VocabularyItems" component={VocabularyItemsScreen} />
     </Drawer.Navigator>
   );
 };
