@@ -17,6 +17,7 @@ const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
 import VocabularyListScreen from "../screens/VocabularyListScreen";
 import VocabularyCourseList from "../screens/VocabularyCourseList";
+import ClubDetailsScreen from "../screens/ClubDetailsScreen";
 function AuthNavigator() {
   const { session, loading } = useAuth();
 
@@ -65,6 +66,7 @@ function AuthNavigator() {
           name="VocabularyCourse"
           component={VocabularyCourseList}
         />
+        <Stack.Screen name="ClubDetailsScreen" component={ClubDetailsScreen}/>
         </>
       )}
     </Stack.Navigator>

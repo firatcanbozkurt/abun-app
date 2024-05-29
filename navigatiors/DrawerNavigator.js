@@ -13,6 +13,7 @@ import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import { useAuth } from "../components/context/AuthProvider";
 import loadingAnimation from "../assets/loading.json";
 import LottieView from "lottie-react-native";
+import ClubDetailsScreen from "../screens/ClubDetailsScreen";
 
 const CustomDrawerContent = ({ navigation }) => {
   const { isAdmin } = useAuth();
@@ -80,6 +81,7 @@ const CustomDrawerContent = ({ navigation }) => {
             borderTopColor: "gray",
           }}
         />
+        <DrawerItem label="Club Detail Screen" onPress={() => { navigation.navigate("ClubDetailsScreen")}}/>
       </View>
     </DrawerContentScrollView>
   );
@@ -96,6 +98,7 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="TabNavigator" component={TabNavigator} />
       <Drawer.Screen name="PastExams" component={PastExamScreen} />
       <Drawer.Screen name="VocabularyItems" component={VocabularyItemsScreen} />
+      <Drawer.Screen name="ClubDetailsScreen.js" component={ClubDetailsScreen} />
     </Drawer.Navigator>
   );
 };

@@ -19,7 +19,7 @@ const ProfileScreen = () => {
   const [text, setText] = useState("");
   const navigation = useNavigation();
   const { session, loading } = useAuth();
-  console.log(session.user.email);
+  console.log(session)
 
   const [fontsLoaded, fontError] = useFonts({
     Montserrat: require("../assets/fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf"),
@@ -65,7 +65,6 @@ const ProfileScreen = () => {
               { fontWeight: 200, fontSize: 37, marginTop: 16 },
             ]}
           >
-            Halid
           </Text>
           <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>
             Software Engineering

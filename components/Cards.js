@@ -28,7 +28,10 @@ import { ActivityIndicator, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./context/AuthProvider";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
+  const navigation = useNavigation();
   const communityId = id;
   // const { data, error, isLoading } = useNumberOfEvents({ id });
   const [joiningClub, setJoiningClub] = useState(false);
@@ -39,6 +42,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const toast = useToast();
   const userId = session?.user?.id;
+
   // const { data: isMemberData, isLoading: memberIsLoading } = isUserMember({
   //   id,
   //   userId,
@@ -153,11 +157,14 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
             <AvatarFallbackText fontFamily="$heading">JD</AvatarFallbackText>
             <AvatarImage source={club1} alt="image" />
           </Avatar>
-          <VStack>
+          <VStack mr="$8">
             <Heading size="sm" fontFamily="$heading" mb="$1">
               {name}
             </Heading>
           </VStack>
+          <TouchableOpacity onPress={() => navigation.navigate('ClubDetailsScreen',{communityId: id})}>
+          <Text>DETAY</Text>
+          </TouchableOpacity>
         </Box>
         <Box
           my="$5"
