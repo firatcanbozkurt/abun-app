@@ -81,7 +81,6 @@ const CustomDrawerContent = ({ navigation }) => {
             borderTopColor: "gray",
           }}
         />
-        <DrawerItem label="Club Detail Screen" onPress={() => { navigation.navigate("ClubDetailsScreen")}}/>
       </View>
     </DrawerContentScrollView>
   );
