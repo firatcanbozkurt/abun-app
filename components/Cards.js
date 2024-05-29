@@ -8,6 +8,7 @@ import {
   Divider,
   Heading,
   VStack,
+  HStack,
   View,
   Text,
   Box,
@@ -65,7 +66,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
     checkIfMember();
   }, []);
 
-  if (isLoading ) {
+  if (isLoading) {
     return (
       <View>
         <ActivityIndicator size={"large"} />
@@ -77,33 +78,31 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
     const { data, error } = await supabase
       .from("community_members")
       .insert([{ community: communityId, user: session?.user?.id }]);
-      
+
     if (error) {
       throw new Error(error.message);
     }
 
-    await supabase 
+    await supabase
       .from("communities")
       .update({
         numberOfMembers: numberOfMembers + 1,
       })
       .eq("id", communityId);
-      toast.show({
-        placement: "top",
-        render: ({ id }) => {
-          const toastId = "toast-" + id;
-          return (
-            <Toast nativeID={toastId} action="success" variant="accent">
-              <VStack space="xs">
-                <ToastTitle>Your registration has succeeded</ToastTitle>
-                <ToastDescription>
-                  You have joined the club!
-                </ToastDescription>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+    toast.show({
+      placement: "top",
+      render: ({ id }) => {
+        const toastId = "toast-" + id;
+        return (
+          <Toast nativeID={toastId} action="success" variant="accent">
+            <VStack space="xs">
+              <ToastTitle>Your registration has succeeded</ToastTitle>
+              <ToastDescription>You have joined the club!</ToastDescription>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
     setJoiningClub(false);
     setIsMember(true);
     setNumberOfMembers(numberOfMembers + 1);
@@ -121,50 +120,67 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
     if (error) {
       throw new Error(error.message);
     }
-    await supabase 
+    await supabase
       .from("communities")
       .update({
         numberOfMembers: numberOfMembers - 1,
       })
       .eq("id", communityId);
-      toast.show({
-        placement: "top",
-        render: ({ id }) => {
-          const toastId = "toast-" + id;
-          return (
-            <Toast nativeID={toastId} action="info" sx={{bg:"$purple500"}} variant="accent">
-              <VStack space="xs">
-                <ToastTitle sx={{color:"$white", fontWeight:"$bold", fontSize:18}}>Info</ToastTitle>
-                <ToastDescription sx={{color:"$white", fontWeight:"$semibold"}}>
-                  We're sorry to see that you've left. Hope to see you at another
-                  event soon!"
-                </ToastDescription>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+    toast.show({
+      placement: "top",
+      render: ({ id }) => {
+        const toastId = "toast-" + id;
+        return (
+          <Toast
+            nativeID={toastId}
+            action="info"
+            sx={{ bg: "$purple500" }}
+            variant="accent"
+          >
+            <VStack space="xs">
+              <ToastTitle
+                sx={{ color: "$white", fontWeight: "$bold", fontSize: 18 }}
+              >
+                Info
+              </ToastTitle>
+              <ToastDescription
+                sx={{ color: "$white", fontWeight: "$semibold" }}
+              >
+                We're sorry to see that you've left. Hope to see you at another
+                event soon!"
+              </ToastDescription>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
     setJoiningClub(false);
     setNumberOfMembers(numberOfMembers - 1);
     return data;
   };
 
   return (
-    <>
+    <Box position="relative">
       <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3" width={330}>
-        <Box flexDirection="row">
+        <TouchableOpacity
+          style={{ position: "absolute", top: 0, right: 0 }}
+          onPress={() =>
+            navigation.navigate("ClubDetailsScreen", { communityId: id })
+          }
+        >
+          <Text style={{ textDecorationLine: "underline", color:"#812347" }}>Details</Text>
+        </TouchableOpacity>
+        <Box flexDirection="row" position="relative">
           <Avatar mr="$4">
             <AvatarFallbackText fontFamily="$heading">JD</AvatarFallbackText>
             <AvatarImage source={club1} alt="image" />
           </Avatar>
-          <VStack mr="$8">
+
+          <HStack justifyContent="space-between" alignItems="center" mr="$8">
             <Heading size="sm" fontFamily="$heading" mb="$1">
               {name}
             </Heading>
-          </VStack>
-          <TouchableOpacity onPress={() => navigation.navigate('ClubDetailsScreen',{communityId: id})}>
-          <Text>DETAY</Text>
-          </TouchableOpacity>
+          </HStack>
         </Box>
         <Box
           my="$5"
@@ -275,7 +291,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
             },
           }}
         >
-          <Text style={{  }}>{body}</Text>
+          <Text style={{}}>{body}</Text>
         </Box>
         {isMember ? (
           <>
@@ -298,7 +314,9 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
               <AlertDialogBackdrop />
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <Heading size="lg">Are you sure you want to leave club?</Heading>
+                  <Heading size="lg">
+                    Are you sure you want to leave club?
+                  </Heading>
                 </AlertDialogHeader>
                 <AlertDialogBody>
                   <Text size="sm"></Text>
@@ -345,7 +363,9 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
               <AlertDialogBackdrop />
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <Heading size="lg">Are you sure you want to join club?</Heading>
+                  <Heading size="lg">
+                    Are you sure you want to join club?
+                  </Heading>
                 </AlertDialogHeader>
                 <AlertDialogBody>
                   <Text size="sm"></Text>
@@ -378,7 +398,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
           </>
         )}
       </Card>
-    </>
+    </Box>
   );
 }
 export default Cards;
