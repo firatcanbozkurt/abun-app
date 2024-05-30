@@ -25,7 +25,7 @@ import {
   useToast,
 } from "@gluestack-ui/themed";
 import club1 from "../assets/clubIcon1.png";
-import { ActivityIndicator, Alert } from "react-native";
+import { ActivityIndicator, Alert, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./context/AuthProvider";
@@ -160,16 +160,16 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
   };
 
   return (
-    <Box position="relative">
+    <Box position="relative" >
       <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3" width={330}>
-        <TouchableOpacity
-          style={{ position: "absolute", top: 0, right: 0 }}
+        <Pressable
+          style={{ position: "absolute", top: "3%", right: "5%" }}
           onPress={() =>
             navigation.navigate("ClubDetailsScreen", { communityId: id })
           }
         >
           <Text style={{ textDecorationLine: "underline", color:"#812347" }}>Details</Text>
-        </TouchableOpacity>
+        </Pressable>
         <Box flexDirection="row" position="relative">
           <Avatar mr="$4">
             <AvatarFallbackText fontFamily="$heading">JD</AvatarFallbackText>
