@@ -7,7 +7,7 @@ import {
 import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
 import { supabase } from "../supabase";
-import { View, SafeAreaView } from "react-native";
+import { View, SafeAreaView, StyleSheet } from "react-native";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import { useAuth } from "../components/context/AuthProvider";
 import ClubDetailsScreen from "../screens/ClubDetailsScreen";
@@ -23,9 +23,11 @@ const CustomDrawerContent = ({ navigation }) => {
         onPress={() => {
           navigation.navigate("Home");
         }}
-        icon={({ color, size }) => ( // Add icon prop
+        icon={({ color, size }) => ( 
           <Icon name="home" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       <DrawerItem
         label="Profile"
@@ -35,6 +37,8 @@ const CustomDrawerContent = ({ navigation }) => {
         icon={({ color, size }) => (
           <Icon name="person" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       <DrawerItem
         label="Clubs"
@@ -44,6 +48,8 @@ const CustomDrawerContent = ({ navigation }) => {
         icon={({ color, size }) => (
           <Icon name="group" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       <DrawerItem
         label="Past Exams"
@@ -53,6 +59,8 @@ const CustomDrawerContent = ({ navigation }) => {
         icon={({ color, size }) => (
           <Icon name="history" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       {isAdmin && (
         <DrawerItem
@@ -63,6 +71,8 @@ const CustomDrawerContent = ({ navigation }) => {
           icon={({ color, size }) => (
             <Icon name="event" color={color} size={size} />
           )}
+          contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
         />
       )}
       <DrawerItem
@@ -73,6 +83,8 @@ const CustomDrawerContent = ({ navigation }) => {
         icon={({ color, size }) => (
           <Icon name="event-note" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       <DrawerItem
         label="Saved Vocabulary"
@@ -82,6 +94,8 @@ const CustomDrawerContent = ({ navigation }) => {
         icon={({ color, size }) => (
           <Icon name="bookmarks" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       <DrawerItem
         label="Vocabulary Items"
@@ -91,19 +105,23 @@ const CustomDrawerContent = ({ navigation }) => {
         icon={({ color, size }) => (
           <Icon name="library-books" color={color} size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
       />
       <DrawerItem
         label="Logout"
         onPress={() => {
           supabase.auth.signOut();
         }}
-        labelStyle={{ color: "blue" }}
+        labelStyle={{ color: "blue", marginLeft:-16, }}
         icon={({ color, size }) => (
           <Icon name="logout" color="blue" size={size} />
         )}
+        contentContainerStyle={styles.drawerItem}
         style={{
           borderTopWidth: 1,
           borderTopColor: "gray",
+          
         }}
       />
     </View>
@@ -126,5 +144,19 @@ const DrawerNavigator = () => {
     </Drawer.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  drawerContainer: {
+    flex: 1,
+  },
+  drawerItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 0,
+  },
+  drawerLabel: {
+    marginLeft: -16,
+  },
+});
 
 export default DrawerNavigator;
