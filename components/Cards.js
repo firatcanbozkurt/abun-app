@@ -129,42 +129,6 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
       >
         <VStack
           alignItems="center"
-          justifyContent="center"
-          sx={{
-            pb: "$2",
-            "@base": {
-              flex: 1,
-              pb: "$0",
-              borderRightWidth: 1,
-              borderColor: "$backgroundLight300",
-              _dark: {
-                borderRightColor: "$backgroundDark800",
-              },
-            },
-          }}
-        >
-          <Heading size="xs" fontFamily="$heading">
-            81
-          </Heading>
-          <Text size="xs">posts</Text>
-        </VStack>
-        <Divider
-          orientation="vertical"
-          height="40%"
-          alignSelf="center"
-          sx={{
-            bg: "$backgroundLight300",
-            display: "flex",
-            _dark: {
-              bg: "$backgroundDark800",
-            },
-            "@base": {
-              display: "none",
-            },
-          }}
-        />
-        <VStack
-          alignItems="center"
           flex="1"
           sx={{
             py: "$2",

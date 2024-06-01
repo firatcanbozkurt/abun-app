@@ -1,4 +1,11 @@
-import { View, Text, Pressable, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format, getDay } from "date-fns";
 import { Octicons } from "@expo/vector-icons";
@@ -13,6 +20,7 @@ import {
   ButtonIcon,
   Icon,
   Box,
+  ScrollView,
 } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 const HomeScreen = ({ navigation }) => {
@@ -27,6 +35,11 @@ const HomeScreen = ({ navigation }) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
+  const announcements = [
+    { id: "1", source: require("../assets/ann.jpeg") },
+    { id: "2", source: require("../assets/ann.jpeg") },
+    // Add more images here if needed
+  ];
   return (
     <SafeAreaView className="flex-1 ">
       <View className="flex-1 p-4">
@@ -53,14 +66,29 @@ const HomeScreen = ({ navigation }) => {
             <Text className="text-xl my-4">Today's {formattedDate}</Text>
           </View>
           <View className="flex-1">
-            <Text className="text-lg mt-2">Hello {}</Text>
-            <Text className="text-xl font-semibold">Announcements</Text>
-            <Image
-              shadow={2}
-              source={require("../assets/ann.jpeg")}
-              alt="Alternate Text"
-              className="w-full h-2/5 mt-4 rounded"
-            />
+            <View>
+              <Text className="text-lg mt-2">Hello {}</Text>
+              <Text className="text-xl font-semibold">Announcements</Text>
+
+              <FlatList
+                horizontal
+                data={announcements}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Image
+                    source={item.source}
+                    style={{
+                      width: 300,
+                      height: 200,
+                      resizeMode: "cover",
+                      borderRadius: 10,
+                      marginRight: 10,
+                    }}
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+              />
+            </View>
             <View className="flex flex-row justify-between items-center">
               <Text className="text-xl font-semibold my-4">
                 Upcoming Events

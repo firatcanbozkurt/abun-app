@@ -19,8 +19,11 @@ const SendNotificaiton = () => {
   const [disabled, setDisabled] = useState(false);
   // notifyUsersWithPushToken("5", "TITLE", "BODY");
   const notifyAllUsers = () => {
+    if (title.length < 1 || body.length < 1) {
+      return alert("Please fill all the fields");
+    }
     setDisabled(true);
-    //adminNotifyAllUsers(title, body);
+    adminNotifyAllUsers(title, body);
     setTimeout(() => {
       setDisabled(false);
     }, 3000);
@@ -119,7 +122,15 @@ const SendNotificaiton = () => {
               Send Notification
             </ButtonText>
           ) : (
-            <ButtonText size="lg">
+            <ButtonText
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "centerß",
+              }}
+              size="lg"
+            >
               Sending <ButtonSpinner />
             </ButtonText>
           )}

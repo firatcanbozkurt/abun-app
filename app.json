@@ -23,7 +23,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.abunapp.abunapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +33,8 @@
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.abunapp.abunapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

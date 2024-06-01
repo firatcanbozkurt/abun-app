@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 
-const DownloadView = ({ title, getExamPdf, downloading }) => {
+const DownloadView = ({ title, getExamPdf, examId, downloading }) => {
   return (
     <>
       <View style={styles.downloadRow}>
@@ -17,14 +17,14 @@ const DownloadView = ({ title, getExamPdf, downloading }) => {
         </View>
         <View>
           <Pressable onPress={getExamPdf} style={{ alignItems: "center" }}>
-            {!downloading ? (
+            {downloading?.id === examId ? (
+              <ActivityIndicator size="small" color="#2B47FC" />
+            ) : (
               <Image
                 source={require("../assets/download.png")} // Image resolution is weak! Change it with another one
                 width={32}
                 height={32}
               />
-            ) : (
-              <ActivityIndicator size="small" color="#2B47FC" />
             )}
           </Pressable>
         </View>

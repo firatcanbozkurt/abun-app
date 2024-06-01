@@ -16,6 +16,7 @@ const NotificationProvider = ({ children }: PropsWithChildren) => {
     if (!newToken) {
       return;
     }
+    console.log("SAVING TOKEN: :", session.user.id, newToken);
 
     await supabase
       .from("users")

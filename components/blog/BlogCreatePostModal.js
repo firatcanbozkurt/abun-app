@@ -45,6 +45,7 @@ const BlogCreatePostModal = ({ navigation, route }) => {
         user_email: session.user.email,
       })
       .then((res) => {
+        console.log("RESPONSE !@!@@", res);
         console.log("Route params:", route.params);
         console.log("Navigation:", navigation);
 

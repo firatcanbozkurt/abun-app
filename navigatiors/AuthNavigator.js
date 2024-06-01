@@ -16,9 +16,11 @@ import loadingAnimation from "../assets/loading.json";
 import LottieView from "lottie-react-native";
 import BlogScreen from "../screens/BlogScreen";
 import BlogModal from "../components/blog/BlogModal";
+import Announcements from "../screens/Announcements";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
 import BlogCreatePostModal from "../components/blog/BlogCreatePostModal";
+import CreateAnnouncementsScreen from "../screens/CreateAnnouncementsScreen";
 
 function AuthNavigator() {
   const { session, loading } = useAuth();
@@ -60,6 +62,11 @@ function AuthNavigator() {
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
           <Stack.Screen name="notification" component={SendNotification} />
+          <Stack.Screen name="announcements" component={Announcements} />
+          <Stack.Screen
+            name="CreateAnnouncements"
+            component={CreateAnnouncementsScreen}
+          />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
           <Stack.Screen
             name="VocabularyItems"

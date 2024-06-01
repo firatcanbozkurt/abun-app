@@ -48,6 +48,7 @@ const CustomDrawerContent = ({ navigation }) => {
         <DrawerItem
           label="Event"
           onPress={() => {
+            console.log("LOGOUT");
             navigation.navigate("Event");
           }}
         />
@@ -64,6 +65,12 @@ const CustomDrawerContent = ({ navigation }) => {
               label="Send notification"
               onPress={() => {
                 navigation.navigate("notification");
+              }}
+            />
+            <DrawerItem
+              label="Announcements"
+              onPress={() => {
+                navigation.navigate("announcements");
               }}
             />
           </>
@@ -85,7 +92,7 @@ const CustomDrawerContent = ({ navigation }) => {
           onPress={() => {
             supabase.auth.signOut();
           }}
-          labelStyle={{ color: "blue" }}
+          labelStyle={{ color: "red" }}
           style={{
             borderTopWidth: 1,
             borderTopColor: "gray",
