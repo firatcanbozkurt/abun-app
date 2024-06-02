@@ -31,6 +31,7 @@ module.exports = {
       vocabCard: {
         100: "#030637",
       },
+      dimgray:"#696969"
     },
   },
   plugins: [],

@@ -8,30 +8,47 @@ import Animated, {
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
-import { Button, ButtonText,  useToast,
+import {
+  Button,
+  ButtonText,
+  useToast,
   Toast,
   VStack,
-ToastTitle,
-ToastDescription,
-Avatar, } from "@gluestack-ui/themed";
+  ToastTitle,
+  ToastDescription,
+  Box,
+  Icon,
+  HStack,
+  Command,
+  AvatarFallbackText,
+  Edit,
+  AvatarGroup,
+  Heading,
+  Avatar,
+  Center,
+} from "@gluestack-ui/themed";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import AvatarIcon from "../components/AvatarIcon";
 import { useVocabularyList } from "../api/courses";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
+import ToolTipComponent from "../components/ToolTipComponent";
 
-
-const VocabularyItemsScreen = ({route, navigation}) => {
+const VocabularyItemsScreen = ({ route, navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const navigation2 = useNavigation();
-  const {courseId} = route.params;
+  const { courseId } = route.params;
 
-  const { data: vocabularyData, error, isLoading } = useVocabularyList(courseId);
+  const {
+    data: vocabularyData,
+    error,
+    isLoading,
+  } = useVocabularyList(courseId);
   const toast = useToast();
 
   const offsetX = useSharedValue(0);
@@ -99,7 +116,9 @@ const VocabularyItemsScreen = ({route, navigation}) => {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
         <View className="flex justify-center items-center">
           <LottieView
             source={loadingAnimation}
@@ -113,23 +132,33 @@ const VocabularyItemsScreen = ({route, navigation}) => {
   }
 
   if (error) {
-    return <SafeAreaView><Text>An error occurred!</Text></SafeAreaView>
+    return (
+      <SafeAreaView>
+        <Text>An error occurred!</Text>
+      </SafeAreaView>
+    );
   }
 
   if (!vocabularyData || vocabularyData.length === 0) {
-    return <Text>No vocabulary data available.</Text>;
+    return (
+      <SafeAreaView className="flex-1">
+        <Text>No vocabulary data available.</Text>
+      </SafeAreaView>
+    );
   }
 
   const currentWord = vocabularyData[currentIndex];
 
   const saveVocabularyData = async (wordData) => {
     try {
-      const jsonValue = await AsyncStorage.getItem('vocabularyData');
+      const jsonValue = await AsyncStorage.getItem("vocabularyData");
       let existingData = [];
       if (jsonValue !== null) {
         existingData = JSON.parse(jsonValue);
         // Check if the word already exists in the vocabulary data
-        const isDuplicate = existingData.some(item => item.word === wordData.word);
+        const isDuplicate = existingData.some(
+          (item) => item.word === wordData.word
+        );
         if (isDuplicate) {
           toast.show({
             placement: "top",
@@ -138,9 +167,10 @@ const VocabularyItemsScreen = ({route, navigation}) => {
               return (
                 <Toast nativeID={toastId} action="error" variant="accent">
                   <VStack space="xs">
-                    <ToastTitle>{wordData.word} kelimesi zaten kaydedilmiş!</ToastTitle>
-                    <ToastDescription>
-                    </ToastDescription>
+                    <ToastTitle>
+                      {wordData.word} kelimesi zaten kaydedilmiş!
+                    </ToastTitle>
+                    <ToastDescription></ToastDescription>
                   </VStack>
                 </Toast>
               );
@@ -149,8 +179,14 @@ const VocabularyItemsScreen = ({route, navigation}) => {
           return;
         }
       }
-      existingData.push({ word: wordData.word, description: wordData.description });
-      await AsyncStorage.setItem('vocabularyData', JSON.stringify(existingData));
+      existingData.push({
+        word: wordData.word,
+        description: wordData.description,
+      });
+      await AsyncStorage.setItem(
+        "vocabularyData",
+        JSON.stringify(existingData)
+      );
       toast.show({
         placement: "top",
         render: ({ id }) => {
@@ -159,39 +195,38 @@ const VocabularyItemsScreen = ({route, navigation}) => {
             <Toast nativeID={toastId} action="success" variant="accent">
               <VStack space="xs">
                 <ToastTitle>{wordData.word} Başarıyla kaydedildi!</ToastTitle>
-                <ToastDescription>
-                </ToastDescription>
+                <ToastDescription></ToastDescription>
               </VStack>
             </Toast>
           );
         },
       });
     } catch (error) {
-      console.error('Kelime kaydetme hatası:', error);
-      alert('Kelime kaydetme hatası!');
+      console.error("Kelime kaydetme hatası:", error);
+      alert("Kelime kaydetme hatası!");
     }
   };
-  
 
+ 
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView className="flex flex-row  justify-between mx-8  items-center">
-          <TouchableOpacity
+        <TouchableOpacity
           className="mt-3"
-            onPress={openDrawer}
-            android_ripple={{ color: "transparent" }}
-          >
-            <Octicons name="three-bars" size={24} color="black" />
-          </TouchableOpacity>
-          <View className=" flex-1 justify-center items-center mt-3">
-            <Text className="font-semibold text-2xl">Vocabulary Items</Text>
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-          </TouchableOpacity>
-          <AvatarIcon navigation={navigation} />
-        </SafeAreaView>
-        
+          onPress={openDrawer}
+          android_ripple={{ color: "transparent" }}
+        >
+          <Octicons name="three-bars" size={24} color="black" />
+        </TouchableOpacity>
+        <View className=" flex-1 justify-center items-center mt-3">
+          <Text className="font-semibold text-2xl">Vocabulary Items</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Profile")}
+        ></TouchableOpacity>
+        <AvatarIcon navigation={navigation} />
+      </SafeAreaView>
       <SafeAreaView style={styles.main}>
         <TouchableOpacity onPress={flipCard}>
           <Animated.View style={[styles.cardContainer, frontCardStyle]}>
@@ -201,7 +236,9 @@ const VocabularyItemsScreen = ({route, navigation}) => {
               <Text style={styles.cardText}>No word available</Text>
             )}
           </Animated.View>
-          <Animated.View style={[styles.cardContainer, backCardStyle, styles.cardBack]}>
+          <Animated.View
+            style={[styles.cardContainer, backCardStyle, styles.cardBack]}
+          >
             {currentWord ? (
               <Text style={styles.cardText}>{currentWord.description}</Text>
             ) : (
@@ -209,16 +246,15 @@ const VocabularyItemsScreen = ({route, navigation}) => {
             )}
           </Animated.View>
         </TouchableOpacity>
-        
       </SafeAreaView>
       <SafeAreaView className="mb-8">
-      <View className="items-center mb-6">
+        <View className="items-center mb-6">
           <View className="w-1/3">
             <Button
               size="md"
               variant="solid"
               action="primary"
-              bg="$black"
+              bg="$dimgray"
               isDisabled={false}
               isFocusVisible={false}
               onPress={() => saveVocabularyData(currentWord)}
@@ -236,10 +272,11 @@ const VocabularyItemsScreen = ({route, navigation}) => {
               isDisabled={false}
               isFocusVisible={false}
               onPress={handlePrevWord}
-              bg="$black"
-
+              bg="$dimgray"
             >
-              <ButtonText><AntDesign name="arrowleft" size={24} color="white" /></ButtonText>
+              <ButtonText>
+                <AntDesign name="arrowleft" size={24} color="white" />
+              </ButtonText>
             </Button>
           </View>
           <View className="w-1/3">
@@ -248,12 +285,14 @@ const VocabularyItemsScreen = ({route, navigation}) => {
               variant="solid"
               action="primary"
               color="$textLight900"
-              bg="$black"
+              bg="$dimgray"
               isDisabled={false}
               isFocusVisible={false}
               onPress={handleNextWord}
             >
-              <ButtonText><AntDesign name="arrowright" size={24} color="white" /></ButtonText>
+              <ButtonText>
+                <AntDesign name="arrowright" size={24} color="white" />
+              </ButtonText>
             </Button>
           </View>
         </View>
@@ -267,10 +306,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "gainsboro",
   },
-  main:{
-    flex:1,
+  main: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 24,
   },
   cardContainer: {
     width: 200,

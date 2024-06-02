@@ -10,6 +10,7 @@ import {
   Avatar, ScrollView,
 } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
+import { useAuth } from "../components/context/AuthProvider";
 const HomeScreen = ({ navigation }) => {
 
   const [eventData, setEventData] = useState([])
@@ -18,7 +19,7 @@ const HomeScreen = ({ navigation }) => {
   const dayOfWeek = getDay(today);
   const navigation2 = useNavigation();
   const [loading, setLoading] = useState(true);
-
+ const {profile} = useAuth();
   const logout = () => {
     supabase.auth.signOut();
     navigation.replace("Login");
@@ -40,6 +41,7 @@ const HomeScreen = ({ navigation }) => {
 
         const imageUrls = [];
         const eventIds = [];
+        console.log(profile)
 
         const imageUrlPromises = data.map(async (event) => {
           const { data: imageData, error: imageError } = await supabase.storage
@@ -120,7 +122,7 @@ const HomeScreen = ({ navigation }) => {
             <Text className="text-xl my-4">Today's {formattedDate}</Text>
           </View>
           <View className="flex-1">
-            <Text className="text-lg mt-2">Hello {}</Text>
+            <Text className="text-lg mt-2">Hello {profile.full_name}</Text>
             <Text className="text-xl font-semibold">Announcements</Text>
             <Image
               shadow={2}

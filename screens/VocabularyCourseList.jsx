@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#2B47FC",
+    color: "black",
     marginTop: 12,
   },
   courseList: {
