@@ -1,6 +1,5 @@
 import { supabase } from "../../supabase";
 import { useQuery } from "@tanstack/react-query";
-import { userUserId } from "../../components/context/AuthProvider";
 
 export const useBlogList = () => {
   return useQuery({
@@ -8,7 +7,6 @@ export const useBlogList = () => {
     queryFn: async () => {
       try {
         const { data, error } = await supabase.from("blog_post").select("*");
-        console.log("DATA ASDASDD", data);
         if (error) {
           throw new Error(error.message); // Rethrow for Tanstack Query to handle
         }
