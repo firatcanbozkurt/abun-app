@@ -160,7 +160,7 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
   };
 
   return (
-    <Box position="relative" >
+    <Box position="relative">
       <Card p="$6" borderRadius="$lg" maxWidth={600} m="$3" width={330}>
         <Pressable
           style={{ position: "absolute", top: "3%", right: "5%" }}
@@ -168,7 +168,9 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
             navigation.navigate("ClubDetailsScreen", { communityId: id })
           }
         >
-          <Text style={{ textDecorationLine: "underline", color:"#812347" }}>Details</Text>
+          <Text style={{ textDecorationLine: "underline", color: "#812347" }}>
+            Details
+          </Text>
         </Pressable>
         <Box flexDirection="row" position="relative">
           <Avatar mr="$4">
@@ -192,27 +194,6 @@ function Cards({ name, id, img, body, numberOfEvents, numberOfMembersProp }) {
             },
           }}
         >
-          <VStack
-            alignItems="center"
-            justifyContent="center"
-            sx={{
-              pb: "$2",
-              "@base": {
-                flex: 1,
-                pb: "$0",
-                borderRightWidth: 1,
-                borderColor: "$backgroundLight300",
-                _dark: {
-                  borderRightColor: "$backgroundDark800",
-                },
-              },
-            }}
-          >
-            <Heading size="xs" fontFamily="$heading">
-              81
-            </Heading>
-            <Text size="xs">posts</Text>
-          </VStack>
           <Divider
             orientation="vertical"
             height="40%"
