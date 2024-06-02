@@ -16,7 +16,9 @@ import LottieView from "lottie-react-native";
 import BlogScreen from "../screens/BlogScreen";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
-
+import VocabularyListScreen from "../screens/VocabularyListScreen";
+import VocabularyCourseList from "../screens/VocabularyCourseList";
+import ClubDetailsScreen from "../screens/ClubDetailsScreen";
 function AuthNavigator() {
   const { session, loading } = useAuth();
 
@@ -58,10 +60,15 @@ function AuthNavigator() {
           <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
           <Stack.Screen
-            name="VocabularyItems"
-            component={VocabularyItemsScreen}
-          />
-          <Stack.Screen name="BlogScreen" component={BlogScreen} />
+            name="VocabularyList"
+            component={VocabularyListScreen}
+          /> 
+          <Stack.Screen
+          name="VocabularyCourse"
+          component={VocabularyCourseList}
+        />
+        <Stack.Screen name="ClubDetailsScreen" component={ClubDetailsScreen}/>
+         <Stack.Screen name="BlogScreen" component={BlogScreen} />
         </>
       )}
     </Stack.Navigator>

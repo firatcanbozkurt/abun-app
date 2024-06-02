@@ -31,6 +31,7 @@ import { set } from "date-fns";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import { useAuth } from "../components/context/AuthProvider";
+import AvatarIcon from "../components/AvatarIcon";
 
 const EventScreen = ({ navigation, route }) => {
   const toast = useToast();
@@ -141,31 +142,19 @@ const EventScreen = ({ navigation, route }) => {
       <View className="">
         <View className="flex flex-row justify-between p-4  items-center ">
           <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
-            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
+            onPress={() => navigation.goBack()}
+            className="bg-tblack-900 p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-2 w-9"
           >
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>
           <HStack
             space="md"
+            marginRight="$5"
             h="100%"
             justifyContent="center"
             alignItems="center"
           >
-            <Pressable onPress={() => navigation.navigate("Profile")}>
-              <View className="pr-5">
-                <Avatar size="md">
-                  <AvatarFallbackText>Halid Acar</AvatarFallbackText>
-                  <AvatarImage
-                    source={{
-                      uri: "https://wrong-url",
-                    }}
-                    alt=""
-                    onPress={() => navigation.navigate("Profile")}
-                  />
-                </Avatar>
-              </View>
-            </Pressable>
+            <AvatarIcon />
           </HStack>
 
           {/* <AvatarIcon /> */}

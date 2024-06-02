@@ -5,8 +5,8 @@ import ProfileScreen from "../screens/ProfileScreen";
 import Clubs from "../screens/Clubs";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import { Foundation, MaterialCommunityIcons } from "@expo/vector-icons";
-
 import BlogScreen from "../screens/BlogScreen";
 const Tab = createBottomTabNavigator();
 

@@ -32,16 +32,12 @@ const Clubs = ({ navigation }) => {
           >
             <Octicons name="three-bars" size={24} color="black" />
           </Pressable>
-          <Pressable onPress={() => navigation.navigate("Profile")}>
-            <Avatar>
-              <AvatarIcon navigation={navigation} />
-            </Avatar>
-          </Pressable>
+            <AvatarIcon />
         </View>
-        <View className="p-4">
+        <View className="p-4 mt-12">
           <View className="flex-row justify-center items-center">
-            <Text className="text-2xl mt-4 mr-1">Discover Communities </Text>
-            <Image source={confetti} className="w-8 h-8" />
+            <Text className="text-2xl  mr-1">Discover Communities </Text>
+            <Image source={confetti} className="w-7 h-7" />
           </View>
         </View>
       </View>

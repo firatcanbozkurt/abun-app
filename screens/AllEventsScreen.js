@@ -21,6 +21,7 @@ import {
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
+import AvatarIcon from "../components/AvatarIcon";
 
 const AllEventsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -111,30 +112,12 @@ const AllEventsScreen = ({ navigation }) => {
         <View className="flex flex-row justify-between p-4  items-center mb-4">
           <TouchableOpacity
             onPress={() => navigation.navigate("Home")}
-            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
+            className="bg-tblack-900 p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
           >
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>
           <Text className="pt-4 text-2xl font-semibold">EVENTS</Text>
-
-          <HStack
-            space="md"
-            h="100%"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Pressable onPress={() => navigation.navigate("Profile")}>
-              <View className="pr-5">
-                <Avatar size="md">
-                  <AvatarFallbackText>Halid Acar</AvatarFallbackText>
-                  <AvatarImage
-                    alt="HH"
-                    onPress={() => navigation.navigate("Profile")}
-                  />
-                </Avatar>
-              </View>
-            </Pressable>
-          </HStack>
+          <AvatarIcon />
         </View>
       </View>
       <FlatList
