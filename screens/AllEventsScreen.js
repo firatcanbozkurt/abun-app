@@ -21,7 +21,7 @@ import {
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
-import { set } from "date-fns";
+import AvatarIcon from "../components/AvatarIcon";
 
 const AllEventsScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -38,11 +38,9 @@ const AllEventsScreen = ({ navigation }) => {
           return;
         }
 
-        // Initialize arrays to hold image URLs and event IDs
         const imageUrls = [];
         const eventIds = [];
 
-        // Fetch image URLs for all events concurrently
         const imageUrlPromises = data.map(async (event) => {
           const { data: imageData, error: imageError } = await supabase.storage
             .from("event_images")
@@ -51,18 +49,15 @@ const AllEventsScreen = ({ navigation }) => {
             console.error("Error fetching image:", imageError.message);
             return null;
           }
-          imageUrls.push(imageData.publicUrl); // Store image URL
-          eventIds.push(event.id); // Store event ID
+          imageUrls.push(imageData.publicUrl); 
+          eventIds.push(event.id);
         });
 
-        // Wait for all image URLs to be fetched
         await Promise.all(imageUrlPromises);
 
-        // Update state with image URLs and event IDs
         setEventData(
           data.map((event) => ({
             ...event,
-            // Retrieve image URL and event ID by index
             eventImage: imageUrls[eventIds.indexOf(event.id)],
           }))
         );
@@ -74,7 +69,7 @@ const AllEventsScreen = ({ navigation }) => {
     };
 
     fetchAllEvents();
-  }, []); // Empty dependency array to run effect only once
+  }, []); 
 
   const renderCard = ({ item }) => (
     <TouchableOpacity onPress={() => handleEventPress(item)}>
@@ -107,7 +102,7 @@ const AllEventsScreen = ({ navigation }) => {
   }
 
   const handleEventPress = (selectedEvent) => {
-    console.log("Selected Event ID:", selectedEvent.id); // Seçilen etkinliğin ID'sini kontrol et
+    console.log("Selected Event ID:", selectedEvent.id);
     navigation2.navigate("Event", { eventData: selectedEvent });
   };
 
@@ -117,30 +112,12 @@ const AllEventsScreen = ({ navigation }) => {
         <View className="flex flex-row justify-between p-4  items-center mb-4">
           <TouchableOpacity
             onPress={() => navigation.navigate("Home")}
-            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
+            className="bg-tblack-900 p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
           >
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>
           <Text className="pt-4 text-2xl font-semibold">EVENTS</Text>
-
-          <HStack
-            space="md"
-            h="100%"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Pressable onPress={() => navigation.navigate("Profile")}>
-              <View className="pr-5">
-                <Avatar size="md">
-                  <AvatarFallbackText>Halid Acar</AvatarFallbackText>
-                  <AvatarImage
-                    alt="HH"
-                    onPress={() => navigation.navigate("Profile")}
-                  />
-                </Avatar>
-              </View>
-            </Pressable>
-          </HStack>
+          <AvatarIcon />
         </View>
       </View>
       <FlatList

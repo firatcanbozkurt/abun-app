@@ -89,7 +89,7 @@ const PastExamScreen = () => {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 ">
       <SafeAreaView
         className="flex bg-primary h-1/4 "
         style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
@@ -97,16 +97,18 @@ const PastExamScreen = () => {
         <View className="flex flex-row justify-between px-4 items-center">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            className="bg-dimgray p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
           >
             <ArrowLeftIcon size="20" color="white" />
+            
           </TouchableOpacity>
-          <AvatarIcon navigation={navigation} />
+          <AvatarIcon navigation={navigation}  />
         </View>
-        <View className="flex  items-center mt-3">
-          <Text className="text-twhite text-4xl">Past Exams </Text>
-          <Text className="text-twhite text-3xl">CENG-SENG</Text>
-        </View>
+        <View className=" relative items-center justify-center">
+            <Text className="text-twhite text-4xl ">Past Exams </Text>
+            <Text className="text-twhite text-3xl">CENG-SENG</Text>
+          </View>
+        
       </SafeAreaView>
       <View className="flex  pt-8">
         {exams.map((exam, id) => {

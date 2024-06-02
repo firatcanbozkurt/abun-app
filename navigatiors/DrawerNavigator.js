@@ -6,61 +6,76 @@ import {
 } from "@react-navigation/drawer";
 import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
-import EventScreen from "../screens/EventScreen";
 import { supabase } from "../supabase";
-import { View, SafeAreaView } from "react-native";
+import { View, SafeAreaView, StyleSheet } from "react-native";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import { useAuth } from "../components/context/AuthProvider";
-import loadingAnimation from "../assets/loading.json";
-import LottieView from "lottie-react-native";
+import ClubDetailsScreen from "../screens/ClubDetailsScreen";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CustomDrawerContent = ({ navigation }) => {
   const { isAdmin } = useAuth();
   return (
     <DrawerContentScrollView>
-      <View>
-        <DrawerItem
-          label="Home"
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
-        />
 
+    <View>
+      <DrawerItem
+        label="Home"
+        onPress={() => {
+          navigation.navigate("Home");
+        }}
+        icon={({ color, size }) => ( 
+          <Icon name="home" color={color} size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      <DrawerItem
+        label="Profile"
+        onPress={() => {
+          navigation.navigate("Profile");
+        }}
+        icon={({ color, size }) => (
+          <Icon name="person" color={color} size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      <DrawerItem
+        label="Clubs"
+        onPress={() => {
+          navigation.navigate("Clubs");
+        }}
+        icon={({ color, size }) => (
+          <Icon name="group" color={color} size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      <DrawerItem
+        label="Past Exams"
+        onPress={() => {
+          navigation.navigate("PastExams");
+        }}
+        icon={({ color, size }) => (
+          <Icon name="history" color={color} size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      {isAdmin && (
+       <>
         <DrawerItem
-          label="Profile"
+          label="Create Event"
           onPress={() => {
-            navigation.navigate("Profile");
+            navigation.navigate("CreateEvent");
           }}
+          icon={({ color, size }) => (
+            <Icon name="event" color={color} size={size} />
+          )}
+          contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
         />
-        <DrawerItem
-          label="Clubs"
-          onPress={() => {
-            navigation.navigate("Clubs");
-          }}
-        />
-        <DrawerItem
-          label="Past Exams"
-          onPress={() => {
-            navigation.navigate("PastExams");
-          }}
-        />
-
-        <DrawerItem
-          label="Event"
-          onPress={() => {
-            console.log("LOGOUT");
-            navigation.navigate("Event");
-          }}
-        />
-        {isAdmin && (
-          // if user is admin show the create event screen on the sidebar
-          <>
-            <DrawerItem
-              label="Create Event"
-              onPress={() => {
-                navigation.navigate("CreateEvent");
-              }}
-            />
             <DrawerItem
               label="Send notification"
               onPress={() => {
@@ -73,34 +88,60 @@ const CustomDrawerContent = ({ navigation }) => {
                 navigation.navigate("announcements");
               }}
             />
-          </>
+        </>
+      )}
+      <DrawerItem
+        label="Events"
+        onPress={() => {
+          navigation.navigate("AllEvents");
+        }}
+        icon={({ color, size }) => (
+          <Icon name="event-note" color={color} size={size} />
         )}
-        <DrawerItem
-          label="Events"
-          onPress={() => {
-            navigation.navigate("AllEvents");
-          }}
-        />
-        <DrawerItem
-          label="VocabularyItems"
-          onPress={() => {
-            navigation.navigate("VocabularyItems");
-          }}
-        />
-        <DrawerItem
-          label="Logout"
-          onPress={() => {
-            supabase.auth.signOut();
-          }}
-          labelStyle={{ color: "red" }}
-          style={{
-            borderTopWidth: 1,
-            borderTopColor: "gray",
-          }}
-        />
-      </View>
-    </DrawerContentScrollView>
-  );
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      <DrawerItem
+        label="Saved Vocabulary"
+        onPress={() => {
+          navigation.navigate("VocabularyList");
+        }}
+        icon={({ color, size }) => (
+          <Icon name="bookmarks" color={color} size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      <DrawerItem
+        label="Vocabulary Items"
+        onPress={() => {
+          navigation.navigate("VocabularyCourse");
+        }}
+        icon={({ color, size }) => (
+          <Icon name="library-books" color={color} size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        labelStyle={styles.drawerLabel}
+      />
+      <DrawerItem
+        label="Logout"
+        onPress={() => {
+          supabase.auth.signOut();
+        }}
+        labelStyle={{ color: "blue", marginLeft:-16, }}
+        icon={({ color, size }) => (
+          <Icon name="logout" color="blue" size={size} />
+        )}
+        contentContainerStyle={styles.drawerItem}
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: "gray",
+          
+        }}
+      />
+    </View>
+  </DrawerContentScrollView>
+);
 };
 
 const DrawerNavigator = () => {
@@ -108,13 +149,29 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName=""
+      initialRouteName="TabNavigator"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="TabNavigator" component={TabNavigator} />
       <Drawer.Screen name="PastExams" component={PastExamScreen} />
+      <Drawer.Screen name="VocabularyItems" component={VocabularyItemsScreen} />
+      <Drawer.Screen name="ClubDetailsScreen.js" component={ClubDetailsScreen} />
     </Drawer.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  drawerContainer: {
+    flex: 1,
+  },
+  drawerItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 0,
+  },
+  drawerLabel: {
+    marginLeft: -16,
+  },
+});
 
 export default DrawerNavigator;

@@ -21,6 +21,9 @@ const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
 import BlogCreatePostModal from "../components/blog/BlogCreatePostModal";
 import CreateAnnouncementsScreen from "../screens/CreateAnnouncementsScreen";
+import VocabularyListScreen from "../screens/VocabularyListScreen";
+import VocabularyCourseList from "../screens/VocabularyCourseList";
+import ClubDetailsScreen from "../screens/ClubDetailsScreen";
 
 function AuthNavigator() {
   const { session, loading } = useAuth();
@@ -68,10 +71,9 @@ function AuthNavigator() {
             component={CreateAnnouncementsScreen}
           />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
-          <Stack.Screen
-            name="VocabularyItems"
-            component={VocabularyItemsScreen}
-          />
+        
+
+         
           <Stack.Screen name="BlogScreen" component={BlogScreen} />
           <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen name="BlogModal" component={BlogModal} />
@@ -80,6 +82,16 @@ function AuthNavigator() {
               component={BlogCreatePostModal}
             />
           </Stack.Group>
+
+            name="VocabularyList"
+            component={VocabularyListScreen}
+          /> 
+          <Stack.Screen
+          name="VocabularyCourse"
+          component={VocabularyCourseList}
+        />
+        <Stack.Screen name="ClubDetailsScreen" component={ClubDetailsScreen}/>
+    
         </>
       )}
     </Stack.Navigator>

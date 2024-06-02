@@ -19,7 +19,7 @@ const ProfileScreen = () => {
   const [text, setText] = useState("");
   const navigation = useNavigation();
   const { session, loading } = useAuth();
-  console.log(session.user.email);
+  console.log(session)
 
   const [fontsLoaded, fontError] = useFonts({
     Montserrat: require("../assets/fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf"),
@@ -65,7 +65,6 @@ const ProfileScreen = () => {
               { fontWeight: 200, fontSize: 37, marginTop: 16 },
             ]}
           >
-            Halid
           </Text>
           <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>
             Software Engineering
@@ -332,76 +331,3 @@ const styles = StyleSheet.create({
 
 export default ProfileScreen;
 
-// <SafeAreaView style={styles.container}>
-// <View style={{ flex: 1 }}>
-//   <View className="pl-4 pt-4">
-//     <AntDesign name="arrowleft" size={24} color="black" className="" />
-//   </View>
-//   <View style={{ left: 25, marginTop: 50 }}>
-//     <Text style={{ fontSize: 46, fontWeight: "bold" }}>Profile</Text>
-//     <View style={{ flexDirection: "row", marginTop: 35, left: -10 }}>
-//       <Ionicons
-//         name="person-circle-outline"
-//         size={64}
-//         color="black"
-//         style={{}}
-//       />
-//       <View style={{ marginLeft: 10, gap: 3 }}>
-//         <Text style={{ fontSize: 22, color: "#2743FD" }}>
-//           Emma Ashley
-//         </Text>
-//         <Text style={{ fontSize: 18, color: "#2743FD" }}>Online</Text>
-//       </View>
-//     </View>
-
-//     <View style={{ marginTop: 35 }}>
-//       <View>
-//         <Text style={{ fontSize: 20 }}>Username</Text>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Epidemic"
-//           placeholderTextColor="#2743FD"
-//           onChangeText={(inputText) => setText(inputText)}
-//           value={Text}
-//         />
-//       </View>
-//       <View>
-//         <Text style={{ fontSize: 20 }}>First Name</Text>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Halid"
-//           placeholderTextColor="#2743FD"
-//         />
-//       </View>
-//       <View>
-//         <Text style={{ fontSize: 20 }}>Last Name</Text>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Acar"
-//           placeholderTextColor="#2743FD"
-//         />
-//       </View>
-//       <View>
-//         <Text style={{ fontSize: 20 }}>Date of Birth</Text>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="04.02.1997"
-//           placeholderTextColor="#2743FD"
-//         />
-//       </View>
-//     </View>
-//   </View>
-//   <Button
-//     title="Start Discover!"
-//     style={{
-//       justifyContent: "center",
-//       alignSelf: "center",
-//       marginTop: 20,
-//     }}
-//     onPress={() => useNavigation.navigate("Home")}
-//   />
-
-//   <Footer />
-// </View>
-// </SafeAreaView>
-// );
