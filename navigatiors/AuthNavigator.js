@@ -13,6 +13,7 @@ import { useAuth } from "../components/context/AuthProvider";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import loadingAnimation from "../assets/loading.json";
 import LottieView from "lottie-react-native";
+import BlogScreen from "../screens/BlogScreen";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
 import VocabularyListScreen from "../screens/VocabularyListScreen";
@@ -67,6 +68,7 @@ function AuthNavigator() {
           component={VocabularyCourseList}
         />
         <Stack.Screen name="ClubDetailsScreen" component={ClubDetailsScreen}/>
+         <Stack.Screen name="BlogScreen" component={BlogScreen} />
         </>
       )}
     </Stack.Navigator>

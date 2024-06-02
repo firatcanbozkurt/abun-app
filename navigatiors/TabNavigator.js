@@ -5,8 +5,9 @@ import ProfileScreen from "../screens/ProfileScreen";
 import Clubs from "../screens/Clubs";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { Foundation } from "@expo/vector-icons";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
+import { Foundation, MaterialCommunityIcons } from "@expo/vector-icons";
+import BlogScreen from "../screens/BlogScreen";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
@@ -65,7 +66,21 @@ const TabNavigator = () => {
           tabBarLabel: "Clubs",
         }}
       />
-    
+      <Tab.Screen
+        name="Blog"
+        component={BlogScreen}
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <MaterialCommunityIcons
+              name="message-text-outline"
+              size={24}
+              color={focused ? "#2B47FC" : "gray"}
+            />
+          ),
+          tabBarLabel: "Blog",
+          tabBarStyle: { display: "none" },
+        }}
+      />
     </Tab.Navigator>
   );
 };
