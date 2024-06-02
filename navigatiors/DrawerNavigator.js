@@ -17,6 +17,7 @@ const CustomDrawerContent = ({ navigation }) => {
   const { isAdmin } = useAuth();
   return (
     <DrawerContentScrollView>
+
     <View>
       <DrawerItem
         label="Home"
@@ -63,6 +64,7 @@ const CustomDrawerContent = ({ navigation }) => {
         labelStyle={styles.drawerLabel}
       />
       {isAdmin && (
+       <>
         <DrawerItem
           label="Create Event"
           onPress={() => {
@@ -74,6 +76,19 @@ const CustomDrawerContent = ({ navigation }) => {
           contentContainerStyle={styles.drawerItem}
         labelStyle={styles.drawerLabel}
         />
+            <DrawerItem
+              label="Send notification"
+              onPress={() => {
+                navigation.navigate("notification");
+              }}
+            />
+            <DrawerItem
+              label="Announcements"
+              onPress={() => {
+                navigation.navigate("announcements");
+              }}
+            />
+        </>
       )}
       <DrawerItem
         label="Events"

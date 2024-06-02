@@ -4,22 +4,73 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  Button,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
+
 import {
   Input,
   InputField,
   InputSlot,
   SearchIcon,
   InputIcon,
+  Button,
+  ButtonText,
+  Icon,
+  ArrowDownIcon,
 } from "@gluestack-ui/themed";
 import BlogListItem from "../components/blog/BlogListItem";
-import { blogData } from "../assets/blogListItemDemo";
-const BlogScreen = ({ navigation }) => {
+import { useBlogList } from "../api/blog";
+import { useAuth } from "../components/context/AuthProvider";
+const BlogScreen = ({ navigation, route }) => {
+  const { profile } = useAuth();
+  const [postData, setPostData] = useState([]);
+  const [postAction, setPostAction] = useState({});
   const [search, setSearch] = useState(""); // Will be used for searching blogs
-  // Scrool view should be fixed, we cannot see the whole content
+  const { data, isLoading, error } = useBlogList();
+  if (error) {
+    alert("Error fetching posts");
+  }
+
+  const openCreatePostModal = () => {
+    navigation.navigate("BlogCreatePostModal", {
+      onGoBack: (data) => setPostAction(data),
+    });
+  };
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setPostData(data);
+      console.log(postData);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (postAction?.isTrue) {
+      setPostData((prevData) => {
+        return prevData.filter((post) => post.id !== postAction?.id);
+      });
+    }
+    if (postAction?.isAdded) {
+      setPostData((prevData) => {
+        return [
+          ...prevData,
+          {
+            uuid: profile?.uuid,
+            id: profile?.uuid + Math.random() * 1000, // to avoid id conflicts without fetching from the server
+            full_name: postAction?.full_name,
+            title: postAction?.title,
+            tag: postAction?.tag,
+            body: postAction?.body,
+            user_email: postAction?.user_email,
+            created_at: new Date().toISOString(), // to avoid timestamp conflicts without fetching from the server
+          },
+        ];
+      });
+    }
+  }, [postAction]);
+
   return (
     <View className="flex-1">
       <SafeAreaView
@@ -38,7 +89,7 @@ const BlogScreen = ({ navigation }) => {
           <Text className="text-twhite text-4xl">Blog</Text>
         </View>
       </SafeAreaView>
-      <View className="px-6 py-4 flex-1">
+      <View className="px-6 py-4 flex-1 ">
         <Input
           variant="rounded"
           size="lg"
@@ -55,18 +106,69 @@ const BlogScreen = ({ navigation }) => {
           />
         </Input>
 
-        <ScrollView className="mt-4" showsVerticalScrollIndicator={false}>
-          {blogData.map((blog, id) => {
-            return (
-              <BlogListItem
-                key={id}
-                profileName={blog.profileName}
-                tag={blog.tag}
-                title={blog.title}
-              />
-            );
-          })}
+        <ScrollView className="mt-4 " showsVerticalScrollIndicator={false}>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : postData.length > 0 ? (
+            postData.map((post) => {
+              return (
+                <BlogListItem
+                  key={post.id}
+                  profileName={post.full_name}
+                  tag={post.tag}
+                  title={post.title}
+                  uuid={post.uuid}
+                  timestamp={post.created_at}
+                  openListItem={() => {
+                    navigation.navigate("BlogModal", {
+                      onGoBack: (data) => setPostAction(data),
+                      id: post.id,
+                      profileName: post.full_name,
+                      title: post.title,
+                      tag: post.tag,
+                      body: post.body,
+                      user_email: post.user_email,
+                      uuid: post.uuid,
+                      timestamp: post.created_at,
+                    });
+                  }}
+                />
+              );
+            })
+          ) : (
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <Text style={{ fontSize: 24 }}>No posts found!</Text>
+              <Text style={{ fontSize: 16 }}>
+                You can create the first post below.
+              </Text>
+              <Icon as={ArrowDownIcon} m="$2" w="$16" h="$16" />
+            </View>
+          )}
         </ScrollView>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginTop: 20,
+            marginBottom: 20,
+          }}
+        >
+          <Button style={{ width: "45%" }} onPress={openCreatePostModal}>
+            <ButtonText size="md">My posts</ButtonText>
+          </Button>
+          <Button style={{ width: "45%" }} onPress={openCreatePostModal}>
+            <ButtonText size="md">Create a post</ButtonText>
+          </Button>
+        </View>
       </View>
     </View>
   );

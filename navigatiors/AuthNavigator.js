@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import TabNavigator from "./TabNavigator";
 import DrawerNavigator from "./DrawerNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
+import SendNotification from "../screens/SendNotification";
 import EventScreen from "../screens/EventScreen";
 import CreateEventScreen from "../screens/CreateEventScreen";
 import AllEventsScreen from "../screens/AllEventsScreen";
@@ -14,11 +15,16 @@ import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import loadingAnimation from "../assets/loading.json";
 import LottieView from "lottie-react-native";
 import BlogScreen from "../screens/BlogScreen";
+import BlogModal from "../components/blog/BlogModal";
+import Announcements from "../screens/Announcements";
 const Stack = createNativeStackNavigator();
 import { SafeAreaView, View } from "react-native";
+import BlogCreatePostModal from "../components/blog/BlogCreatePostModal";
+import CreateAnnouncementsScreen from "../screens/CreateAnnouncementsScreen";
 import VocabularyListScreen from "../screens/VocabularyListScreen";
 import VocabularyCourseList from "../screens/VocabularyCourseList";
 import ClubDetailsScreen from "../screens/ClubDetailsScreen";
+
 function AuthNavigator() {
   const { session, loading } = useAuth();
 
@@ -58,8 +64,25 @@ function AuthNavigator() {
           <Stack.Screen name="PastExams" component={PastExamScreen} />
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
-          <Stack.Screen name="AllEvents" component={AllEventsScreen} />
+          <Stack.Screen name="notification" component={SendNotification} />
+          <Stack.Screen name="announcements" component={Announcements} />
           <Stack.Screen
+            name="CreateAnnouncements"
+            component={CreateAnnouncementsScreen}
+          />
+          <Stack.Screen name="AllEvents" component={AllEventsScreen} />
+        
+
+         
+          <Stack.Screen name="BlogScreen" component={BlogScreen} />
+          <Stack.Group screenOptions={{ presentation: "modal" }}>
+            <Stack.Screen name="BlogModal" component={BlogModal} />
+            <Stack.Screen
+              name="BlogCreatePostModal"
+              component={BlogCreatePostModal}
+            />
+          </Stack.Group>
+
             name="VocabularyList"
             component={VocabularyListScreen}
           /> 
@@ -68,7 +91,7 @@ function AuthNavigator() {
           component={VocabularyCourseList}
         />
         <Stack.Screen name="ClubDetailsScreen" component={ClubDetailsScreen}/>
-         <Stack.Screen name="BlogScreen" component={BlogScreen} />
+    
         </>
       )}
     </Stack.Navigator>

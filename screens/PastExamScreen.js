@@ -24,12 +24,14 @@ import { useExamList } from "../api/exams";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
 import { StorageAccessFramework } from "expo-file-system";
-import { set } from "date-fns";
 
 const PastExamScreen = () => {
   const navigation = useNavigation();
   const { data: exams, error, isLoading } = useExamList();
-  const [downloading, setDownloading] = useState(false);
+  const [downloading, setDownloading] = useState({
+    downloading: false,
+    id: "",
+  });
   const downloadFromUrl = async ({ url, name }) => {
     let androidPermission = false;
     if (Platform.OS === "android") {
@@ -53,8 +55,9 @@ const PastExamScreen = () => {
   };
 
   const getExamPdf = async ({ id, name }) => {
+    console.log("Downloading exam with id: ", id);
     try {
-      setDownloading(true);
+      setDownloading({ downloading: true, id });
       const { data } = await supabase.storage // Data = public URL
         .from("past_exams") // Storage bucket name
         .getPublicUrl(`${id}.pdf`);
