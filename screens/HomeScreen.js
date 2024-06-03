@@ -1,7 +1,16 @@
-import { View, Text, Pressable, Image, TouchableOpacity,FlatList,  StyleSheet} from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { format, getDay } from "date-fns";
+import { format, getDay, set } from "date-fns";
 import { Octicons } from "@expo/vector-icons";
 import { supabase } from "../supabase";
 import { useNavigation } from "@react-navigation/native";
@@ -20,34 +29,71 @@ import {
 } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 import { useAuth } from "../components/context/AuthProvider";
+import { useAnnouncementList } from "../api/announcements";
 const HomeScreen = ({ navigation }) => {
-
-  const [eventData, setEventData] = useState([])
+  const [eventData, setEventData] = useState([]);
   const today = new Date();
   const formattedDate = format(today, "MMMM d, yyyy");
   const dayOfWeek = getDay(today);
   const navigation2 = useNavigation();
   const [loading, setLoading] = useState(true);
- const {profile} = useAuth();
-  const logout = () => {
-    supabase.auth.signOut();
-    navigation.replace("Login");
-    console.log("logged out");
-  };
+  const [announcementsLoading, setAnnouncementsLoading] = useState(true);
+  const [announcements, setAnnouncements] = useState([
+    { id: "1", uri: require("../assets/ann.jpeg") },
+    { id: "2", uri: require("../assets/ann.jpeg") },
+  ]);
+  const { profile } = useAuth();
+
   const openDrawer = () => {
     navigation.openDrawer();
   };
 
-  const announcements = [
-    { id: "1", source: require("../assets/ann.jpeg") },
-    { id: "2", source: require("../assets/ann.jpeg") },
-    // Add more images here if needed
-  ];
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("announcements")
+          .select("id, src_image");
 
+        if (error) {
+          console.error("Error fetching all events:", error.message);
+          return;
+        }
+
+        const announcementData = [];
+
+        const imageUrlPromises = data.map(async (announcement) => {
+          const { data: imageData, error: imageError } = await supabase.storage
+            .from("announcements")
+            .getPublicUrl(announcement.src_image);
+          if (imageError) {
+            console.error("Error fetching image:", imageError.message);
+            return null;
+          }
+          console.log("IMAGE", imageData.publicUrl);
+          announcementData.push({
+            uri: imageData.publicUrl,
+            id: announcement.id,
+          });
+        });
+
+        await Promise.all(imageUrlPromises);
+        setAnnouncements(announcementData);
+        setAnnouncementsLoading(false);
+      } catch (error) {
+        console.error("Error fetching all events:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnnouncements();
+  }, []);
 
   useEffect(() => {
     const fetchAllEvents = async () => {
       try {
+        // get only recent 2 events
+
         const { data, error } = await supabase.from("eventTest").select("*");
 
         if (error) {
@@ -57,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
 
         const imageUrls = [];
         const eventIds = [];
-        console.log(profile)
+        console.log(profile);
 
         const imageUrlPromises = data.map(async (event) => {
           const { data: imageData, error: imageError } = await supabase.storage
@@ -67,7 +113,7 @@ const HomeScreen = ({ navigation }) => {
             console.error("Error fetching image:", imageError.message);
             return null;
           }
-          imageUrls.push(imageData.publicUrl); 
+          imageUrls.push(imageData.publicUrl);
           eventIds.push(event.id);
         });
 
@@ -78,14 +124,12 @@ const HomeScreen = ({ navigation }) => {
           eventImage: imageUrls[eventIds.indexOf(event.id)],
         }));
 
-        const sortedEvents = eventsWithImages.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const sortedEvents = eventsWithImages.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
         const upcomingEvents = sortedEvents.slice(0, 2);
 
-
-        setEventData(
-         upcomingEvents
-        );
-
+        setEventData(upcomingEvents);
       } catch (error) {
         console.error("Error fetching all events:", error.message);
       } finally {
@@ -94,24 +138,10 @@ const HomeScreen = ({ navigation }) => {
     };
 
     fetchAllEvents();
-  }, []); 
+  }, []);
   const handleEventPress = (selectedEvent) => {
-    console.log("Selected Event ID:", selectedEvent.id);
     navigation2.navigate("Event", { eventData: selectedEvent });
   };
-  const renderCard = ({ item }) => (
-    <TouchableOpacity onPress={() => handleEventPress(item)}>
-      <View style={styles.card}>
-        <Image source={{ uri: item.eventImage }} style={styles.cardImage} />
-        <View style={styles.cardContent}>
-          <Text style={styles.eventName}>{item.eventName}</Text>
-          <Text style={styles.eventAbout}>{item.eventAbout}</Text>
-          <Text style={styles.date}>{item.date}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
 
   return (
     <SafeAreaView className="flex-1 ">
@@ -140,27 +170,50 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View className="flex-1">
             <View>
-              <Text className="text-lg mt-2">Hello {}</Text>
+              <Text className="text-lg mt-2">Hello {profile.full_name}</Text>
               <Text className="text-xl font-semibold">Announcements</Text>
-
-              <FlatList
-                horizontal
-                data={announcements}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <Image
-                    source={item.source}
-                    style={{
-                      width: 300,
-                      height: 200,
-                      resizeMode: "cover",
-                      borderRadius: 10,
-                      marginRight: 10,
-                    }}
-                  />
-                )}
-                showsHorizontalScrollIndicator={false}
-              />
+              {announcementsLoading ? (
+                <View
+                  style={{
+                    width: 300,
+                    height: 200,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+              ) : (
+                <FlatList
+                  horizontal
+                  data={announcements}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("announcement", {
+                          id: item.id,
+                          uri: item.uri,
+                          url: item.url,
+                        })
+                      }
+                    >
+                      <Image
+                        source={{ uri: `${item.uri}` }}
+                        style={{
+                          width: 300,
+                          height: 200,
+                          resizeMode: "cover",
+                          borderRadius: 10,
+                          marginRight: 10,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  showsHorizontalScrollIndicator={false}
+                />
+              )}
             </View>
             <View className="flex flex-row justify-between items-center">
               <Text className="text-xl font-semibold my-4">
@@ -174,9 +227,15 @@ const HomeScreen = ({ navigation }) => {
             </View>
             <View style={styles.eventsContainer}>
               {eventData.map((event, index) => (
-                <TouchableOpacity key={index} onPress={() => handleEventPress(event)}>
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleEventPress(event)}
+                >
                   <View style={styles.card}>
-                    <Image source={{ uri: event.eventImage }} style={styles.cardImage} />
+                    <Image
+                      source={{ uri: event.eventImage }}
+                      style={styles.cardImage}
+                    />
                     <View style={styles.cardContent}>
                       <Text style={styles.eventName}>{event.eventName}</Text>
                       <Text style={styles.eventAbout}>{event.eventAbout}</Text>
@@ -198,21 +257,20 @@ const styles = StyleSheet.create({
     padding: 0,
     backgroundColor: "#f0f0f0",
   },
-  eventsContainer:{
+  eventsContainer: {
     padding: 4,
-
   },
   flatListContainer: {
     padding: 12,
     paddingTop: 8,
   },
   card: {
-    display:"flex",
-    flexDirection:"row",
+    display: "flex",
+    flexDirection: "row",
     backgroundColor: "white",
     borderRadius: 8,
     marginBottom: 16,
-    elevation: 3, 
+    elevation: 3,
   },
   cardImage: {
     width: "50%",

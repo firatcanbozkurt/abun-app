@@ -2,7 +2,7 @@ import { supabase } from "./supabase";
 
 const courses = [
   {
-    name: "CENG 471",
+    name: "CENG 470",
     vocab: [
       { word: "API", definition: "API" },
       { word: "API", definition: "API" },
@@ -21,21 +21,32 @@ const courses = [
   },
 ];
 
-// async function addVocab(courses: any) {
-//   courses.forEach(async (course) => {
-//     const [insert, fetch] = await Promise.allSettled([
-//       supabase.from("courses").insert(course.name),
-//       supabase.from("courses").eq("name", "asdf"),
-//     ]);
+export async function addVocab() {
+  courses.forEach(async (course) => {
+    let course_id = "";
+    await supabase
+      .from("courses")
+      .insert([{ name: course.name }])
+      .then(async () => {
+        await supabase
+          .from("courses")
+          .select("*")
+          .eq("name", course.name)
+          .single()
+          .then((data) => {
+            console.log("DATAAA§112:", data);
+            course_id = data.data.id;
+          });
+      });
 
-//     courses.vocab.forEach(async (voc) => {
-//       await supabase.from("vocabulary_items").insert([
-//         {
-//           word: voc.word,
-//           description: voc.definition,
-//           course_id: "",
-//         },
-//       ]);
-//     });
-//   });
-// }
+    course.vocab.forEach(async (voc) => {
+      await supabase.from("vocabulary_items").insert([
+        {
+          word: voc.word,
+          description: voc.definition,
+          course_id,
+        },
+      ]);
+    });
+  });
+}

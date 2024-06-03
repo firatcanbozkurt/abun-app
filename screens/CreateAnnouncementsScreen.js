@@ -1,4 +1,11 @@
-import { View, Text, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState } from "react";
 import {
   Button,
@@ -8,25 +15,69 @@ import {
   Textarea,
   TextareaInput,
   FabLabel,
+  Icon,
+  CheckIcon,
+  CloseIcon,
 } from "@gluestack-ui/themed";
 import { supabase } from "../supabase";
-import { set } from "date-fns";
+import * as ImagePicker from "expo-image-picker";
 
 const CreateAnnouncementsScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
+  const [image, setImage] = useState(null);
   const [disabled, setDisabled] = useState(false);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    setImage(result.assets[0].uri);
+  };
+
+  const generateFormData = () => {
+    const ext = image.substring(image.lastIndexOf(".") + 1);
+    const fileName = image.replace(/^.*[\\\/]/, "");
+    console.log(fileName);
+    const formData = new FormData();
+    const date = new Date();
+    const stringDate = (
+      date.getMilliseconds() *
+      (Math.random() + 1000)
+    ).toString();
+    formData.append("files", {
+      uri: image,
+      name: `${stringDate}-${fileName}`,
+      type: `image/${ext}`,
+    });
+    return [formData, `${stringDate}-${fileName}`];
+  };
   const addAnnouncement = async () => {
+    console.log("URLLL", url);
     setDisabled(true);
-    if (title.length > 0 && body.length > 0 && url.length === 0) {
-      await supabase.from("announcements").insert([{ title, body }]);
+    if (title.length > 0 && body.length > 0 && image && url.length === 0) {
+      const [formData, name] = generateFormData();
+
+      await supabase
+        .from("announcements")
+        .insert([{ title, body, src_image: name }]);
+      await supabase.storage.from("announcements").upload(name, formData);
+
       navigation.goBack();
       return;
     }
-
-    if (title.length > 0 && body.length > 0 && url.length > 0) {
-      await supabase.from("announcements").insert([{ title, body, url }]);
+    if (title.length > 0 && body.length > 0 && image && url.length > 0) {
+      const [formData, name] = generateFormData();
+      await supabase
+        .from("announcements")
+        .insert([{ title, body, src_image: name, url }]);
+      await supabase.storage.from("announcements").upload(name, formData);
       navigation.goBack();
       return;
     }
@@ -37,7 +88,7 @@ const CreateAnnouncementsScreen = ({ navigation }) => {
     alert("Please fill all the fields, URL is optional");
   };
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ marginTop: 24 }}>
       <View
         style={{
           padding: "5%",
@@ -107,6 +158,49 @@ const CreateAnnouncementsScreen = ({ navigation }) => {
             <FabLabel
               style={{ color: "black", marginLeft: 2, marginBottom: 2 }}
             >
+              *Image
+            </FabLabel>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button isDisabled={disabled} onPress={pickImage}>
+              <ButtonText size="lg">Pick an image</ButtonText>
+            </Button>
+            <Text>{image ? "Image selected" : "No Image selected"}</Text>
+            {image ? (
+              <View
+                style={{
+                  borderColor: "green",
+                  borderWidth: 4,
+                  borderRadius: 8,
+                }}
+              >
+                <Icon as={CheckIcon} m="$2" w="$8" h="$8" />
+              </View>
+            ) : (
+              <View
+                style={{
+                  borderColor: "red",
+                  borderWidth: 4,
+                  borderRadius: 8,
+                }}
+              >
+                <Icon as={CloseIcon} m="$2" w="$8" h="$8" />
+              </View>
+            )}
+          </View>
+        </View>
+        <View style={{ marginTop: 16 }}>
+          <View>
+            <FabLabel
+              style={{ color: "black", marginLeft: 2, marginBottom: 2 }}
+            >
               URL
             </FabLabel>
           </View>
@@ -123,9 +217,17 @@ const CreateAnnouncementsScreen = ({ navigation }) => {
             />
           </Input>
         </View>
+
         <View style={{ marginTop: 16 }}>
-          <Button onPress={addAnnouncement}>
-            <ButtonText size="lg">Add Announcement</ButtonText>
+          <Button isDisabled={disabled} onPress={addAnnouncement}>
+            {disabled ? (
+              <>
+                <ButtonText>Adding...</ButtonText>
+                <ActivityIndicator size="large" color="white" />
+              </>
+            ) : (
+              <ButtonText size="lg">Add Announcement</ButtonText>
+            )}
           </Button>
         </View>
       </View>
@@ -134,3 +236,15 @@ const CreateAnnouncementsScreen = ({ navigation }) => {
 };
 
 export default CreateAnnouncementsScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    width: 200,
+    height: 200,
+  },
+});

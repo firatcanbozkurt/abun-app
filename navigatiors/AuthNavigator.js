@@ -24,6 +24,7 @@ import CreateAnnouncementsScreen from "../screens/CreateAnnouncementsScreen";
 import VocabularyListScreen from "../screens/VocabularyListScreen";
 import VocabularyCourseList from "../screens/VocabularyCourseList";
 import ClubDetailsScreen from "../screens/ClubDetailsScreen";
+import AnnouncementScreen from "../screens/AnnouncementScreen";
 
 function AuthNavigator() {
   const { session, loading } = useAuth();
@@ -71,9 +72,7 @@ function AuthNavigator() {
             component={CreateAnnouncementsScreen}
           />
           <Stack.Screen name="AllEvents" component={AllEventsScreen} />
-        
 
-         
           <Stack.Screen name="BlogScreen" component={BlogScreen} />
           <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen name="BlogModal" component={BlogModal} />
@@ -82,16 +81,19 @@ function AuthNavigator() {
               component={BlogCreatePostModal}
             />
           </Stack.Group>
-
+          <Stack.Screen
             name="VocabularyList"
             component={VocabularyListScreen}
-          /> 
+          />
           <Stack.Screen
-          name="VocabularyCourse"
-          component={VocabularyCourseList}
-        />
-        <Stack.Screen name="ClubDetailsScreen" component={ClubDetailsScreen}/>
-    
+            name="VocabularyCourse"
+            component={VocabularyCourseList}
+          />
+          <Stack.Screen
+            name="ClubDetailsScreen"
+            component={ClubDetailsScreen}
+          />
+          <Stack.Screen name="announcement" component={AnnouncementScreen} />
         </>
       )}
     </Stack.Navigator>

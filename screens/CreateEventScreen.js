@@ -11,7 +11,11 @@ import {
 import { supabase } from "../supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import { ButtonText, ButtonIcon, Button, AddIcon,
+import {
+  ButtonText,
+  ButtonIcon,
+  Button,
+  AddIcon,
   AlertDialog,
   AlertDialogBackdrop,
   AlertDialogContent,
@@ -19,12 +23,17 @@ import { ButtonText, ButtonIcon, Button, AddIcon,
   AlertDialogCloseButton,
   AlertDialogFooter,
   AlertDialogBody,
-Center,Heading,Icon,CloseIcon, ButtonGroup,
-useToast,
-Toast,
-VStack,
-ToastTitle,
-ToastDescription,} from "@gluestack-ui/themed";
+  Center,
+  Heading,
+  Icon,
+  CloseIcon,
+  ButtonGroup,
+  useToast,
+  Toast,
+  VStack,
+  ToastTitle,
+  ToastDescription,
+} from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useAuth } from "../components/context/AuthProvider";
@@ -43,7 +52,7 @@ const CreateEventScreen = ({ navigation }) => {
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
-  const [showAlertDialog, setShowAlertDialog] = useState(false)
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -134,7 +143,7 @@ const CreateEventScreen = ({ navigation }) => {
         allowsEditing: true,
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         aspect: [4, 3],
-        quality: 0.1,
+        quality: 0,
       });
       if (result) {
         if (!result.canceled) {
@@ -185,15 +194,14 @@ const CreateEventScreen = ({ navigation }) => {
             <Toast nativeID={toastId} action="success" variant="accent">
               <VStack space="xs">
                 <ToastTitle>{eventName} has created</ToastTitle>
-                <ToastDescription>
-                </ToastDescription>
+                <ToastDescription></ToastDescription>
               </VStack>
             </Toast>
           );
         },
       });
 
-      navigation.navigate("Home")
+      navigation.navigate("Home");
     } catch (error) {
       console.error("Error creating event:", error.message);
     } finally {
@@ -207,7 +215,7 @@ const CreateEventScreen = ({ navigation }) => {
       );
     }
   };
- 
+
   if (loading) {
     return (
       <SafeAreaView
@@ -314,52 +322,56 @@ const CreateEventScreen = ({ navigation }) => {
       </View>
 
       <SafeAreaView className="flex justify-center w-2/3 self-center">
-      <Center h={200}>
-      <Button sx={{w:"$90%", h:"$25%"}} onPress={() => setShowAlertDialog(true)}>
-        <ButtonText>Create Event</ButtonText>
-      </Button>
-      <AlertDialog
-        isOpen={showAlertDialog}
-        onClose={() => {
-          setShowAlertDialog(false)
-        }}
-      >
-        <AlertDialogBackdrop />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <Heading size="lg">Create Event: {eventName}</Heading>
-            <AlertDialogCloseButton>
-              <Icon as={CloseIcon} />
-            </AlertDialogCloseButton>
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            <Text size="sm">
-              Are you sure you want to create event? 
-            </Text>
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <ButtonGroup space="lg">
-              <Button
-                variant="outline"
-                action="secondary"
-                onPress={() => {
-                  setShowAlertDialog(false)
-                }}
-              >
-                <ButtonText>Cancel</ButtonText>
-              </Button>
-              <Button
-                bg="$purple600"
-                action="negative"
-                onPress={() => {createEvent(); setShowAlertDialog(false);}} 
-              >
-                <ButtonText>Confirm</ButtonText>
-              </Button>
-            </ButtonGroup>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Center>
+        <Center h={200}>
+          <Button
+            sx={{ w: "$90%", h: "$25%" }}
+            onPress={() => setShowAlertDialog(true)}
+          >
+            <ButtonText>Create Event</ButtonText>
+          </Button>
+          <AlertDialog
+            isOpen={showAlertDialog}
+            onClose={() => {
+              setShowAlertDialog(false);
+            }}
+          >
+            <AlertDialogBackdrop />
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <Heading size="lg">Create Event: {eventName}</Heading>
+                <AlertDialogCloseButton>
+                  <Icon as={CloseIcon} />
+                </AlertDialogCloseButton>
+              </AlertDialogHeader>
+              <AlertDialogBody>
+                <Text size="sm">Are you sure you want to create event?</Text>
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <ButtonGroup space="lg">
+                  <Button
+                    variant="outline"
+                    action="secondary"
+                    onPress={() => {
+                      setShowAlertDialog(false);
+                    }}
+                  >
+                    <ButtonText>Cancel</ButtonText>
+                  </Button>
+                  <Button
+                    bg="$purple600"
+                    action="negative"
+                    onPress={() => {
+                      createEvent();
+                      setShowAlertDialog(false);
+                    }}
+                  >
+                    <ButtonText>Confirm</ButtonText>
+                  </Button>
+                </ButtonGroup>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </Center>
       </SafeAreaView>
     </SafeAreaView>
   );

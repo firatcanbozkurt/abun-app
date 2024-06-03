@@ -49,7 +49,7 @@ const AllEventsScreen = ({ navigation }) => {
             console.error("Error fetching image:", imageError.message);
             return null;
           }
-          imageUrls.push(imageData.publicUrl); 
+          imageUrls.push(imageData.publicUrl);
           eventIds.push(event.id);
         });
 
@@ -69,7 +69,7 @@ const AllEventsScreen = ({ navigation }) => {
     };
 
     fetchAllEvents();
-  }, []); 
+  }, []);
 
   const renderCard = ({ item }) => (
     <TouchableOpacity onPress={() => handleEventPress(item)}>
