@@ -7,17 +7,44 @@ import {
 import TabNavigator from "./TabNavigator";
 import PastExamScreen from "../screens/PastExamScreen";
 import { supabase } from "../supabase";
-import { View, SafeAreaView, StyleSheet } from "react-native";
+import { View, SafeAreaView, StyleSheet, Text } from "react-native";
 import VocabularyItemsScreen from "../screens/VocabularyItemsScreen";
 import { useAuth } from "../components/context/AuthProvider";
 import ClubDetailsScreen from "../screens/ClubDetailsScreen";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import AvatarIcon from "../components/AvatarIcon";
 
 const CustomDrawerContent = ({ navigation }) => {
-  const { isAdmin } = useAuth();
+  const navigation2 = useNavigation();
+  const { isAdmin, profile } = useAuth();
+  console.log(profile.full_name);
   return (
     <DrawerContentScrollView>
       <View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "",
+            alignItems: "center",
+          }}
+        >
+          <View style={styles.avatarContainer}>
+            <AvatarIcon />
+          </View>
+          <View style={{marginTop:20 , marginLeft:20, }}>
+            <Text style={styles.profileText}>{profile.full_name}</Text>
+            </View>
+        </View>
+        <DrawerItem
+          label=""
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+          contentContainerStyle={styles.drawerItem}
+          labelStyle={styles.drawerLabel}
+        />
         <DrawerItem
           label="Home"
           onPress={() => {
@@ -172,6 +199,16 @@ const DrawerNavigator = () => {
 };
 
 const styles = StyleSheet.create({
+  avatarContainer: {
+    height: "5%",
+    left: "15%",
+  },
+  profileText: {
+    marginTop:25,
+    fontSize: 20,
+    fontWeight:"500",
+    color: "black",
+  },
   drawerContainer: {
     flex: 1,
   },
