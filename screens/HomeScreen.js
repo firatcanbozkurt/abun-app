@@ -38,7 +38,10 @@ const HomeScreen = ({ navigation }) => {
   const navigation2 = useNavigation();
   const [loading, setLoading] = useState(true);
   const [announcementsLoading, setAnnouncementsLoading] = useState(true);
+
+  const [onGoBack, setOnGoBack] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
+
   const { profile } = useAuth();
 
   const openDrawer = () => {
@@ -84,7 +87,7 @@ const HomeScreen = ({ navigation }) => {
       }
     };
     fetchAnnouncements();
-  }, []);
+  }, [onGoBack]);
 
   useEffect(() => {
     const fetchAllEvents = async () => {
@@ -213,6 +216,7 @@ const HomeScreen = ({ navigation }) => {
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate("announcement", {
+                          onGoBack: (data) => setOnGoBack(true),
                           id: item.id,
                           uri: item.uri,
                           url: item.url,

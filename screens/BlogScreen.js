@@ -58,7 +58,7 @@ const BlogScreen = ({ navigation, route }) => {
           ...prevData,
           {
             uuid: profile?.uuid,
-            id: profile?.uuid + Math.random() * 1000, // to avoid id conflicts without fetching from the server
+            id: postAction?.id, // to avoid id conflicts without fetching from the server
             full_name: postAction?.full_name,
             title: postAction?.title,
             tag: postAction?.tag,

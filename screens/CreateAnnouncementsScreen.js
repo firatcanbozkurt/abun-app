@@ -22,8 +22,15 @@ import {
 } from "@gluestack-ui/themed";
 import { supabase } from "../supabase";
 import * as ImagePicker from "expo-image-picker";
+import { LogBox } from "react-native";
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
+const CreateAnnouncementsScreen = ({ navigation, route }) => {
+
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 const CreateAnnouncementsScreen = ({ navigation }) => {
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
@@ -59,26 +66,31 @@ const CreateAnnouncementsScreen = ({ navigation }) => {
     });
     return [formData, `${stringDate}-${fileName}`];
   };
+
+  const isValidUrl = (url) => {
+    try {
+      url = new URL(url);
+    } catch (e) {
+      alert("Paste a valid URL");
+      return false;
+    }
+    return true;
+  };
+
   const addAnnouncement = async () => {
-    console.log("URLLL", url);
-    setDisabled(true);
-    if (title.length > 0 && body.length > 0 && image && url.length === 0) {
-      const [formData, name] = generateFormData();
-
-      await supabase
-        .from("announcements")
-        .insert([{ title, body, src_image: name }]);
-      await supabase.storage.from("announcements").upload(name, formData);
-
-      navigation.goBack();
+    if (url.length > 0 && !isValidUrl(url)) {
       return;
     }
-    if (title.length > 0 && body.length > 0 && image && url.length > 0) {
+    setDisabled(true);
+    if (title.length > 0 && body.length > 0 && image) {
       const [formData, name] = generateFormData();
-      await supabase
-        .from("announcements")
-        .insert([{ title, body, src_image: name, url }]);
-      await supabase.storage.from("announcements").upload(name, formData);
+      await Promise.all([
+        supabase
+          .from("announcements")
+          .insert({ title, body, src_image: name, url }),
+        supabase.storage.from("announcements").upload(name, formData),
+      ]);
+      route.params.onGoBack();
       navigation.goBack();
       return;
     }

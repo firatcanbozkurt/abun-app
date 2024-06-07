@@ -11,9 +11,11 @@ import { supabase } from "../supabase";
 import { Linking } from "react-native";
 import { Button, Icon, LinkIcon } from "@gluestack-ui/themed";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/loading.json";
 
 const AnnouncementScreen = ({ navigation, route }) => {
-  const { id, uri, url } = route.params;
+  const { id, uri } = route.params;
   const [announcement, setAnnouncement] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +29,8 @@ const AnnouncementScreen = ({ navigation, route }) => {
           .single();
         if (error) {
           alert("Announcement does not exist");
-          console.error("Error fetching announcement:", error.message);
+          route.params.onGoBack();
+          navigation.goBack();
           return;
         }
         setAnnouncement(data);
@@ -38,116 +41,127 @@ const AnnouncementScreen = ({ navigation, route }) => {
       }
     };
     fetchAnnouncement();
-  }, []);
+  }, [id]);
 
+  if (loading)
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <View className="flex justify-center items-center">
+          <LottieView
+            source={loadingAnimation}
+            style={{ height: 100, aspectRatio: 1 }}
+            autoPlay
+            loop
+          />
+        </View>
+      </SafeAreaView>
+    );
   return (
     <SafeAreaView style={{ flex: 1, padding: 16 }}>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <View style={{ flex: 1 }}>
-          <View className="flex flex-row justify-between px-4 items-center">
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              className="bg-tblack-900 p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
-            >
-              <ArrowLeftIcon size="20" color="white" />
-            </TouchableOpacity>
-          </View>
+      <View style={{ flex: 1 }}>
+        <View className="flex flex-row justify-between px-4 items-center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="bg-dimgray p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+          >
+            <ArrowLeftIcon size="20" color="white" />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: "4%",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+            {announcement?.title}
+          </Text>
+        </View>
+        <View
+          style={{
+            width: "100%",
+            borderBottomColor: "#B8B9BC",
+            opacity: 0.5,
+            borderBottomWidth: 1.5,
+            alignSelf: "center",
+            marginTop: 10,
+          }}
+        />
+        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View
             style={{
-              padding: "4%",
+              paddingLeft: "5%",
+              paddingTop: "5%",
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-              {announcement?.title}
-            </Text>
+            <Image
+              source={{ uri }}
+              style={{
+                width: 300,
+                height: 200,
+                resizeMode: "cover",
+                borderRadius: 10,
+                marginRight: 10,
+              }}
+            />
           </View>
           <View
             style={{
-              width: "100%",
-              borderBottomColor: "#B8B9BC",
-              opacity: 0.5,
-              borderBottomWidth: 1.5,
-              alignSelf: "center",
-              marginTop: 10,
+              padding: "4%",
+
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
-          />
-          <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+          >
+            <Text style={{ fontSize: 16 }}>{announcement?.body}</Text>
+          </View>
+          {announcement?.url !== "" && (
             <View
               style={{
+                height: "100%",
                 paddingLeft: "5%",
                 paddingTop: "5%",
+                marginVertical: 16,
                 display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={{ uri }}
-                style={{
-                  width: 300,
-                  height: 200,
-                  resizeMode: "cover",
-                  borderRadius: 10,
-                  marginRight: 10,
-                }}
-              />
-            </View>
-            <View
-              style={{
-                padding: "4%",
-
-                display: "flex",
-                flexDirection: "row",
+                flexDirection: "column",
                 alignItems: "center",
               }}
             >
-              <Text style={{ fontSize: 16 }}>{announcement?.body}</Text>
-            </View>
-            {url !== null && (
-              <View
-                style={{
-                  height: "100%",
-                  paddingLeft: "5%",
-                  paddingTop: "5%",
-                  marginVertical: 16,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
+              <Button
+                style={{ width: "70%", marginBottom: "10%" }}
+                onPress={() => Linking.openURL(announcement?.url)}
               >
-                <Button
-                  style={{ width: "70%", marginBottom: "10%" }}
-                  onPress={() => Linking.openURL(`${url}`)}
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "500",
+                    color: "white",
+                  }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "500",
-                      color: "white",
-                    }}
-                  >
-                    Go to website
-                  </Text>
-                  <Icon
-                    style={{ color: "white" }}
-                    as={LinkIcon}
-                    m="$2"
-                    w="$6"
-                    h="$6"
-                  />
-                </Button>
-              </View>
-            )}
-          </ScrollView>
-        </View>
-      )}
+                  Go to website
+                </Text>
+                <Icon
+                  style={{ color: "white" }}
+                  as={LinkIcon}
+                  m="$2"
+                  w="$6"
+                  h="$6"
+                />
+              </Button>
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

@@ -27,11 +27,10 @@ import {
 } from "@gluestack-ui/themed";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
-const Announcements = ({ navigation }) => {
+const Announcements = ({ navigation, route }) => {
+  //const {id, , title} = route.params;
   const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
   const [annoucements, setAnnouncements] = useState([]);
-  const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [operation, setOperation] = useState(false);
 
@@ -39,15 +38,12 @@ const Announcements = ({ navigation }) => {
     console.log("Updating announcement");
   };
 
-  const addAnnouncement = async () => {
-    if (title.length > 0 && body.length > 0 && url.length === 0) {
-      await supabase.from("announcements").insert([{ title, body }]);
-    }
-
-    if (title.length > 0 && body.length > 0 && url.length > 0) {
-      await supabase.from("announcements").insert([{ title, body, url }]);
-    }
+  const navigateCreateAnnouncement = () => {
+    navigation.navigate("CreateAnnouncements", {
+      onGoBack: (data) => fetchAnnouncements(),
+    });
   };
+
   const deleteAnnouncement = async (id) => {
     setOperation(true);
     await supabase
@@ -121,7 +117,7 @@ const Announcements = ({ navigation }) => {
           isDisabled={operation}
           isFocusVisible={false}
           onPress={() => {
-            navigation.navigate("CreateAnnouncements");
+            navigateCreateAnnouncement();
           }}
         >
           <ButtonText>Create Announcement</ButtonText>
