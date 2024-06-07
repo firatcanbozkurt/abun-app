@@ -28,8 +28,9 @@ import {
 } from "@gluestack-ui/themed";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
-const VocabularyListScreen = () => {
+const VocabularyListScreen = ({navigation}) => {
   const [vocabularyData, setVocabularyData] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
@@ -116,6 +117,15 @@ const VocabularyListScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <View className="justify-center items-center mr-2">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="bg-tblack p-2 rounded-full w-9"
+              style={{backgroundColor:"black"}}
+            >
+              <ArrowLeftIcon size="20" color="white" />
+            </TouchableOpacity>
+            </View>
       <Text style={styles.title}>Vocabulary Words</Text>
       <TouchableOpacity onPress={refreshScreen} style={styles.refreshButton}>
         <MaterialIcons name="refresh" size={32} color="blue" />
@@ -184,15 +194,17 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    justifyContent:"center",
+
+    display:"space-between",
     marginBottom: 20,
-    paddingLeft: '18%'
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
+    marginHorizontal: 25,
+
   },
 
   card: {

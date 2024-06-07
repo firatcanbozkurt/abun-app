@@ -238,7 +238,8 @@ const CreateEventScreen = ({ navigation }) => {
         <View className="flex flex-row justify-between px-4 items-center">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="flex mt-3 bg-dimgray p-2 rounded-tr-2xl rounded-bl-2xl ml-4  w-9"
+            className="flex mt-3 p-2 rounded-tr-2xl rounded-bl-2xl ml-4  w-9"
+            style={{backgroundColor:"#000000"}}
           >
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>

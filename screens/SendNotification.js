@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import {
   Button,
@@ -13,7 +13,9 @@ import {
   notifyUsersWithPushToken,
   adminNotifyAllUsers,
 } from "../lib/nofitications";
-const SendNotificaiton = () => {
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
+
+const SendNotificaiton = ({navigation}) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [disabled, setDisabled] = useState(false);
@@ -32,14 +34,20 @@ const SendNotificaiton = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
-          paddingLeft: "5%",
           paddingTop: "5%",
           display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 32, fontWeight: "bold" }}>
+         <View className="flex flex-row justify-between px-4 items-center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="bg-tblack p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            style={{backgroundColor:"#000000"}}
+          >
+            <ArrowLeftIcon size="20" color="white" />
+          </TouchableOpacity>
+        </View>
+        <Text style={{ fontSize: 32, fontWeight: "bold", paddingLeft:"7%", paddingTop:"5%" }}>
           Send notification to all users
         </Text>
       </View>
@@ -62,7 +70,7 @@ const SendNotificaiton = () => {
         />
       </View>
 
-      <View style={{ padding: 16 }}>
+      <View style={{ padding: 24 }}>
         <View style={{ marginTop: 8 }}>
           <FabLabel style={{ color: "black", marginLeft: 2, marginBottom: 2 }}>
             Title:
@@ -114,6 +122,7 @@ const SendNotificaiton = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          paddingTop: "3%"
         }}
       >
         <Button isDisabled={disabled}>

@@ -36,7 +36,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { AntDesign } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
-import ToolTipComponent from "../components/ToolTipComponent";
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 const VocabularyItemsScreen = ({ route, navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -114,6 +115,9 @@ const VocabularyItemsScreen = ({ route, navigation }) => {
     setIsFlipped(!isFlipped);
   };
 
+
+ 
+
   if (isLoading) {
     return (
       <SafeAreaView
@@ -141,8 +145,18 @@ const VocabularyItemsScreen = ({ route, navigation }) => {
 
   if (!vocabularyData || vocabularyData.length === 0) {
     return (
-      <SafeAreaView className="flex-1">
-        <Text>No vocabulary data available.</Text>
+      <SafeAreaView className="flex-1 justify-center items-center">
+        <Text className="text-2xl font-bold">No vocabulary data available.</Text>
+        <Text className="text-xl mt-4">Go Back to Course List</Text>
+        <View className="flex flex-row justify-between px-4 items-center">
+            <TouchableOpacity
+              onPress={() => navigation.navigate("VocabularyCourse")}
+              className="bg-tblack p-2 rounded-full ml-4 mt-4 w-9"
+              style={{backgroundColor:"black"}}
+            >
+              <ArrowLeftIcon size="20" color="white" />
+            </TouchableOpacity>
+          </View>
       </SafeAreaView>
     );
   }

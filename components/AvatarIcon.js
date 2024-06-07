@@ -17,7 +17,7 @@ const AvatarIcon = ({ navigation, sz }) => {
       <Pressable onPress={() => navigation2.navigate("Profile")}>
         <View>
           {sz ? (
-            <Avatar size={sz} bgColor="$dimgray">
+            <Avatar size={sz} bgColor="$black">
               <AvatarFallbackText>{profileName}</AvatarFallbackText>
               <AvatarImage
                 source={{
@@ -28,7 +28,7 @@ const AvatarIcon = ({ navigation, sz }) => {
               />
             </Avatar>
           ) : (
-            <Avatar size="md" bgColor="$dimgray">
+            <Avatar size="md"bgColor="$black"">
               <AvatarFallbackText>{profileName}</AvatarFallbackText>
               <AvatarImage
                 source={{

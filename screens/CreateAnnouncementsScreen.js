@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 import React, { useState } from "react";
 import {
@@ -22,12 +23,14 @@ import {
 import { supabase } from "../supabase";
 import * as ImagePicker from "expo-image-picker";
 import { LogBox } from "react-native";
-
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
 ]);
-
 const CreateAnnouncementsScreen = ({ navigation, route }) => {
+
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
+const CreateAnnouncementsScreen = ({ navigation }) => {
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
@@ -99,9 +102,19 @@ const CreateAnnouncementsScreen = ({ navigation, route }) => {
   };
   return (
     <SafeAreaView style={{ marginTop: 24 }}>
+      <View className="flex flex-row justify-between px-4 items-center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className=" p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            style={{backgroundColor:"#000000"}}
+          >
+            <ArrowLeftIcon size="20" color="white" />
+            
+          </TouchableOpacity>
+        </View>
       <View
         style={{
-          padding: "5%",
+          padding: "8%",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -111,7 +124,7 @@ const CreateAnnouncementsScreen = ({ navigation, route }) => {
           Create Announcement
         </Text>
       </View>
-      <View style={{ padding: 16 }}>
+      <View style={{ padding: 24 }}>
         <View>
           <View
             style={{
