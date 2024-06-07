@@ -29,6 +29,7 @@ const AnnouncementScreen = ({ navigation, route }) => {
           .single();
         if (error) {
           alert("Announcement does not exist");
+          route.params.onGoBack();
           navigation.goBack();
           return;
         }
