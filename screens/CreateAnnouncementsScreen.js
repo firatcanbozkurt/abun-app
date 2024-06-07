@@ -22,7 +22,7 @@ import {
 import { supabase } from "../supabase";
 import * as ImagePicker from "expo-image-picker";
 
-const CreateAnnouncementsScreen = ({ navigation }) => {
+const CreateAnnouncementsScreen = ({ navigation, route }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
@@ -74,10 +74,12 @@ const CreateAnnouncementsScreen = ({ navigation }) => {
     }
     if (title.length > 0 && body.length > 0 && image && url.length > 0) {
       const [formData, name] = generateFormData();
-      await supabase
+      const { data, error } = await supabase
         .from("announcements")
-        .insert([{ title, body, src_image: name, url }]);
+        .insert({ title, body, src_image: name, url });
+
       await supabase.storage.from("announcements").upload(name, formData);
+      route.params.onGoBack();
       navigation.goBack();
       return;
     }

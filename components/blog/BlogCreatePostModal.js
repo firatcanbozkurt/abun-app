@@ -37,23 +37,24 @@ const BlogCreatePostModal = ({ navigation, route }) => {
 
     await supabase
       .from("blog_post")
-      .insert({
+      .upsert({
         full_name: profile?.full_name,
         title: title,
         tag: tag,
         body: body,
         user_email: session.user.email,
       })
-      .then((res) => {
-        console.log("RESPONSE !@!@@", res);
-        console.log("Route params:", route.params);
-        console.log("Navigation:", navigation);
-
+      .select()
+      .single()
+      .then(({ data, error }) => {
+        console.log("AASDASDA", data);
         route.params.onGoBack({
+          id: data.id,
           isAdded: true,
-          title: title,
-          tag: tag,
-          body: body,
+          title: data.title,
+          tag: data.tag,
+          body: data.body,
+          uuid: data.id,
           full_name: profile.full_name,
           user_email: session.user.email,
         });

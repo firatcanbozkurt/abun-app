@@ -38,7 +38,7 @@ const AnnouncementScreen = ({ navigation, route }) => {
       }
     };
     fetchAnnouncement();
-  }, []);
+  }, [id]);
 
   return (
     <SafeAreaView style={{ flex: 1, padding: 16 }}>

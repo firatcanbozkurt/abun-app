@@ -137,9 +137,9 @@ const CustomDrawerContent = ({ navigation }) => {
           onPress={() => {
             supabase.auth.signOut();
           }}
-          labelStyle={{ color: "blue", marginLeft: -16 }}
+          labelStyle={{ color: "red", marginLeft: -16 }}
           icon={({ color, size }) => (
-            <Icon name="logout" color="blue" size={size} />
+            <Icon name="logout" color="red" size={size} />
           )}
           contentContainerStyle={styles.drawerItem}
           style={{
