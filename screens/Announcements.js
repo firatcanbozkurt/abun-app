@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { supabase } from "../supabase";
@@ -24,6 +25,7 @@ import {
   Icon,
   MessageCircleIcon,
 } from "@gluestack-ui/themed";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 const Announcements = ({ navigation }) => {
   const [title, setTitle] = useState("");
@@ -72,9 +74,18 @@ const Announcements = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+      <View className="flex flex-row justify-between px-4 items-center">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="bg-tblack p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+              style={{backgroundColor:"black"}}
+            >
+              <ArrowLeftIcon size="20" color="white" />
+            </TouchableOpacity>
+          </View>
       <View
         style={{
-          paddingLeft: "5%",
+          paddingLeft: "7%",
           paddingTop: "5%",
           display: "flex",
           flexDirection: "row",
@@ -102,7 +113,7 @@ const Announcements = ({ navigation }) => {
           }}
         />
       </View>
-      <View style={{ padding: 16 }}>
+      <View style={{ padding: 24 }}>
         <Button
           size="md"
           variant="solid"

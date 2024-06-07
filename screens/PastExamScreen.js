@@ -91,22 +91,23 @@ const PastExamScreen = () => {
   return (
     <View className="flex-1 ">
       <SafeAreaView
-        className="flex bg-primary h-1/4 "
+        className="flex h-1/4 mt-4"
         style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
       >
         <View className="flex flex-row justify-between px-4 items-center">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="bg-dimgray p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            className=" p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            style={{backgroundColor:"#000000"}}
           >
             <ArrowLeftIcon size="20" color="white" />
             
           </TouchableOpacity>
           <AvatarIcon navigation={navigation}  />
         </View>
-        <View className=" relative items-center justify-center">
-            <Text className="text-twhite text-4xl ">Past Exams </Text>
-            <Text className="text-twhite text-3xl">CENG-SENG</Text>
+        <View className=" relative items-center justify-center" style={{marginBottom:"10%"}}>
+            <Text className="text-tblack text-4xl ">Past Exams</Text>
+            <Text className="text-tblack text-3xl">CENG-SENG</Text>
           </View>
         
       </SafeAreaView>

@@ -16,7 +16,7 @@ const AvatarIcon = ({ navigation }) => {
     <HStack space="md" h="75%">
       <Pressable onPress={() => navigation2.navigate("Profile")}>
         <View >
-          <Avatar size="md" bgColor="$dimgray">
+          <Avatar size="md" bgColor="$black">
             <AvatarFallbackText>{profileName}</AvatarFallbackText>
             <AvatarImage
               source={{

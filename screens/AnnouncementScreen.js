@@ -49,7 +49,7 @@ const AnnouncementScreen = ({ navigation, route }) => {
           <View className="flex flex-row justify-between px-4 items-center">
             <TouchableOpacity
               onPress={() => navigation.goBack()}
-              className="bg-dimgray p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+              className="bg-tblack-900 p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
             >
               <ArrowLeftIcon size="20" color="white" />
             </TouchableOpacity>
