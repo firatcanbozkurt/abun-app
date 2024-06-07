@@ -21,6 +21,11 @@ import {
 } from "@gluestack-ui/themed";
 import { supabase } from "../../supabase";
 import { useAuth } from "../context/AuthProvider";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
 
 const BlogCreatePostModal = ({ navigation, route }) => {
   const asdfsadf = route.params;
