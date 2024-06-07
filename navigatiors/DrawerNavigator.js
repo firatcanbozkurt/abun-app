@@ -33,7 +33,7 @@ const CustomDrawerContent = ({ navigation }) => {
           <View style={styles.avatarContainer}>
             <AvatarIcon />
           </View>
-          <View style={{marginTop:20 , marginLeft:20, }}>
+          <View style={{marginTop:20 , marginLeft:"10%", }}>
             <Text style={styles.profileText}>{profile.full_name}</Text>
             </View>
         </View>
@@ -201,7 +201,7 @@ const DrawerNavigator = () => {
 const styles = StyleSheet.create({
   avatarContainer: {
     height: "5%",
-    left: "15%",
+    left: "20%",
   },
   profileText: {
     marginTop:25,

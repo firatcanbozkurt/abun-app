@@ -29,7 +29,7 @@ import {
 } from "@gluestack-ui/themed";
 import AvatarIcon from "../components/AvatarIcon";
 import { useAuth } from "../components/context/AuthProvider";
-import { useAnnouncementList } from "../api/announcements";
+
 const HomeScreen = ({ navigation }) => {
   const [eventData, setEventData] = useState([]);
   const today = new Date();
@@ -38,10 +38,7 @@ const HomeScreen = ({ navigation }) => {
   const navigation2 = useNavigation();
   const [loading, setLoading] = useState(true);
   const [announcementsLoading, setAnnouncementsLoading] = useState(true);
-  const [announcements, setAnnouncements] = useState([
-    { id: "1", uri: require("../assets/ann.jpeg") },
-    { id: "2", uri: require("../assets/ann.jpeg") },
-  ]);
+  const [announcements, setAnnouncements] = useState([]);
   const { profile } = useAuth();
 
   const openDrawer = () => {
@@ -92,8 +89,6 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchAllEvents = async () => {
       try {
-        // get only recent 2 events
-
         const { data, error } = await supabase.from("eventTest").select("*");
 
         if (error) {
@@ -143,6 +138,9 @@ const HomeScreen = ({ navigation }) => {
     navigation2.navigate("Event", { eventData: selectedEvent });
   };
 
+  // Varsayılan görsel için URL veya yerel yol
+  const defaultImageUri = "https://via.placeholder.com/"; // Bu örnek bir URL'dir, kendi görselinizi kullanabilirsiniz.
+
   return (
     <SafeAreaView className="flex-1 ">
       <View className="flex-1 p-4">
@@ -165,11 +163,11 @@ const HomeScreen = ({ navigation }) => {
           <AvatarIcon navigation={navigation} />
         </View>
         <View className="flex-1 px-4">
-          <View>
+          <View className="">
             <Text className="text-xl my-4">Today's {formattedDate}</Text>
           </View>
           <View className="flex-1">
-            <View>
+            <View className="flex-1">
               <Text className="text-lg mt-2">Hello {profile.full_name}</Text>
               <Text className="text-xl font-semibold">Announcements</Text>
               {announcementsLoading ? (
@@ -184,11 +182,33 @@ const HomeScreen = ({ navigation }) => {
                 >
                   <ActivityIndicator size="large" color="#0000ff" />
                 </View>
+              ) : announcements.length === 0 ? ( // Veri yoksa
+                <View
+                  style={{
+                    width: 300,
+                    height: 200,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    source={{ uri: defaultImageUri }}
+                    style={{
+                      width: 300,
+                      marginTop:"5%",
+                      height: 200,
+                      resizeMode: "cover",
+                      borderRadius: 10,
+                    }}
+                  />
+                </View>
               ) : (
                 <FlatList
                   horizontal
                   data={announcements}
                   keyExtractor={(item) => item.id}
+                  style={{marginTop:"5%"}}
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() =>
@@ -251,6 +271,7 @@ const HomeScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

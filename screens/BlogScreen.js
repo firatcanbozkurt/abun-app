@@ -74,19 +74,20 @@ const BlogScreen = ({ navigation, route }) => {
   return (
     <View className="flex-1">
       <SafeAreaView
-        className="flex bg-primary h-1/4 "
+        className="flex h-1/4 "
         style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
       >
         <View className="flex flex-row justify-between px-4 items-center">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="bg-secondary p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            className="bg-tblack p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
+            style={{backgroundColor:"#000000"}}
           >
             <ArrowLeftIcon size="20" color="white" />
           </TouchableOpacity>
         </View>
-        <View className="flex  items-center mt-3">
-          <Text className="text-twhite text-4xl">Blog</Text>
+        <View className="flex  items-center ">
+          <Text className="text-bold text-4xl">Blog</Text>
         </View>
       </SafeAreaView>
       <View className="px-6 py-4 flex-1 ">
@@ -158,8 +159,7 @@ const BlogScreen = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
-            marginTop: 20,
-            marginBottom: 20,
+            marginBottom: "15%",
           }}
         >
           <Button style={{ width: "45%" }} onPress={openCreatePostModal}>

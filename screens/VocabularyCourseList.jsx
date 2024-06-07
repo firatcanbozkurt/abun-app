@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Text, StyleSheet, Pressable, FlatList } from "react-native";
+import { SafeAreaView, View, Text, StyleSheet, Pressable, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useVocabularyCourses } from "../api/courses";
 import { TextInput } from "react-native";
 import { AntDesign } from '@expo/vector-icons'; 
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../assets/loading.json";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
 
 const VocabularyCourseList = () => {
-  const navigation = useNavigation();
+  const navigation= useNavigation();
   const { data: coursesData, error, isLoading } = useVocabularyCourses();
   const [searchText, setSearchText] = useState("");
 
@@ -54,7 +55,17 @@ const VocabularyCourseList = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View className="flex flex-row justify-between px-4 items-center">
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              className="bg-tblack p-2 rounded-full ml-4 mt-4 w-9"
+              style={{backgroundColor:"black"}}
+            >
+              <ArrowLeftIcon size="20" color="white" />
+            </TouchableOpacity>
+          </View>
       <View style={styles.header}>
+      
         <Text style={styles.title}>COURSES</Text>
         <View style={styles.searchContainer}>
           <TextInput
