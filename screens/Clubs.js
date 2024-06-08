@@ -23,7 +23,7 @@ const Clubs = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{backgroundColor:"#f0f4f7"}}>
       <View className="p-4">
         <View className="flex flex-row justify-between px-4 items-center">
           <Pressable

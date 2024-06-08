@@ -142,7 +142,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   // Varsayılan görsel için URL veya yerel yol
-  const defaultImageUri = "https://via.placeholder.com/"; // Bu örnek bir URL'dir, kendi görselinizi kullanabilirsiniz.
+  const defaultImageUri = "../assets/ankarabilim.png";
 
   return (
     <SafeAreaView className="flex-1 ">
@@ -196,8 +196,8 @@ const HomeScreen = ({ navigation }) => {
                   }}
                 >
                   <Image
-                    source={{ uri: defaultImageUri }}
-                    style={{
+                      source={require(defaultImageUri)}
+                       style={{
                       width: 300,
                       marginTop:"5%",
                       height: 200,

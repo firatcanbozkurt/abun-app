@@ -59,7 +59,7 @@ const AnnouncementScreen = ({ navigation, route }) => {
       </SafeAreaView>
     );
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView style={{ flex: 1, padding: 16, backgroundColor:"#f0f4f7" }}>
       <View style={{ flex: 1 }}>
         <View className="flex flex-row justify-between px-4 items-center">
           <TouchableOpacity

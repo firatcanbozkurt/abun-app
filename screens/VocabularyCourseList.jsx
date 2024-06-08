@@ -58,7 +58,7 @@ const VocabularyCourseList = () => {
       <View className="flex flex-row justify-between px-4 items-center">
             <TouchableOpacity
               onPress={() => navigation.navigate("Home")}
-              className="bg-tblack p-2 rounded-full ml-4 mt-4 w-9"
+              className="bg-tblack p-2 rounded-tr-2xl rounded-bl-2xl ml-4 mt-4 w-9"
               style={{backgroundColor:"black"}}
             >
               <ArrowLeftIcon size="20" color="white" />

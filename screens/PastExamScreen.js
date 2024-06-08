@@ -89,7 +89,7 @@ const PastExamScreen = () => {
   }
 
   return (
-    <View className="flex-1 ">
+    <View className="flex-1 " style={{backgroundColor:"#f0f4f7"}}>
       <SafeAreaView
         className="flex h-1/4 mt-4"
         style={{ borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}

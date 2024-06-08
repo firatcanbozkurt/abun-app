@@ -146,29 +146,17 @@ const Announcements = ({ navigation, route }) => {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View>
-                  <Card size="md" variant="elevated" m="$3">
-                    <Heading mb="$1" size="md">
+                  <Card size="md" variant="elevated" m="$3" >
+                    <View className="flex-row justify-between">
+                    <Heading mb="$1" size="md" alignSelf="center">
                       {item.title}
                     </Heading>
                     <View
                       style={{
                         display: "flex",
-                        flexDirection: "row",
                         justifyContent: "space-between",
                       }}
                     >
-                      <Button
-                        size="md"
-                        variant="solid"
-                        action="primary"
-                        isDisabled={operation}
-                        isFocusVisible={false}
-                        onPress={() => {
-                          updateAnnouncement();
-                        }}
-                      >
-                        <ButtonIcon as={EditIcon} />
-                      </Button>
                       <Button
                         size="md"
                         variant="solid"
@@ -179,6 +167,7 @@ const Announcements = ({ navigation, route }) => {
                       >
                         <ButtonIcon as={CloseIcon} />
                       </Button>
+                      </View>
                     </View>
                   </Card>
                 </View>

@@ -138,7 +138,7 @@ const EventScreen = ({ navigation, route }) => {
       </SafeAreaView>
     );
   return (
-    <SafeAreaView className="">
+    <SafeAreaView style={{backgroundColor:"#f0f4f7"}}>
       <View className="">
         <View className="flex flex-row justify-between p-4  items-center ">
           <TouchableOpacity

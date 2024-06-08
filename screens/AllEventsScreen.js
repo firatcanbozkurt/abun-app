@@ -109,7 +109,7 @@ const AllEventsScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <View className="flex flex-row justify-between p-4  items-center mb-4">
+        <View className="flex flex-row justify-between p-4 mr-3  items-center mb-4">
           <TouchableOpacity
             onPress={() => navigation.navigate("Home")}
             className="bg-tblack-900 p-2 rounded-tr-2xl rounded-bl-2xl ml-5 mt-4 w-9"
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#f0f4f7",
+    
   },
   flatListContainer: {
     padding: 34,

@@ -28,7 +28,7 @@ const AvatarIcon = ({ navigation, sz }) => {
               />
             </Avatar>
           ) : (
-            <Avatar size="md"bgColor="$black"">
+            <Avatar size="md"bgColor="$black">
               <AvatarFallbackText>{profileName}</AvatarFallbackText>
               <AvatarImage
                 source={{

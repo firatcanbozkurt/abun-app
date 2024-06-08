@@ -23,13 +23,13 @@ import {
 import { supabase } from "../supabase";
 import * as ImagePicker from "expo-image-picker";
 import { LogBox } from "react-native";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
+
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
 ]);
-const CreateAnnouncementsScreen = ({ navigation, route }) => {
 
-import { ArrowLeftIcon } from "react-native-heroicons/solid";
-const CreateAnnouncementsScreen = ({ navigation }) => {
+const CreateAnnouncementsScreen = ({ navigation, route }) => {
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");

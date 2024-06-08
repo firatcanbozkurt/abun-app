@@ -31,7 +31,7 @@ const SendNotificaiton = ({navigation}) => {
     }, 3000);
   };
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor:"#f0f4f7" }}>
       <View
         style={{
           paddingTop: "5%",
