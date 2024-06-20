@@ -33,7 +33,7 @@ The ABU APP is designed to enhance the student and academic experience at Ankara
 
 ###
 
-<h3 align="left">Tech Stack</h3>
+## Tech Stack
 
 ###
 
