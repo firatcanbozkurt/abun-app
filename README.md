@@ -58,6 +58,21 @@ The ABU APP is designed to enhance the student and academic experience at Ankara
 
 ###
 
+## Installation & Run
+
+### Download the Repository and configure
+```
+git clone https://github.com/ABUN-APP/abun-app.git
+cd abun-app
+```
+
+After downloading the repository open up **supabase.js** file in the main directory and paste your Supabase API credentials
+### Start the project
+```
+npm install -f
+npm start
+```
+Now you can use an Emulator or a real phone to see the app and play with the code
 
 
 
