@@ -14,9 +14,8 @@ const ExpoSecureStoreAdapter = {
   },
 };
 
-const supabaseUrl = "https://rivyajuoigpvpgssytra.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdnlhanVvaWdwdnBnc3N5dHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcwNDgxNzcsImV4cCI6MjAyMjYyNDE3N30.MjEGGR2rq4aYK-3Yaw1bgF8OeIjWbDZmRH9je526kQs";
+const supabaseUrl = "";
+const supabaseAnonKey = "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
